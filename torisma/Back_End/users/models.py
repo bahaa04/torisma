@@ -38,6 +38,10 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     def save(self, *args, **kwargs):
+        if self.is_banned:
+            BannedUser.objects.get_or_create(user=self)
+        else:
+            BannedUser.objects.filter(user=self).delete()
         if self.role == 'admin':
             self.is_staff = True
         super().save(*args, **kwargs)
@@ -56,3 +60,10 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+class BannedUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="banned_user")
+    banned_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Banned: {self.user.email}"

@@ -16,8 +16,19 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('role', 'is_banned')
     search_fields = ('email', 'username')  # Optional: Add search functionality
     ordering = ('email',)  # Optional: Order by email
-    actions = ['ban_users']
+    actions = ['ban_users', 'unban_users']
 
     def ban_users(self, request, queryset):
-        queryset.update(is_banned=True)
+        for user in queryset:
+            user.is_banned = True
+            user.is_active = False
+            user.save()
+
+    def unban_users(self, request, queryset):
+        for user in queryset:
+            user.is_banned = False
+            user.is_active = True
+            user.save()
+
     ban_users.short_description = "Ban selected users"
+    unban_users.short_description = "Unban selected users"

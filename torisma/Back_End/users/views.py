@@ -25,6 +25,13 @@ class UserRegisterView(generics.CreateAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(email=request.data.get("email"))
+            if user.is_banned:
+                return Response({"error": "User is banned"}, status=status.HTTP_403_FORBIDDEN)
+        except User.DoesNotExist:
+            pass  # Handle missing user gracefully
+
         response = super().post(request, *args, **kwargs)
         try:
             user = User.objects.get(email=request.data.get("email"))
@@ -49,6 +56,7 @@ class AdminUserManagementView(APIView):
             user.role = role
         if is_banned is not None:
             user.is_active = not is_banned  # Deactivate user if banned
+            user.is_banned = is_banned  # Update the is_banned field
         user.save()
 
         return Response({"message": "User updated successfully"}, status=status.HTTP_200_OK)
