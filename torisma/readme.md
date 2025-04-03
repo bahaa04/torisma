@@ -1,6 +1,6 @@
 to start working on the project:
     clone the repo "git clone https://github.com/bahaa04/torisma/"
-    initiat the git                            
+    initiate the git                            
 
 Steps of working on the Back End:
     cd "Back_End"
