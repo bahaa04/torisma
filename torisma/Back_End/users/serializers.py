@@ -37,3 +37,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise AuthenticationFailed("This account is banned.")  # Explicitly deny token issuance
 
         return data
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'phone_number', 'gender', 'profile_image']
+        read_only_fields = ['id', 'email', 'username']
