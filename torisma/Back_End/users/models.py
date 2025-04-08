@@ -23,6 +23,8 @@ class User(AbstractUser):
     is_banned = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=15, blank=True, null=True)  # Add phone number field
 
+    is_email_verified = models.BooleanField(default=False)  # Track email verification status
+
     groups = models.ManyToManyField(
         Group,
         related_name="custom_user_groups",  # Avoid clash with auth.User.groups

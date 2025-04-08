@@ -18,9 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+import debug_toolbar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls')),  # Ensure this line includes the users app URLs
-    path('', include('users.urls')),  # Ensure this line includes the users app URLs
+    path('api/users/', include('users.urls')),
+    path('listings/', include('listings.urls')),
+    path('register/',include('users.urls')),
+    path('login/',include('users.urls')),
+    path('profile/',include('users.urls')),
+    path('',include('users.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),  # Debug Toolbar URL
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
