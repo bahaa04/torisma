@@ -3,7 +3,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('listings', '0005_previous_migration'),  # Replace with the actual previous migration name
+        ('listings', '0001_initial'),
     ]
 
     operations = [
