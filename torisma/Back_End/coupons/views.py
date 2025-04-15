@@ -36,4 +36,3 @@ class CouponViewSet(viewsets.ModelViewSet):
         if coupon.is_valid():
             return Response({'status': 'valid'})
         return Response({'status': 'expired'})
-
