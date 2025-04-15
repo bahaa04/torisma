@@ -82,12 +82,16 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+from decouple import config
+import os
+from dotenv import load_dotenv
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'torisma',  # Your database name
         'USER': 'postgres',  # Your PostgreSQL username
-        'PASSWORD': 'bahaa2005',  # Your PostgreSQL password
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': 'localhost',  # Or the IP address if hosted elsewhere
         'PORT': '5432',  # Default PostgreSQL port
     }
