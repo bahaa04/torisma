@@ -4,10 +4,10 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Coupon
@@ -223,5 +223,34 @@ else:
     # Create an instance of the view and call the notification method
     view = CouponListCreateView()
     view._send_coupon_notification(coupon)
+
+class CouponViewSet(viewsets.ModelViewSet):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+    def list(self, request, *args, **kwargs):
+        """
+        Custom list view to return only valid coupons (active and within valid time).
+        """
+        current_time = timezone.now()
+        valid_coupons = Coupon.objects.filter(is_active=True, valid_from__lte=current_time, valid_until__gte=current_time)
+        serializer = self.get_serializer(valid_coupons, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Custom create view (Optional, can use default create behavior).
+        """
+        return super().create(request, *args, **kwargs)
+
+    @action(detail=True, methods=['get'])
+    def validate(self, request, pk=None):
+        """
+        Custom action to validate if a specific coupon is still valid.
+        """
+        coupon = self.get_object()
+        if coupon.is_valid():
+            return Response({'status': 'valid'})
+        return Response({'status': 'expired'})
 
 # Create your views here.

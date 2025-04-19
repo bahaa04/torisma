@@ -25,11 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']  # Add 'testserver' for testing
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
 
 
 # Application definition
@@ -92,11 +93,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'torisma',  # Your database name
-        'USER': 'postgres',  # Your PostgreSQL username
-        'PASSWORD': 'bahaa2005',  # Your PostgreSQL password
-        'HOST': 'localhost',  # Or the IP address if hosted elsewhere
-        'PORT': '5432',  # Default PostgreSQL port
+        'NAME': os.getenv('DB_NAME', 'torisma'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -165,7 +166,7 @@ SIMPLE_JWT = {
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
+    'SIGNING_KEY': os.getenv('SECRET_KEY'),  # Fetch SECRET_KEY from environment
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
@@ -190,16 +191,13 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Default backend
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Replace with your frontend's URL
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 
 internal_ips = [
     '127.0.0.1',
 ]
 
 # Email Configuration
-
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
@@ -223,12 +221,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000',
-]
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:3000,http://localhost:8000,http://127.0.0.1:3000,http://127.0.0.1:8000').split(',')
 
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
@@ -236,13 +229,25 @@ CSRF_USE_SESSIONS = False
 # Coupon Settings
 COUPON_AUTO_NOTIFY = True  # Set to False to disable automatic notifications
 COUPON_NOTIFICATION_SUBJECT = 'New Coupon Available!'
-COUPON_NOTIFICATION_FROM_EMAIL = DEFAULT_FROM_EMAIL
+COUPON_NOTIFICATION_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 # Payment Gateway settings
 # Dhahabiya Payment Gateway settings
 
 # Stripe Configuration
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+
+STRIPE_PUBLISHER_KEY = os.getenv('STRIPE_PUBLISHER_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 
 # Ensure the logs directory exists
 LOG_DIR = BASE_DIR / 'logs'
@@ -273,3 +278,4 @@ CELERY_ACCEPT_CONTENT = ['json']  # Accept JSON-encoded tasks
 CELERY_TASK_SERIALIZER = 'json'  # Serialize tasks in JSON format
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Store task results in Redis
 CELERY_TIMEZONE = TIME_ZONE  # Use the same timezone as Django
+
