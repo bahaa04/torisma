@@ -1,20 +1,31 @@
+from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, wilayas, WilayaPhotos
 from django.contrib import admin
-from .models import Car, HouseHotel, Favorite
+from django import forms
+from django.contrib.auth.models import User
+
+
+class CarAdminForm(forms.ModelForm):
+    la_wilaya = forms.ChoiceField(choices=[(name, name) for name, _ in wilayas])  # Use predefined Wilayas
+
+    class Meta:
+        model = Car
+        fields = '__all__'
+
+    def clean_la_wilaya(self):
+        wilaya_name = self.cleaned_data['la_wilaya']
+        wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)  # Ensure Wilaya exists in the table
+        return wilaya
+
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    list_display = ('manufacture', 'model', 'manufacturing_year', 'seats', 'fuel_type', 'price', 'currency', 'la_wilaya', 'is_active')
-    search_fields = ('manufacture', 'model', 'la_wilaya')
-    list_filter = ('fuel_type', 'manufacturing_year', 'la_wilaya', 'currency', 'is_active')
-    fields = ('owner', 'description', 'price', 'currency', 'location', 'la_wilaya',
-              'manufacture', 'model', 'manufacturing_year', 'seats', 'fuel_type', 'is_active')
+    form = CarAdminForm
+    list_display = ('manufacture', 'model', 'price', 'status', 'la_wilaya', 'location')
+    search_fields = ('manufacture', 'model', 'la_wilaya__name')
+    list_filter = ('fuel_type', 'manufacturing_year', 'la_wilaya')
+    fields = ('owner', 'description', 'price', 'la_wilaya', 'location',
+              'manufacture', 'model', 'manufacturing_year', 'seats', 'fuel_type')
     actions = ['activate_items', 'deactivate_items']
-
-    def get_fields(self, request, obj=None):
-        fields = super().get_fields(request, obj)
-        if obj is None:  # Creating a new instance
-            fields = [field for field in fields if field != 'is_active']
-        return fields
 
     @admin.action(description='Activate selected cars')
     def activate_items(self, request, queryset):
@@ -24,32 +35,58 @@ class CarAdmin(admin.ModelAdmin):
     def deactivate_items(self, request, queryset):
         queryset.update(is_active=False)
 
-@admin.register(HouseHotel)
-class HouseHotelAdmin(admin.ModelAdmin):
-    list_display = ('type', 'number_of_rooms', 'has_parking', 'has_wifi', 'is_furnished', 'price', 'currency', 'la_wilaya', 'is_active')
-    search_fields = ('exact_location', 'la_wilaya')
-    list_filter = ('type', 'has_parking', 'has_wifi', 'is_furnished', 'la_wilaya', 'currency', 'is_active')
-    fields = ('owner', 'description', 'price', 'currency', 'location', 'la_wilaya',
-              'type', 'number_of_rooms', 'has_parking', 'has_wifi', 'is_furnished', 'exact_location', 'is_active')
+
+
+class HouseAdminForm(forms.ModelForm):
+    la_wilaya = forms.ChoiceField(choices=[(name, name) for name, _ in wilayas])  # Use predefined Wilayas
+
+    class Meta:
+        model = House
+        fields = '__all__'
+
+    def clean_la_wilaya(self):
+        wilaya_name = self.cleaned_data['la_wilaya']
+        wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)  # Ensure Wilaya exists in the table
+        return wilaya
+
+
+@admin.register(House)
+class HouseAdmin(admin.ModelAdmin):
+    form = HouseAdminForm
+    list_display = ('number_of_rooms', 'price', 'status', 'la_wilaya', 'exact_location')
+    search_fields = ('la_wilaya__name', 'exact_location')
+    list_filter = ('has_parking', 'has_wifi', 'la_wilaya')
+    fields = ('owner', 'description', 'price', 'la_wilaya', 'exact_location',
+              'number_of_rooms', 'has_parking', 'has_wifi')
     actions = ['activate_items', 'deactivate_items']
 
-    def get_fields(self, request, obj=None):
-        fields = super().get_fields(request, obj)
-        if obj is None:  # Creating a new instance
-            fields = [field for field in fields if field != 'is_active']
-        return fields
-
-    @admin.action(description='Activate selected houses/hotels')
+    @admin.action(description='Activate selected houses')
     def activate_items(self, request, queryset):
         queryset.update(is_active=True)
 
-    @admin.action(description='Deactivate selected houses/hotels')
+    @admin.action(description='Deactivate selected houses')
     def deactivate_items(self, request, queryset):
         queryset.update(is_active=False)
 
-@admin.register(Favorite)
-class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'item', 'created_at')
-    search_fields = ('user__username', 'item__description')
-    list_filter = ('created_at',)
-    fields = ('user', 'item')
+
+@admin.register(CarPhotos)
+class CarPhotosAdmin(admin.ModelAdmin):
+    list_display = ('car', 'photo')
+
+
+@admin.register(HousePhotos)
+class HousePhotosAdmin(admin.ModelAdmin):
+    list_display = ('house', 'photo')
+
+
+@admin.register(Wilaya)
+class WilayaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'photo')  # Display photo in the admin list view
+    search_fields = ('name',)
+    fields = ('name', 'photo')  # Allow editing the photo in the admin form
+
+
+@admin.register(WilayaPhotos)
+class WilayaPhotosAdmin(admin.ModelAdmin):
+    list_display = ['wilaya_name', 'photo', 'uploaded_at']
+    search_fields = ['wilaya_name']

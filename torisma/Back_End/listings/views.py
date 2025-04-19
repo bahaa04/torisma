@@ -1,71 +1,150 @@
-from rest_framework import generics, permissions, filters, status
+from rest_framework import generics, permissions, filters, status, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
-from .models import Car, HouseHotel, Favorite
-from .serializers import CarSerializer, HouseHotelSerializer, FavoriteSerializer
+from django.utils import timezone
+from coupons.models import Coupon
+from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos
+from .serializers import CarSerializer, HouseSerializer, FavoriteSerializer, CarPhotosSerializer, HousePhotosSerializer, WilayaSerializer, WilayaPhotosSerializer
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from .filters import HouseFilter
 
 class CarListView(generics.ListAPIView):
     serializer_class = CarSerializer
     pagination_class = None
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['location', 'price', 'la_wilaya', 'currency']
-    search_fields = ['description', 'manufacture', 'model']
-    ordering_fields = ['price', 'created_at']
+    filterset_fields = {
+        'price': ['exact', 'gte', 'lte'],
+        'la_wilaya': ['exact'],
+        'status': ['exact'],
+        'manufacturing_year': ['exact', 'gte', 'lte'],
+        'seats': ['exact', 'gte', 'lte'],
+        'fuel_type': ['exact']
+    }
+    search_fields = ['description', 'manufacture', 'model', 'location']
+    ordering_fields = ['price', 'created_at', 'manufacturing_year']
     ordering = ['-created_at']
 
     def get_queryset(self):
-        return Car.objects.filter(is_active=True)
+        queryset = Car.objects.all()
+        
+        # Handle price range
+        min_price = self.request.query_params.get('min_price')
+        max_price = self.request.query_params.get('max_price')
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+            
+        # Handle year range
+        min_year = self.request.query_params.get('min_year')
+        max_year = self.request.query_params.get('max_year')
+        if min_year:
+            queryset = queryset.filter(manufacturing_year__gte=min_year)
+        if max_year:
+            queryset = queryset.filter(manufacturing_year__lte=max_year)
+            
+        # Handle seats range
+        min_seats = self.request.query_params.get('min_seats')
+        max_seats = self.request.query_params.get('max_seats')
+        if min_seats:
+            queryset = queryset.filter(seats__gte=min_seats)
+        if max_seats:
+            queryset = queryset.filter(seats__lte=max_seats)
+            
+        # Handle wilaya filter
+        wilaya = self.request.query_params.get('la_wilaya')
+        if wilaya:
+            queryset = queryset.filter(la_wilaya__name=wilaya)
+            
+        return queryset
 
-class HouseHotelListView(generics.ListAPIView):
-    serializer_class = HouseHotelSerializer
-    pagination_class = None
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['location', 'price', 'la_wilaya', 'currency', 'type']
-    search_fields = ['description', 'exact_location']
-    ordering_fields = ['price', 'created_at']
-    ordering = ['-created_at']
-
-    def get_queryset(self):
-        return HouseHotel.objects.filter(is_active=True)
+class HouseListView(ListAPIView):
+    """
+    View to list all houses with filtering options.
+    """
+    queryset = House.objects.all()
+    serializer_class = HouseSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = HouseFilter
+    ordering_fields = ['price']  # Allow ordering by price
+    ordering = ['price']  # Default ordering by ascending price
 
 # 🔍 List & Create Listings
 class CarListCreateView(generics.ListCreateAPIView):
     serializer_class = CarSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['la_wilaya', 'price', 'currency']
+    filterset_fields = ['la_wilaya', 'price', 'status']
     search_fields = ['description', 'manufacture', 'model']
     ordering_fields = ['price', 'created_at']
     ordering = ['-created_at']
 
     def get_queryset(self):
-        return Car.objects.filter(is_active=True)
+        return Car.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        user = self.request.user
+        wilaya_name = serializer.validated_data.get('la_wilaya')
+
+        # Ensure the Wilaya exists in the table
+        wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)
+
+        # Save the car with the associated Wilaya
+        car = serializer.save(owner=user, la_wilaya=wilaya)
+
+        # Handle photos
+        photos = self.request.FILES.getlist('photos')
+        for photo in photos:
+            CarPhotos.objects.create(car=car, photo=photo)
+
+        # Update user role if necessary
+        if user.role == 'customer':
+            user.role = 'renter'
+            user.save()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({"request": self.request})
         return context
 
-class HouseHotelListCreateView(generics.ListCreateAPIView):
-    serializer_class = HouseHotelSerializer
+class HouseListCreateView(generics.ListCreateAPIView):
+    serializer_class = HouseSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['la_wilaya', 'price', 'currency', 'type']
+    filterset_fields = ['la_wilaya', 'price', 'type', 'status']
     search_fields = ['description', 'exact_location']
     ordering_fields = ['price', 'created_at']
     ordering = ['-created_at']
 
     def get_queryset(self):
-        return HouseHotel.objects.filter(is_active=True)
+        return House.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        user = self.request.user
+        wilaya_name = serializer.validated_data.get('la_wilaya')
+
+        # Ensure the Wilaya exists in the table
+        wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)
+
+        # Save the house with the associated Wilaya
+        house = serializer.save(owner=user, la_wilaya=wilaya)
+
+        # Handle photos
+        photos = self.request.FILES.getlist('photos')
+        for photo in photos:
+            HousePhotos.objects.create(house=house, photo=photo)
+
+        # Update user role if necessary
+        if user.role == 'customer':
+            user.role = 'renter'
+            user.save()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -80,26 +159,70 @@ class CarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         if self.request.method in ['PUT', 'PATCH', 'DELETE']:
             return Car.objects.filter(owner=self.request.user)
-        return Car.objects.filter(is_active=True)
+        return Car.objects.all()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({"request": self.request})
         return context
 
-class HouseHotelRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = HouseHotelSerializer
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        coupon_code = request.query_params.get("coupon")
+        discount = 0
+
+        if coupon_code:
+            try:
+                coupon = Coupon.objects.get(code=coupon_code, active=True)
+                now = timezone.now()
+                if coupon.valid_from <= now <= coupon.valid_until:
+                    discount = coupon.discount_percentage
+                else:
+                    return Response({"error": "Coupon expired"}, status=status.HTTP_400_BAD_REQUEST)
+            except Coupon.DoesNotExist:
+                return Response({"error": "Invalid coupon code"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        if discount > 0:
+            data["discounted_price"] = f"{float(data['price']) * (1 - discount / 100):.2f}"
+        return Response(data)
+
+class HouseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = HouseSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         if self.request.method in ['PUT', 'PATCH', 'DELETE']:
-            return HouseHotel.objects.filter(owner=self.request.user)
-        return HouseHotel.objects.filter(is_active=True)
+            return House.objects.filter(owner=self.request.user)
+        return House.objects.all()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({"request": self.request})
         return context
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        coupon_code = request.query_params.get("coupon")
+        discount = 0
+
+        if coupon_code:
+            try:
+                coupon = Coupon.objects.get(code=coupon_code, active=True)
+                now = timezone.now()
+                if coupon.valid_from <= now <= coupon.valid_until:
+                    discount = coupon.discount_percentage
+                else:
+                    return Response({"error": "Coupon expired"}, status=status.HTTP_400_BAD_REQUEST)
+            except Coupon.DoesNotExist:
+                return Response({"error": "Invalid coupon code"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        if discount > 0:
+            data["discounted_price"] = f"{float(data['price']) * (1 - discount / 100):.2f}"
+        return Response(data)
 
 # ❤️ Favorite a listing
 class AddFavoriteView(generics.CreateAPIView):
@@ -111,7 +234,7 @@ class AddFavoriteView(generics.CreateAPIView):
         item_type = request.data.get("item_type", "car")  # Default to car if not specified
 
         # Get the correct model and content type
-        model = Car if item_type == "car" else HouseHotel
+        model = Car if item_type == "car" else House
         content_type = ContentType.objects.get_for_model(model)
         
         # Try to get the item
@@ -139,7 +262,7 @@ class RemoveFavoriteView(generics.DestroyAPIView):
         item_type = request.data.get("item_type", "car")  # Default to car if not specified
 
         # Get the correct model and content type
-        model = Car if item_type == "car" else HouseHotel
+        model = Car if item_type == "car" else House
         content_type = ContentType.objects.get_for_model(model)
         
         # Try to get the favorite
@@ -155,4 +278,30 @@ class RemoveFavoriteView(generics.DestroyAPIView):
         favorite.delete()
         return Response({"detail": "Item removed from favorites."}, status=status.HTTP_204_NO_CONTENT)
 
+class CarViewSet(viewsets.ModelViewSet):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class HouseViewSet(viewsets.ModelViewSet):
+    queryset = House.objects.all()
+    serializer_class = HouseSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class WilayaListView(APIView):
+    def get(self, request):
+        # Get wilayas that have active cars or houses
+        wilayas = Wilaya.objects.filter(
+            Q(car__is_active=True) | Q(house__is_active=True)
+        ).distinct()
+        serializer = WilayaSerializer(wilayas, many=True)
+        return Response(serializer.data)
+
+class WilayaPhotosViewSet(ModelViewSet):
+    queryset = WilayaPhotos.objects.all()
+    serializer_class = WilayaPhotosSerializer
 

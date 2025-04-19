@@ -24,6 +24,13 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)  # Add phone number field
 
     is_email_verified = models.BooleanField(default=False)  # Track email verification status
+    identifiers=[
+        ('national_id', 'National ID'),
+        ('passport', 'Passport'),
+    ]
+
+    identification_type = models.CharField(max_length=50, blank=True, null=True,choices=identifiers)  # Rename identification_name to identification_type
+    identification_image = models.ImageField(upload_to="identifications/", blank=True, null=True)  # Keep identification_image
 
     groups = models.ManyToManyField(
         Group,

@@ -9,8 +9,13 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from dotenv import load_dotenv
 from pathlib import Path
+import os
+from datetime import timedelta
+
+# Load environment variables from a .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1_p*93^pt%4p2w-k*rw6=xl2oplk7^ju_*$(xn1fi!(0ph!x63'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Add localhost for development
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']  # Add 'testserver' for testing
 
 
 # Application definition
@@ -40,10 +44,13 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',  # Add token blacklist app
     'django_filters',
     'listings',
     'corsheaders',  # Add CORS headers app
-    "debug_toolbar",  # Add Debug Toolbar app
+    'debug_toolbar',  # Add Debug Toolbar app
+    'coupons',
+    'resANDtran',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +70,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # Add the templates directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -149,6 +156,34 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
+# JWT Settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    'JTI_CLAIM': 'jti',
+}
 
 AUTHENTICATION_BACKENDS = [
     'users.auth_backend.CustomAuthBackend',  # Add the custom authentication backend
@@ -163,18 +198,78 @@ internal_ips = [
     '127.0.0.1',
 ]
 
-# Email backend configuration
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development (prints emails to the console)
+# Email Configuration
 
-# Uncomment and configure the following for production:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email provider's SMTP server
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your-email@example.com'  # Replace with your email address
-# EMAIL_HOST_PASSWORD = 'your-email-password'  # Replace with your email password
 
-# Session settings
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
-SESSION_COOKIE_AGE = 3600  # Set session to expire in 1 hour (3600 seconds)
-SESSION_SAVE_EVERY_REQUEST = True  # Refresh session expiry on each request
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000',
+]
+
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False
+# Coupon Settings
+COUPON_AUTO_NOTIFY = True  # Set to False to disable automatic notifications
+COUPON_NOTIFICATION_SUBJECT = 'New Coupon Available!'
+COUPON_NOTIFICATION_FROM_EMAIL = DEFAULT_FROM_EMAIL
+
+# Payment Gateway settings
+# Dhahabiya Payment Gateway settings
+
+# Stripe Configuration
+
+
+# Ensure the logs directory exists
+LOG_DIR = BASE_DIR / 'logs'
+LOG_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR / 'errors.log',  # Use the LOG_DIR path
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://<your-redis-host>:<your-redis-port>/0'  # Example: 'redis://192.168.1.100:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']  # Accept JSON-encoded tasks
+CELERY_TASK_SERIALIZER = 'json'  # Serialize tasks in JSON format
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Store task results in Redis
+CELERY_TIMEZONE = TIME_ZONE  # Use the same timezone as Django

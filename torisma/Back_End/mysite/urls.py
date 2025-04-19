@@ -23,10 +23,8 @@ import debug_toolbar
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
-    path('listings/', include('listings.urls')),
-    path('register/',include('users.urls')),
-    path('login/',include('users.urls')),
-    path('profile/',include('users.urls')),
-    path('',include('users.urls')),
-    path('__debug__/', include('debug_toolbar.urls')),  # Debug Toolbar URL
+    path('api/listings/', include('listings.urls')),
+    path('api/coupons/', include('coupons.urls')),
+    path('api/reservations/', include('resANDtran.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

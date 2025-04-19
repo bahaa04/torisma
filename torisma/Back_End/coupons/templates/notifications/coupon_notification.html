@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your New Coupon From torisma</title>
+    <style>
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #202124;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f6f9fc;
+        }
+        .container {
+            border-radius: 8px;
+            padding: 24px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .logo {
+            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a73e8;
+        }
+        .coupon-container {
+            background: linear-gradient(135deg, #ebf5ff 0%, #e1f1ff 100%);
+            border: 1px dashed #1a73e8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
+        }
+        .coupon-code {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #1a73e8;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: white;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .discount-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1a73e8;
+            margin: 10px 0;
+        }
+        .expiry {
+            font-size: 14px;
+            color: #5f6368;
+            margin-top: 15px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #1a73e8;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-weight: 500;
+            font-size: 14px;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #0d65d9;
+        }
+        .terms {
+            font-size: 12px;
+            color: #5f6368;
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #5f6368;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #e8eaed;
+        }
+        .social-links {
+            margin: 15px 0;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">torisma</div>
+            <h1 style="color: #202124; font-size: 24px; margin-top: 0;">Your Special Discount Awaits!</h1>
+        </div>
+        
+        <div class="content">
+            <p>Hello,</p>
+            <p>We're excited to offer you a special discount on your next booking with torisma!</p>
+            
+            <div class="coupon-container">
+                <p style="margin-top: 0;">SAVE</p>
+                <div class="discount-value">{{ discount_amount }}</div>
+                <p>on your next booking</p>
+                <div class="coupon-code">{{ coupon_code }}</div>
+                <p class="expiry">Valid until: {{ expiry_date }}</p>
+            </div>
+            
+            <p>Discover amazing destinations and create unforgettable memories with torisma. Use your exclusive coupon code at checkout and enjoy your discounted adventure!</p>
+            
+            <div style="text-align: center;">
+                <a href="https://torisma.com/listings" class="button">Browse Destinations</a>
+            </div>
+            
+            <p class="terms">
+                Terms & Conditions: This coupon is valid for one-time use only. Cannot be combined with other offers. 
+                Valid for bookings made before the expiration date. Additional restrictions may apply.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>Follow us for travel inspiration:</p>
+            <div class="social-links">
+                <a href="#" style="color: #1a73e8;">Facebook</a>
+                <a href="#" style="color: #1a73e8;">Instagram</a>
+                <a href="#" style="color: #1a73e8;">Twitter</a>
+            </div>
+            <p>&copy; 2025 torisma. All rights reserved.</p>
+            <p>If you'd prefer not to receive promotional emails, you can <a href="#" style="color: #1a73e8;">unsubscribe here</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
