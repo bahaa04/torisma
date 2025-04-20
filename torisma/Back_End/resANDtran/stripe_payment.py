@@ -7,7 +7,7 @@ from .models import CarTransaction, HouseTransaction
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-def create_stripe_payment_intent(amount, currency='dzd', capture_method='automatic'):
+def create_stripe_payment_intent(amount, currency='usd', capture_method='automatic'):
     """Create a Stripe PaymentIntent"""
     try:
         intent = stripe.PaymentIntent.create(

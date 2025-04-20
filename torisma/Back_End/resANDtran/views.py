@@ -4,10 +4,6 @@ from .models import CarReservation, HouseReservation, CarTransaction, HouseTrans
 from .serializers import CarReservationSerializer, HouseReservationSerializer, CarTransactionSerializer, HouseTransactionSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action, api_view, permission_classes
-import json
-import hmac
-import hashlib
-import requests
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -20,6 +16,7 @@ from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
 from .stripe_payment import create_stripe_payment_intent, handle_stripe_payment_success
+import json
 import stripe
 
 
@@ -344,9 +341,11 @@ def create_stripe_payment(request, transaction_id):
         # Get transaction
         try:
             transaction = CarTransaction.objects.get(id=transaction_id)
+            item = transaction.car
         except CarTransaction.DoesNotExist:
             try:
                 transaction = HouseTransaction.objects.get(id=transaction_id)
+                item = transaction.house
             except HouseTransaction.DoesNotExist:
                 return Response({"error": "Transaction not found"}, status=404)
 
@@ -358,20 +357,40 @@ def create_stripe_payment(request, transaction_id):
         if transaction.status in ['completed', 'confirmed']:
             return Response({"error": "Transaction already completed or confirmed"}, status=400)
 
-        # Ensure payment_details is not None
-        if not transaction.payment_details:
-            return Response({"error": "Payment details are missing"}, status=400)
+        # Calculate the amount based on price and rental duration
+        if transaction.reservation:
+            start_date = transaction.reservation.start_date
+            end_date = transaction.reservation.end_date
+            rental_days = (end_date - start_date).days
+            if rental_days <= 0:
+                return Response({"error": "Invalid rental duration"}, status=400)
+            amount_dzd = item.price * rental_days
+        else:
+            return Response({"error": "Reservation details are missing"}, status=400)
+
+        # Convert DZD to EUR
+        conversion_rate = 0.0068  # Example conversion rate (1 DZD = 0.0068 EUR)
+        amount_eur = round(amount_dzd * conversion_rate, 2)
+
+        # Update payment_details in the transaction
+        currency = 'eur'  # Default currency for Mastercard Stripe payments
+        transaction.payment_details = {
+            "amount_dzd": amount_dzd,
+            "amount_eur": amount_eur,
+            "currency": currency
+        }
+        transaction.save()
 
         # Create payment intent without capturing
-        amount = transaction.payment_details.get('amount', 0)
-        intent = create_stripe_payment_intent(amount, capture_method='manual')
+        intent = create_stripe_payment_intent(amount_eur, currency, capture_method='manual')
 
         # Notify the owner
         send_owner_notification(transaction, 'pending')
 
-        # Return client_secret for frontend
+        # Return client_secret and payment_intent_id for frontend
         return Response({
-            "client_secret": intent.client_secret
+            "client_secret": intent.client_secret,
+            "payment_intent_id": intent.id
         })
 
     except Exception as e:
@@ -402,6 +421,31 @@ def verify_payment(request):
             return Response({"success": True, "message": "Payment verified and transaction updated"})
 
         return Response({"error": "Payment not completed", "status": payment_intent.status}, status=400)
+
+    except stripe.error.StripeError as e:
+        return Response({"error": f"Stripe error: {str(e)}"}, status=500)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def refund_payment(request):
+    """Refund a payment using the payment_intent_id"""
+    try:
+        payment_intent_id = request.data.get('payment_intent_id')
+        if not payment_intent_id:
+            return Response({"error": "PaymentIntent ID is required"}, status=400)
+
+        # Issue a refund
+        stripe.Refund.create(payment_intent=payment_intent_id)
+
+        # Update transaction status
+        transaction = CarTransaction.objects.get(payment_reference=payment_intent_id)  # Adjust for HouseTransaction if needed
+        transaction.status = 'cancelled'
+        transaction.payment_status = 'refunded'
+        transaction.save()
+
+        return Response({"success": True, "message": "Payment refunded successfully"})
 
     except stripe.error.StripeError as e:
         return Response({"error": f"Stripe error: {str(e)}"}, status=500)

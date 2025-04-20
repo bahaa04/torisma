@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from coupons.models import Coupon
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -8,14 +8,12 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Coupon
 from .serializers import CouponSerializer, CouponCreateSerializer, CouponUpdateSerializer
 from users.models import User
-from datetime import datetime
 from rest_framework import serializers
 import logging
+from django.http import request
 from .tasks import send_coupon_email_task  # Import the Celery task
 
 logger = logging.getLogger(__name__)
@@ -211,18 +209,6 @@ def send_coupon_notification(request, coupon_id):
         )
 
 # Import necessary modules and models
-from coupons.models import Coupon
-from coupons.views import CouponListCreateView
-
-# Fetch the coupon with code 'TEST'
-try:
-    coupon = Coupon.objects.get(code='TEST')
-except Coupon.DoesNotExist:
-    print("Coupon with code 'TEST' does not exist.")
-else:
-    # Create an instance of the view and call the notification method
-    view = CouponListCreateView()
-    view._send_coupon_notification(coupon)
 
 class CouponViewSet(viewsets.ModelViewSet):
     queryset = Coupon.objects.all()

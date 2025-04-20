@@ -7,10 +7,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='car',
-            name='manufacturing_date',
-        ),
         migrations.AddField(
             model_name='car',
             name='manufacturing_date',

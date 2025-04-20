@@ -24,17 +24,20 @@ class CarAdmin(admin.ModelAdmin):
     search_fields = ('manufacture', 'model', 'la_wilaya__name')
     list_filter = ('fuel_type', 'manufacturing_year', 'la_wilaya')
     fields = ('owner', 'description', 'price', 'la_wilaya', 'location',
-              'manufacture', 'model', 'manufacturing_year', 'seats', 'fuel_type')
+            'manufacture', 'model', 'manufacturing_year', 'seats', 'fuel_type')
     actions = ['activate_items', 'deactivate_items']
 
     @admin.action(description='Activate selected cars')
     def activate_items(self, request, queryset):
-        queryset.update(is_active=True)
+        queryset.update(status='available')
 
     @admin.action(description='Deactivate selected cars')
     def deactivate_items(self, request, queryset):
-        queryset.update(is_active=False)
-
+        if self.status == 'available':
+            queryset.update(status='disabled')
+        else:
+            pass
+        
 
 
 class HouseAdminForm(forms.ModelForm):
@@ -57,17 +60,19 @@ class HouseAdmin(admin.ModelAdmin):
     search_fields = ('la_wilaya__name', 'exact_location')
     list_filter = ('has_parking', 'has_wifi', 'la_wilaya')
     fields = ('owner', 'description', 'price', 'la_wilaya', 'exact_location',
-              'number_of_rooms', 'has_parking', 'has_wifi')
+            'number_of_rooms', 'has_parking', 'has_wifi')
     actions = ['activate_items', 'deactivate_items']
 
     @admin.action(description='Activate selected houses')
     def activate_items(self, request, queryset):
-        queryset.update(is_active=True)
+        queryset.update(status='available')
 
     @admin.action(description='Deactivate selected houses')
     def deactivate_items(self, request, queryset):
-        queryset.update(is_active=False)
-
+        if self.status == 'available':
+            queryset.update(status='disabled')
+        else:
+            pass
 
 @admin.register(CarPhotos)
 class CarPhotosAdmin(admin.ModelAdmin):
