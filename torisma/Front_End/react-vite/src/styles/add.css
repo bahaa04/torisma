@@ -1,0 +1,136 @@
+
+.selection-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .selection-container {
+    width: 100%;
+    max-width: 500px;
+    border: 2px solid #2ecc8a;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Title styles */
+  .selection-title {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #222;
+  }
+  
+  /* Options container */
+  .options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* Option button styles */
+  .option-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background-color: #2ecc8a;
+    color: #222;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 1rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .option-button:hover {
+    background-color: #28b67d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 204, 138, 0.2);
+  }
+  
+  .option-button.selected {
+    background-color: #222;
+    color: white;
+  }
+  
+  .option-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  /* Cancel button styles */
+  .cancel-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+  
+  .cancel-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: #222;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  
+  .cancel-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .cancel-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .selection-container {
+      max-width: 90%;
+      padding: 1.5rem;
+    }
+  
+    .selection-title {
+      font-size: 1.5rem;
+    }
+  
+    .option-button {
+      font-size: 1rem;
+      padding: 0.75rem;
+    }
+  }
+  
+  /* Animation classes */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(46, 204, 138, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(46, 204, 138, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(46, 204, 138, 0);
+    }
+  }
+  
+  .option-button:focus {
+    animation: pulse 1.5s infinite;
+  }
+  

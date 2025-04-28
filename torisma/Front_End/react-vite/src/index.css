@@ -1,0 +1,23 @@
+/* index.css */
+
+/* Apply some basic resets */
+* {
+    margin: 0;
+    padding: 0;
+    
+  }
+  
+  /* Set a nice font and background */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  
+
+ 
+  
+
+  
