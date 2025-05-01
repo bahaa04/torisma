@@ -1,0 +1,160 @@
+/* PropertyRating.css */
+
+.property-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the row horizontally */
+  gap: 20px;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 95%;
+  max-width: 900px;
+  margin: 20px auto;
+}
+
+.laurels-row {
+  display: flex;
+  justify-content: space-around; /* Space out the laurel and rating sections */
+  align-items: center; /* Vertically align the laurels and rating */
+  width: 100%;
+}
+
+.laurel-left,
+.laurel-right {
+  display: flex;
+  align-items: center; /* Center image horizontally in laurel container */
+  justify-content: center; /* Center image vertically in laurel container */
+  width: 30%; /* Adjust width as needed */
+  height: auto; /* Adjust height based on image aspect ratio */
+}
+
+.laurel-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 120px; /* Adjust max width of the laurel image */
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rating-value {
+  font-size: 4.5em;
+  font-weight: bold;
+  color: #030303;
+  margin-bottom: 5px;
+}
+
+.star-container {
+  display: flex;
+  gap: 5px;
+}
+
+.star {
+  font-size: 1.2em;
+  color: #0a0a08;
+}
+
+.star.empty {
+  color: #ccc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .property-rating {
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .laurels-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .laurel-left,
+  .laurel-right {
+    width: 60%;
+  }
+
+  .rating-value {
+    font-size: 2em;
+  }
+
+  .star {
+    font-size: 1em;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .rating-value {
+    font-size: 3em;
+  }
+
+  .star {
+    font-size: 1.4em;
+  }
+
+  .laurel-image {
+    max-width: 150px;
+  }
+}
+
+/* Media Query for larger laptop screens (typically 1200px and up) */
+@media (min-width: 1200px) {
+  .property-rating {
+    max-width: 1200px;
+    gap: 30px;
+    padding: 30px;
+  }
+
+  .laurels-row {
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .laurel-left,
+  .laurel-right {
+    width: 30%;
+  }
+
+  .laurel-image {
+    max-width: 180px;
+  }
+
+  .rating-value {
+    font-size: 3.5em;
+  }
+
+  .star {
+    font-size: 1.6em;
+  }
+}
+
+/* Media Query for even larger laptop/desktop screens (typically 1400px and up) */
+@media (min-width: 1400px) {
+  .property-rating {
+    max-width: 1400px;
+  }
+
+  .laurel-left,
+  .laurel-right {
+    width: 25%;
+  }
+
+  .laurel-image {
+    max-width: 200px;
+  }
+
+  .rating-value {
+    font-size: 4em;
+  }
+
+  .star {
+    font-size: 1.8em;
+  }
+}

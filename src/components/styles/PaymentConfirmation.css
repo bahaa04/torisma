@@ -1,0 +1,135 @@
+/* ./styles/PaymentConfirmation.css */
+
+.payment-confirmation-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px; /* Add padding for small screens */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+.payment-box {
+  background-color: #34E0A1;
+  padding: 20px; /* Adjust padding for smaller screens */
+  border-radius: 25px;
+  width: 100%; /* Make it take more width on smaller screens */
+  max-width: 400px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+  position: relative;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.title {
+  font-size: 24px; /* Adjust title font size for smaller screens */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 12px; /* Adjust subtitle font size for smaller screens */
+  color: #222;
+  margin-bottom: 15px;
+}
+
+.code-input {
+  width: 80%; /* Take more width on smaller screens */
+  padding: 10px; /* Adjust padding */
+  border-radius: 10px;
+  border: none;
+  font-size: 14px; /* Adjust font size */
+  margin-bottom: 15px;
+  text-align: center;
+  margin-right: 5%; /* Adjusted to add right margin */
+}
+
+.confirm-button {
+  background-color: white;
+  color: black;
+  padding: 8px 20px; /* Adjust padding */
+  border: none;
+  font-size: 14px; /* Adjust font size */
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+.confirm-button:hover {
+  background-color: #e0e2e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 18px; /* Adjust font size */
+  background: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: black;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+.back-button:hover {
+  background-color: #e0e2e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Query for larger screens (e.g., tablets) */
+@media (min-width: 768px) {
+  .payment-box {
+    padding: 30px;
+    width: 80%;
+    max-width: 500px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .code-input {
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    margin-right: 5%; /* Adjusted for larger screens */
+  }
+
+  .confirm-button {
+    padding: 10px 24px;
+    font-size: 16px;
+  }
+
+  .back-button {
+    font-size: 20px;
+    top: 15px;
+    left: 20px;
+  }
+}
+
+/* Media Query for even larger screens (desktops) */
+@media (min-width: 1024px) {
+  .payment-box {
+    max-width: 450px;
+    height: 300px; /* Maintain max width on desktop */
+  }
+
+  .code-input {
+    margin-right: 5%; /* Adjusted for desktops */
+  }
+}

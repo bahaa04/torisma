@@ -1,0 +1,83 @@
+.localisation-container {
+  display: flex;
+  flex-direction: row; /* Arrange left and right columns in a row */
+  align-items: flex-start; /* Align items to the top */
+  padding: 15px; /* Add some padding around the main content */
+  gap: 15px;
+  min-height: 100vh; /* Ensure the container takes up at least the viewport height */
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column; /* Stack the three components vertically */
+ 
+  width : 300px; /* Set a fixed width for the fixed column */
+  gap: 15px; /* Spacing between the three components */
+  position: sticky; /* Make it sticky */
+  top: 20px; /* Adjust top offset as needed (e.g., to account for a fixed header) */
+  height: fit-content; /* Make the height fit its content */
+  /* overflow-y: auto; If the content inside BookingForm might overflow */
+}
+
+.right-column {
+  flex: 1; /* Allow it to take up remaining available space */
+  margin-left: 20px;
+  width: auto; /* Adjust width as needed */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 767px) {
+  .localisation-container {
+    flex-direction: column; /* Stack left and right columns vertically */
+  }
+
+  .left-column {
+    width: 100%; /* Take full width on smaller screens */
+    position: static; /* No sticky behavior on small screens */
+  }
+
+  .right-column {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* Media Query for larger screens (e.g., tablets - 768px and up) */
+@media (min-width: 768px) {
+  .localisation-container {
+    flex-direction: row; /* Keep left and right columns in a row */
+  }
+
+  .left-column {
+    flex-direction: column; /* Ensure the three components stay stacked vertically */
+    width: 300px; /* Maintain fixed width */
+    position: sticky; /* Keep sticky on larger screens */
+    top: 20px;
+  }
+
+  .right-column {
+    flex: 1;
+    margin-left: 20px; /* Adjust left margin on larger screens if needed */
+  }
+}
+
+/* Media Query for even larger screens (desktops - 1024px and up) */
+@media (min-width: 1024px) {
+  .localisation-container {
+    padding: 20px; /* Adjust padding */
+    gap: 30px;
+    max-width: 1200px; /* Example: Set a maximum width */
+    margin: 20px auto; /* Center the container */
+  }
+
+  .left-column {
+    gap: 20px;
+    width: 350px; /* Slightly wider on desktop */
+    top: 0px; /* Adjust top offset on desktop */
+  }
+
+  .right-column {
+    flex: 1;
+    margin-left: 30px; /* Adjust right column margin */
+  }
+}

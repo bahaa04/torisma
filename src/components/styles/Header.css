@@ -1,0 +1,121 @@
+/* Header.css */
+
+.header {
+  background-color:rgb(255, 255, 255); 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 15px 20px; /* Add horizontal padding for responsiveness */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px; /* Limit container width for larger screens */
+  margin: 0 auto; /* Center the container on larger screens */
+}
+
+.nav-list {
+  display: flex;
+  gap: 15px; /* Adjust gap for smaller screens */
+}
+
+.nav-link {
+  font-size: 14px; /* Adjust font size for smaller screens */
+  color: #999696;
+  padding: 5px 0;
+  position: relative;
+}
+
+.nav-link.active {
+  font-weight: 600;
+  color: #000;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+}
+
+.language-button {
+  background: none;
+  border: none;
+  font-size: 16px; /* Adjust font size for smaller screens */
+  color: #555;
+  cursor: pointer;
+}
+
+.login-button {
+  background-color: #000;
+  color: #fff;
+  padding: 8px 14px; /* Adjust padding for smaller screens */
+  border-radius: 20px;
+  font-size: 12px; /* Adjust font size for smaller screens */
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: #878383;
+}
+
+/* Media Query for larger screens (tablets and small laptops) */
+@media (min-width: 768px) {
+  .header {
+    padding: 20px 30px;
+    background-color: white; /* Changed background color to white */
+  }
+
+  .nav-list {
+    gap: 25px; /* Restore larger gap */
+  }
+
+  .nav-link {
+    font-size: 16px; /* Restore larger font size */
+  }
+
+  .language-button {
+    font-size: 18px; /* Restore larger font size */
+  }
+
+  .login-button {
+    padding: 8px 16px; /* Restore larger padding */
+    font-size: 14px; /* Restore larger font size */
+  }
+}
+
+/* Media Query for largest laptop screens (typically 1200px and up) */
+@media (min-width: 1200px) {
+  .header {
+    padding: 25px 40px;
+    background-color: white; /* Changed background color to white */
+  }
+
+  .header-container {
+    max-width: 1400px; /* Further limit width on very large screens */
+  }
+
+  .nav-list {
+    gap: 30px; /* Increase gap for very large screens if needed */
+  }
+
+  .nav-link {
+    font-size: 18px; /* Slightly larger font for very large screens */
+  }
+
+  .language-button {
+    font-size: 20px; /* Slightly larger font for very large screens */
+  }
+
+  .login-button {
+    padding: 10px 20px; /* Slightly larger padding */
+    font-size: 16px; /* Slightly larger font for very large screens */
+  }
+}

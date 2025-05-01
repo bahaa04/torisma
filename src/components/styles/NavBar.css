@@ -1,0 +1,101 @@
+/* Navbar.css */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f8f8f8; /* Light background, adjust if needed */
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-text {
+    display: flex;
+    margin-left: 8px;
+    font-size: 1.2em; /* Adjust size as needed */
+    font-weight: bold;
+    color: #171717; /* Dark text color */
+  }
+  
+  .logo-text span {
+    margin-right: 2px;
+  }
+  
+  .logo-text .highlighted {
+    color: #090a0b; /* Example highlight color */
+  }
+  
+  .nav-links {
+    display: flex;
+    align-items: center;
+  }
+  
+  .link-button {
+    background: none;
+    border: none;
+    color: #908888;
+    padding: 8px 15px;
+    margin-right: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  
+  .link-button:hover {
+    color: #040405;
+  }
+  
+  .nav-links a {
+    color: #887f7f;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 15px;
+  }
+  
+  .nav-links a:hover {
+    color: #040607;
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  .globe-button {
+    background: none;
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .globe-button svg {
+    fill: none;
+    stroke: #555;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .login-button {
+    background-color: #222;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none; /* Remove underline from Link */
+  }
+  
+  .login-button:hover {
+    background-color: #555;
+  }
