@@ -300,11 +300,9 @@ class HouseViewSet(viewsets.ModelViewSet):
 
 class WilayaListView(APIView):
     def get(self, request):
-        # Get wilayas that have active cars or houses
-        wilayas = Wilaya.objects.filter(
-            Q(car__is_active=True) | Q(house__is_active=True)
-        ).distinct()
-        serializer = WilayaSerializer(wilayas, many=True)
+        # Return all wilayas, not just those with cars or houses
+        wilayas = Wilaya.objects.all()
+        serializer = WilayaSerializer(wilayas, many=True, context={'request': request})
         return Response(serializer.data)
 
 class WilayaPhotosViewSet(ModelViewSet):
@@ -322,5 +320,17 @@ class HouseByWilayaListView(ListAPIView):
     def get_queryset(self):
         wilaya_name = self.kwargs.get('wilaya_name')
         queryset = House.objects.filter(la_wilaya__name__iexact=wilaya_name)
+        return queryset
+
+class CarByWilayaListView(ListAPIView):
+    serializer_class = CarSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['description', 'manufacture', 'model', 'location']
+    ordering_fields = ['price', 'created_at', 'manufacturing_year']
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        wilaya_name = self.kwargs.get('wilaya_name')
+        queryset = Car.objects.filter(la_wilaya__name__iexact=wilaya_name)
         return queryset
 

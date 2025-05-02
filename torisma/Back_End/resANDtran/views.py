@@ -71,23 +71,28 @@ def send_cash_payment_confirmation(request, transaction):
             item_type = 'house'
 
         context = {
-            'owner_name': transaction.seller.username,
-            'item_type': item_type,
-            'renter_name': transaction.buyer.username,
-            'renter_phone': transaction.buyer.phone_number,
-            'renter_email': transaction.buyer.email,
+            'username': transaction.buyer.username,
             'amount': transaction.amount,
-            'payment_date': timezone.now().strftime('%Y-%m-%d %H:%M:%S')
+            'owner_phone': transaction.seller.phone_number,
+            'due_date': timezone.now().strftime('%Y-%m-%d'),
+            'confirmation_url': request.build_absolute_uri(
+                reverse('confirm_rental', kwargs={'transaction_id': transaction.id})
+            ),
+            'cancellation_url': request.build_absolute_uri(
+                reverse('cancel_rental', kwargs={'transaction_id': transaction.id})
+            ),
+            'cancellation_date': (timezone.now() + timedelta(days=1)).strftime('%Y-%m-%d'),
         }
 
         html_message = render_to_string('email/cash_payment_confirmation.html', context)
         plain_message = strip_tags(html_message)
 
+        # Send to renter (buyer)
         send_mail(
             subject=f'Cash Payment Confirmation for {item_type} rental',
             message=plain_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[transaction.seller.email],
+            recipient_list=[transaction.buyer.email],
             html_message=html_message
         )
     except Exception as e:

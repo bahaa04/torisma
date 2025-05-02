@@ -86,9 +86,9 @@ class HousePhotosAdmin(admin.ModelAdmin):
 
 @admin.register(Wilaya)
 class WilayaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'photo')  # Display photo in the admin list view
+    list_display = ('id', 'name')  # Removed 'photo'
     search_fields = ('name',)
-    fields = ('name', 'photo')  # Allow editing the photo in the admin form
+    fields = ('name',)  # Removed 'photo'
 
 
 @admin.register(WilayaPhotos)
