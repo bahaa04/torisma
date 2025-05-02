@@ -45,18 +45,19 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',  # Add token blacklist app
+    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'listings',
-    'corsheaders',  # Add CORS headers app
-    'debug_toolbar',  # Add Debug Toolbar app
+    'corsheaders',
+    'debug_toolbar',
     'coupons',
     'resANDtran',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',  # Add Debug Toolbar middleware
-    'corsheaders.middleware.CorsMiddleware',  # Add CORS middleware
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,7 +88,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
-# Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {

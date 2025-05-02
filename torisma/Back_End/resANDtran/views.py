@@ -23,6 +23,12 @@ import stripe
 def send_owner_notification(transaction, status):
     """Helper function to send notification to owner"""
     try:
+        pass  # Add your logic here
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+        pass  # Add your logic here
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
         if isinstance(transaction, CarTransaction):
             item = transaction.car
             item_type = 'car'
