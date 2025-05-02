@@ -11,10 +11,10 @@ from .views import (
     RemoveFavoriteView,
     WilayaListView,
     WilayaPhotosViewSet,
-    HouseByWilayaListView,  # ADD THIS
+    HouseByWilayaListView,
+    CarByWilayaListView,
 )
 
-# Create a router for wilaya photos
 wilaya_router = DefaultRouter()
 wilaya_router.register(r'photos', WilayaPhotosViewSet, basename='wilaya-photos')
 
@@ -23,8 +23,7 @@ urlpatterns = [
     path('cars/', CarListView.as_view(), name='car-list'),
     path('cars/create/', CarListCreateView.as_view(), name='car-create'),
     path('cars/<uuid:pk>/', CarRetrieveUpdateDestroyView.as_view(), name='car-detail'),
-    # Optionally, fix the car wilaya endpoint as well:
-    # path('cars/by_wilaya/<str:wilaya_name>/', CarByWilayaListView.as_view(), name='wilaya-car-list'),
+    path('cars/by_wilaya/<str:wilaya_name>/', CarByWilayaListView.as_view(), name='wilaya-car-list'),
 
     # House endpoints
     path('houses/', HouseListView.as_view(), name='house-list'),
@@ -39,5 +38,6 @@ urlpatterns = [
 
     # Wilaya endpoints
     path('wilayas/', WilayaListView.as_view(), name='wilaya-list'),
-    path('wilayas/', include(wilaya_router.urls)),  # Include wilaya photos under wilayas/
+    path('wilayas/photos/', WilayaPhotosViewSet.as_view({'get': 'list', 'post': 'create'}), name='wilaya-photos-list'),
+    path('wilayas/photos/<int:pk>/', WilayaPhotosViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='wilaya-photos-detail'),
 ]

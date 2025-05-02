@@ -59,9 +59,8 @@ class CouponListCreateView(ListCreateAPIView):
             # Prepare email context
             context = {
                 'coupon_code': coupon.code,
-                'discount_percentage': coupon.discount_percentage,
-                'valid_from': coupon.valid_from.strftime('%Y-%m-%d'),
-                'valid_to': coupon.valid_until.strftime('%Y-%m-%d'),
+                'discount_amount': f"{coupon.discount_percentage}%",
+                'expiry_date': coupon.valid_to.strftime('%Y-%m-%d'),
             }
 
             # Send email synchronously

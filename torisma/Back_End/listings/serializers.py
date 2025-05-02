@@ -212,10 +212,27 @@ class FavoriteSerializer(serializers.ModelSerializer):
         
         return favorite
 
+# Wilaya Photos Serializer
+class WilayaPhotosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WilayaPhotos
+        fields = '__all__'
+
 # Wilaya Serializer
 class WilayaSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField(read_only=True)  # Include photo URL
+    photo = serializers.SerializerMethodField()
+
+    def get_photo(self, obj):
+        # Return the URL of the first photo for this wilaya, or None
+        first_photo = obj.photos().first()
+        if first_photo and first_photo.photo:
+            request = self.context.get('request')
+            photo_url = first_photo.photo.url
+            if request is not None:
+                return request.build_absolute_uri(photo_url)
+            return photo_url
+        return None
 
     class Meta:
         model = Wilaya
-        fields = ['id', 'name', 'photo']  # Include photo field
+        fields = ['id', 'name', 'photo']
