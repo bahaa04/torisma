@@ -69,6 +69,7 @@ export default function CarCard({ car, index }) {
           ))}
         </div>
       </div>
+      
       <div className="car-info">
         <div className="car-location">{car.location}</div>
         <div className="car-name">

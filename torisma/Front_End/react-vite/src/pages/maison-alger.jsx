@@ -6,7 +6,7 @@ import "../styles/voiture1.css";
 import OptionMaison2 from "../components/optionmaison2";
 import NavBar from "../components/navbar1";
 import Search from "../components/search";
-
+import Footer from "../components/footer";
 export default function MaisonAlger() {
   const [houses] = useState([
     {
@@ -68,7 +68,10 @@ export default function MaisonAlger() {
       <OptionMaison2 />
       <MaisonList houses={houses} />
     </div>
-   
+    <br/><br/>
+   <Footer/>
+
+
 
     </>
   );

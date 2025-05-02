@@ -9,13 +9,17 @@ import Maison1   from './pages/maison1';
 import Voiture1   from './pages/voiture1';
 import CarPage from './location/[id]/page'
 import DestPage from './willayat/[id]/page'
+import  HousePage from './houses/[id]/page'
 import  MaisonAlger  from './pages/maison-alger';
 import  VoitureAlger  from './pages/voiture-alger';
-
+import  PasswordReset  from './pages/recoverpassword';
+import VerificationForm from './pages/verification-form';
+import ResetPassword from './pages/resetpassword';
 
 
 
 import './App.css'; 
+
 
 function App() {
   return (
@@ -31,15 +35,21 @@ function App() {
       
       <Route path="/maison1" element={<Maison1 />} />
      <Route path="/voiture1" element={<Voiture1 />}  />
-     <Route path="/masion-alger" element={<MaisonAlger />}  />
+     <Route path="/maison-alger" element={<MaisonAlger />}  />
      <Route path="/voiture-alger" element={<VoitureAlger />}  />
-
+     <Route path="/recoverpass" element={<PasswordReset />}  />
+     <Route path="/verification" element={<VerificationForm />}  />
+     <Route path="/reset" element={<ResetPassword />}  />
+     
+    
+     
 
 
 
 
         {/* dynamic-location route */}
         <Route path="/location/:id" element={<CarPage />} />
+        <Route path="/houses/:id" element={<HousePage />} />
         <Route path="/willayat/:id" element={<DestPage />} />
 
 

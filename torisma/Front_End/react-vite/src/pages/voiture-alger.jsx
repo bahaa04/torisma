@@ -61,7 +61,9 @@ export default function VoitureAlger() {
       <Search />
       <OptionVoiture2 />
       <CarList cars={cars} />
+      <br/><br/>
       <Footer/>
+     
     </div>
   );
 }

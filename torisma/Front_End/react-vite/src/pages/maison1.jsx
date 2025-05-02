@@ -68,7 +68,9 @@ export default function Maison1() {
        <Search/>
       <OptionMaison />
       <MaisonList houses={houses} />
+      <br/><br/>
       <Footer/>
+
     </div>
    
 

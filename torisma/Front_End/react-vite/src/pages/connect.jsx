@@ -107,7 +107,7 @@ export default function Connect() {
        
 
 <NavBar2/>
-<hr style={{border:"none" , height:"0.5px",backgroundColor:"#e0e0e0"}}  />
+
 
         <main>
             <div className="left-section">
@@ -134,7 +134,7 @@ export default function Connect() {
                             <input type="password" placeholder="Password" className="form-control"/>
                         </div>
                         <div className="forgot-password">
-                            <a href="#">Recover Password ?</a>
+                        <Link to="/recoverpass"> Recover Password </Link>
                         </div>
                         <button type="submit" class="signin-btn">Sign in</button>
                     </form>

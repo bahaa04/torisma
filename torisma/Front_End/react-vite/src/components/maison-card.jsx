@@ -19,12 +19,12 @@ export default function MaisonCard({ house, index }) {
 
   const nextImage = (e) => {
     e.stopPropagation() // Prevent card click when clicking carousel buttons
-    setCurrentImageIndex((prev) => (prev + 1) % car.images.length)
+    setCurrentImageIndex((prev) => (prev + 1) % house.images.length)
   }
 
   const prevImage = (e) => {
     e.stopPropagation() 
-    setCurrentImageIndex((prev) => (prev - 1 + car.images.length) % car.images.length)
+    setCurrentImageIndex((prev) => (prev - 1 + house.images.length) % house.images.length)
   }
 
   const handleIndicatorClick = (e, imgIndex) => {
@@ -34,7 +34,7 @@ export default function MaisonCard({ house, index }) {
 
   // Navigate to the detail page for this house by its ID
   const navigateToDetail = () => {
-    navigate(`/location/${house.id}`)
+    navigate(`/houses/${house.id}`)
   }
 
   return (
@@ -70,12 +70,13 @@ export default function MaisonCard({ house, index }) {
           ))}
         </div>
       </div>
+      
       <div className="car-info">
         <div className="car-location">{house.location}</div>
         <div className="car-price">
           {house.brand} 
           <br />
-           {house.model}
+          {house.model}
         </div>
         <div className="car-price">
           {house.price} {house.currency} <span className="per-day">par jour</span>
