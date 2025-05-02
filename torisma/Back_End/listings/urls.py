@@ -11,6 +11,7 @@ from .views import (
     RemoveFavoriteView,
     WilayaListView,
     WilayaPhotosViewSet,
+    HouseByWilayaListView,  # ADD THIS
 )
 
 # Create a router for wilaya photos
@@ -22,12 +23,15 @@ urlpatterns = [
     path('cars/', CarListView.as_view(), name='car-list'),
     path('cars/create/', CarListCreateView.as_view(), name='car-create'),
     path('cars/<uuid:pk>/', CarRetrieveUpdateDestroyView.as_view(), name='car-detail'),
-    
+    # Optionally, fix the car wilaya endpoint as well:
+    # path('cars/by_wilaya/<str:wilaya_name>/', CarByWilayaListView.as_view(), name='wilaya-car-list'),
+
     # House endpoints
     path('houses/', HouseListView.as_view(), name='house-list'),
     path('houses/create/', HouseListCreateView.as_view(), name='house-create'),
     path('houses/<uuid:pk>/', HouseRetrieveUpdateDestroyView.as_view(), name='house-detail'),
-    
+    path('houses/by_wilaya/<str:wilaya_name>/', HouseByWilayaListView.as_view(), name='wilaya-house-list'),
+
     # Favorite endpoints
     path('favorites/', AddFavoriteView.as_view(), name='favorites-list'),
     path('<uuid:item_id>/favorite/', AddFavoriteView.as_view(), name='add-favorite'),

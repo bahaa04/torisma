@@ -68,13 +68,19 @@ class HouseListView(ListAPIView):
     """
     View to list all houses with filtering options.
     """
-    queryset = House.objects.all()
     serializer_class = HouseSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = HouseFilter
     ordering_fields = ['price']  # Allow ordering by price
     ordering = ['price']  # Default ordering by ascending price
+
+    def get_queryset(self):
+        queryset = House.objects.all()
+        wilaya = self.request.query_params.get('la_wilaya')
+        if wilaya:
+            queryset = queryset.filter(la_wilaya__name=wilaya)
+        return queryset
 
 # 🔍 List & Create Listings
 class CarListCreateView(generics.ListCreateAPIView):
@@ -304,4 +310,17 @@ class WilayaListView(APIView):
 class WilayaPhotosViewSet(ModelViewSet):
     queryset = WilayaPhotos.objects.all()
     serializer_class = WilayaPhotosSerializer
+
+class HouseByWilayaListView(ListAPIView):
+    serializer_class = HouseSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = HouseFilter  # <-- Add this line
+    search_fields = ['description', 'exact_location']
+    ordering_fields = ['price', 'created_at']
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        wilaya_name = self.kwargs.get('wilaya_name')
+        queryset = House.objects.filter(la_wilaya__name__iexact=wilaya_name)
+        return queryset
 
