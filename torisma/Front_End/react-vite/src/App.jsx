@@ -11,6 +11,13 @@ import CarPage from './location/[id]/page'
 import DestPage from './willayat/[id]/page'
 import  MaisonAlger  from './pages/maison-alger';
 import  VoitureAlger  from './pages/voiture-alger';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from "react";
+import "./App.css";
+import Localisation from "./pages/localisation";
+import Voiture from "./pages/voiture";
+import Whyalgeria from "./pages/whyalgeria";
+import Moi from "./pages/moi";
 
 
 
@@ -34,7 +41,11 @@ function App() {
      <Route path="/masion-alger" element={<MaisonAlger />}  />
      <Route path="/voiture-alger" element={<VoitureAlger />}  />
 
-
+     <Route path="/localisation" element={<Localisation />} />
+      <Route path="/voiture" element={<Voiture />} />
+      <Route path="/whyalgeria" element={<Whyalgeria />} />
+      <Route path="/moi" element={<Moi />} />
+      
 
 
 
