@@ -7,6 +7,8 @@ import NavBar3 from '../components/navbar3';
 
 export default function SignUp() {
   const [idCardType, setIdCardType] = useState('');
+  const [gender, setGender] = useState('');
+  const [showGenderDropdown, setShowGenderDropdown] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -44,8 +46,35 @@ export default function SignUp() {
           <input type="text" placeholder="Nom" className="form-input" />
           <input type="text" placeholder="Prénom" className="form-input" />
           <input type="tel" placeholder="Numéro de téléphone" className="form-input" />
-          <input type="text" placeholder="Gender" className="form-input" />
-          <input type="text" placeholder="Adresse" className="form-input" />
+          
+          <div className="dropdown-container">
+            <div
+              className="dropdown-selector"
+              onClick={() => setShowGenderDropdown(!showGenderDropdown)}
+            >
+              <span className="dropdown-placeholder">
+                {gender || "Genre"}
+              </span>
+              <ChevronDown className="dropdown-icon" />
+            </div>
+            {showGenderDropdown && (
+              <div className="dropdown-menu">
+                {["Masculin", "Féminin"].map((type) => (
+                  <div
+                    key={type}
+                    className="dropdown-item"
+                    onClick={() => {
+                      setGender(type);
+                      setShowGenderDropdown(false);
+                    }}
+                  >
+                    {type}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <input type="password" placeholder="Mot de passe" className="form-input" />
 
           <div className="dropdown-container">
@@ -62,8 +91,7 @@ export default function SignUp() {
               <div className="dropdown-menu">
                 {[
                   "Carte Nationale d'Identité",
-                  "Passeport",
-                  "Permis de conduire",
+                  "Passeport"
                 ].map((type) => (
                   <div
                     key={type}

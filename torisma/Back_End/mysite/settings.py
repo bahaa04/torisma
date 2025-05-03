@@ -191,7 +191,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Default backend
 ]
 
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+# CORS configuration
+CORS_ALLOW_ALL_ORIGINS = True
 
 internal_ips = [
     '127.0.0.1',
@@ -225,7 +226,7 @@ CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:3000,
 
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
-CSRF_USE_SESSIONS = False
+CSRF_USE_SESSIONS = False 
 # Coupon Settings
 COUPON_AUTO_NOTIFY = True  # Set to False to disable automatic notifications
 COUPON_NOTIFICATION_SUBJECT = 'New Coupon Available!'

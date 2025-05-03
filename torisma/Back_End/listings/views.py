@@ -105,7 +105,7 @@ class CarListCreateView(generics.ListCreateAPIView):
         # Save the car with the associated Wilaya
         car = serializer.save(owner=user, la_wilaya=wilaya)
 
-        # Handle photos
+        # Handle multiple photos
         photos = self.request.FILES.getlist('photos')
         for photo in photos:
             CarPhotos.objects.create(car=car, photo=photo)
@@ -142,7 +142,7 @@ class HouseListCreateView(generics.ListCreateAPIView):
         # Save the house with the associated Wilaya
         house = serializer.save(owner=user, la_wilaya=wilaya)
 
-        # Handle photos
+        # Handle multiple photos
         photos = self.request.FILES.getlist('photos')
         for photo in photos:
             HousePhotos.objects.create(house=house, photo=photo)
@@ -312,15 +312,21 @@ class WilayaPhotosViewSet(ModelViewSet):
 class HouseByWilayaListView(ListAPIView):
     serializer_class = HouseSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_class = HouseFilter  # <-- Add this line
+    filterset_class = HouseFilter
     search_fields = ['description', 'exact_location']
     ordering_fields = ['price', 'created_at']
     ordering = ['-created_at']
+    pagination_class = None  # Disable pagination to match frontend expectations
 
     def get_queryset(self):
         wilaya_name = self.kwargs.get('wilaya_name')
-        queryset = House.objects.filter(la_wilaya__name__iexact=wilaya_name)
+        queryset = House.objects.filter(la_wilaya__name__iexact=wilaya_name).prefetch_related('photos')
         return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'results': serializer.data})
 
 class CarByWilayaListView(ListAPIView):
     serializer_class = CarSerializer
@@ -328,9 +334,45 @@ class CarByWilayaListView(ListAPIView):
     search_fields = ['description', 'manufacture', 'model', 'location']
     ordering_fields = ['price', 'created_at', 'manufacturing_year']
     ordering = ['-created_at']
+    pagination_class = None  # Disable pagination to match frontend expectations
 
     def get_queryset(self):
         wilaya_name = self.kwargs.get('wilaya_name')
-        queryset = Car.objects.filter(la_wilaya__name__iexact=wilaya_name)
+        queryset = Car.objects.filter(la_wilaya__name__iexact=wilaya_name).prefetch_related('photos')
         return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True, context={'request': request})
+        return Response({'results': serializer.data})
+
+class WilayaViewSet(viewsets.ModelViewSet):
+    queryset = Wilaya.objects.all()
+    serializer_class = WilayaSerializer
+
+class CarPhotoViewSet(viewsets.ModelViewSet):
+    queryset = CarPhotos.objects.all()
+    serializer_class = CarPhotosSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return CarPhotos.objects.filter(car__owner=self.request.user)
+
+    def perform_create(self, serializer):
+        car_id = self.request.data.get('car')
+        car = get_object_or_404(Car, id=car_id, owner=self.request.user)
+        serializer.save(car=car)
+
+class HousePhotoViewSet(viewsets.ModelViewSet):
+    queryset = HousePhotos.objects.all()
+    serializer_class = HousePhotosSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return HousePhotos.objects.filter(house__owner=self.request.user)
+
+    def perform_create(self, serializer):
+        house_id = self.request.data.get('house')
+        house = get_object_or_404(House, id=house_id, owner=self.request.user)
+        serializer.save(house=house)
 

@@ -289,3 +289,20 @@ main {
         max-width: 100%;
     }
 }
+
+.logo-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.logo-container:hover {
+    opacity: 0.8;
+}

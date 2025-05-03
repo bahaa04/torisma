@@ -1,0 +1,122 @@
+.choose-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem;
+}
+
+.choose-cards-container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.choose-title {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.choose-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.choose-card {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 260px;
+  max-width: 380px;
+  height: 340px;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1.5px 6px rgba(46,204,138,0.08);
+  display: flex;
+  align-items: flex-end;
+  transition: box-shadow 0.3s, transform 0.3s;
+  background: #fff;
+}
+
+.choose-card:hover {
+  box-shadow: 0 12px 36px rgba(46,204,138,0.18), 0 2px 8px rgba(46,204,138,0.12);
+  transform: translateY(-6px) scale(1.03);
+}
+
+.card-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+.maison-bg {
+  background: linear-gradient(120deg, #2ecc8a 60%, #b2f7ef 100%);
+  /* You can use a house image here if you want: background-image: url('/your-house-image.jpg'); */
+  background-size: cover;
+  background-position: center;
+}
+
+.voiture-bg {
+  background: linear-gradient(120deg, #3a3d4d 60%, #6e8efb 100%);
+  /* You can use a car image here if you want: background-image: url('/your-car-image.jpg'); */
+  background-size: cover;
+  background-position: center;
+}
+
+.card-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: linear-gradient(0deg, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.05) 100%);
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+}
+
+.card-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 1.2rem;
+  color: #fff;
+}
+
+.card-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.card-subtitle {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #e0e0e0;
+}
+
+@media (max-width: 900px) {
+  .choose-cards {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .choose-card {
+    max-width: 95vw;
+    height: 260px;
+  }
+} 

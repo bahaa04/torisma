@@ -1,27 +1,26 @@
-import { MapPin, Home, Car } from "lucide-react"
-import {Link} from "react-router-dom";
-
+import { Home, Car } from "lucide-react"
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function OptionVoiture() {
+  const navigate = useNavigate();
+  const params = useParams();
+  const wilaya = params.wilaya;
+
+  const handleMaisonClick = () => {
+    if (wilaya) {
+      navigate(`/houses/${wilaya}`);
+    } else {
+      navigate('/houses');
+    }
+  };
+
   return (
     <div className="navigation">
-
-
-      <Link to="/" className="no-underline">
-      <div className="nav-item">
-        <MapPin className="nav-icon" />
-        <span>Wilaya</span>
-      </div>
-    </Link>
-
-<Link to ="/maison1" className="no-underline">
-      <div className="nav-item">
+      <div className="nav-item" onClick={handleMaisonClick} style={{cursor: 'pointer'}}>
         <Home className="nav-icon" />
         <span>Maison</span>
       </div>
-</Link>
-
-      <div className="nav-item active">
+      <div className={`nav-item${wilaya ? ' active' : ''}`} style={wilaya ? {pointerEvents: 'none', opacity: 0.6} : {}}>
         <Car className="nav-icon" />
         <span>Voiture</span>
       </div>

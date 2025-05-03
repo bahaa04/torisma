@@ -73,9 +73,17 @@ export default function MaisonCard({ house, index }) {
       
       <div className="car-info">
         <div className="car-location">{house.location}</div>
+        {house.rooms !== undefined && (
+          <div className="car-rooms">{house.rooms} pièces</div>
+        )}
+        <div className="car-status">
+          Statut : {house.status}
+          {house.status === 'rented' && house.rented_until && (
+            <span> — Louée jusqu'au {new Date(house.rented_until).toLocaleDateString('fr-FR')}</span>
+          )}
+        </div>
         <div className="car-price">
-          {house.brand} 
-          <br />
+          {house.brand} <br />
           {house.model}
         </div>
         <div className="car-price">

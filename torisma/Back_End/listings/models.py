@@ -8,6 +8,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 User = get_user_model()
 
@@ -88,24 +90,23 @@ class Wilaya(models.Model):
         choices=wilayas
     )
 
-    def photo(self):
-        """Return the first photo associated with this Wilaya, if any."""
-        return WilayaPhotos.objects.filter(wilaya_name=self.name).first()
-
-    def photos(self):
-        """Return all photos associated with this Wilaya."""
-        return WilayaPhotos.objects.filter(wilaya_name=self.name)
-
     def __str__(self):
         return self.name
 
-class Car(models.Model):
+class WilayaPhoto(models.Model):
+    wilaya = models.ForeignKey(Wilaya, related_name='photos', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='wilaya_photos/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Photo for {self.wilaya} ({self.id})"
+
+class Car(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    location = models.CharField(max_length=255)  # Made mandatory by removing null=True, blank=True
+    location = models.CharField(max_length=255)
     created_at = models.DateTimeField(default=django.utils.timezone.now)
     updated_at = models.DateTimeField(default=django.utils.timezone.now)
     la_wilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE, related_name="cars")
@@ -129,7 +130,7 @@ class Car(models.Model):
     seats = models.IntegerField(
         validators=[
             MinValueValidator(2),
-            MaxValueValidator(9)  # Assuming a maximum of 9 seats for passenger cars
+            MaxValueValidator(9)
         ]
     )
     fuel_type = models.CharField(max_length=50, choices=fuel_types)
@@ -152,7 +153,7 @@ class Car(models.Model):
     def __str__(self):
         return f"{self.manufacture} {self.model} ({self.manufacturing_year}) in {self.la_wilaya} - {self.price} DZD"
 
-class House(models.Model):  # Renamed from HouseHotel to House
+class House(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
@@ -164,7 +165,7 @@ class House(models.Model):  # Renamed from HouseHotel to House
     number_of_rooms = models.IntegerField()
     has_parking = models.BooleanField(default=False)
     has_wifi = models.BooleanField(default=False)
-    exact_location = models.CharField(max_length=255)  # Already mandatory
+    exact_location = models.CharField(max_length=255)
 
     class Meta:
         db_table = 'listings_house'
@@ -235,3 +236,15 @@ class WilayaPhotos(models.Model):
 
     def __str__(self):
         return f"Photo for {self.wilaya_name}"
+
+@receiver(post_delete, sender=Car)
+def delete_wilaya_if_no_cars_or_houses(sender, instance, **kwargs):
+    wilaya = instance.la_wilaya
+    if wilaya.cars.count() == 0 and wilaya.houses.count() == 0:
+        wilaya.delete()
+
+@receiver(post_delete, sender=House)
+def delete_wilaya_if_no_cars_or_houses_house(sender, instance, **kwargs):
+    wilaya = instance.la_wilaya
+    if wilaya.cars.count() == 0 and wilaya.houses.count() == 0:
+        wilaya.delete()

@@ -75,6 +75,12 @@ export default function CarCard({ car, index }) {
         <div className="car-name">
           {car.brand} {car.model}
         </div>
+        <div className="car-status">
+          Statut : {car.status}
+          {car.status === 'rented' && car.rented_until && (
+            <span> — Louée jusqu'au {new Date(car.rented_until).toLocaleDateString('fr-FR')}</span>
+          )}
+        </div>
         <div className="car-price">
           {car.price} {car.currency} <span className="per-day">par jour</span>
         </div>

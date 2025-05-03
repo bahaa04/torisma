@@ -1,24 +1,18 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import HomePage from './pages/homepage'; // Adjust the path as needed
-import Connect from './pages/connect'; 
+import Connect from './pages/connect';
 import SignUp   from './pages/signup';
 import Add   from './pages/add';
 import AddInfos   from './pages/addinfos';
-import Maison1   from './pages/maison1';
-import Voiture1   from './pages/voiture1';
-import CarPage from './location/[id]/page'
-import DestPage from './willayat/[id]/page'
-import  HousePage from './houses/[id]/page'
-import  MaisonAlger  from './pages/maison-alger';
-import  VoitureAlger  from './pages/voiture-alger';
-import  PasswordReset  from './pages/recoverpassword';
+import CarPage from './pages/CarPage'
+import HousePage from './pages/HousePage'
+import PasswordReset  from './pages/recoverpassword';
 import VerificationForm from './pages/verification-form';
 import ResetPassword from './pages/resetpassword';
+import Choose from './pages/choose';
 
-
-
-import './App.css'; 
+import './App.css';
 
 
 function App() {
@@ -33,13 +27,10 @@ function App() {
       <Route path="/add" element={<Add />} />
       <Route path="/addinfos" element={<AddInfos />} />
       
-      <Route path="/maison1" element={<Maison1 />} />
-     <Route path="/voiture1" element={<Voiture1 />}  />
-     <Route path="/maison-alger" element={<MaisonAlger />}  />
-     <Route path="/voiture-alger" element={<VoitureAlger />}  />
      <Route path="/recoverpass" element={<PasswordReset />}  />
      <Route path="/verification" element={<VerificationForm />}  />
      <Route path="/reset" element={<ResetPassword />}  />
+     <Route path="/choose" element={<Choose />} />
      
     
      
@@ -48,9 +39,10 @@ function App() {
 
 
         {/* dynamic-location route */}
-        <Route path="/location/:id" element={<CarPage />} />
-        <Route path="/houses/:id" element={<HousePage />} />
-        <Route path="/willayat/:id" element={<DestPage />} />
+        <Route path="/houses/:wilaya" element={<HousePage />} />
+        <Route path="/cars/:wilaya" element={<CarPage />} />
+        <Route path="/houses/:wilaya/:id" element={<HousePage />} />
+        <Route path="/location/:wilaya/:id" element={<CarPage />} />
 
 
 

@@ -34,7 +34,15 @@ export default function DestinationCard({ dest, index }) {
 
 
   const navigateToDetail = () => {
-    navigate(`/willayat/${dest.id}`)
+    navigate('/choose', { 
+      state: { 
+        wilaya: {
+          id: dest.id,
+          location: dest.location,
+          images: dest.images
+        }
+      }
+    });
   }
 
   return (

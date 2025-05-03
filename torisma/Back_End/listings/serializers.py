@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
-from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos
+from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto
 import datetime
+from resANDtran.models import CarReservation, HouseReservation
 
 wilayas = [
         ('Adrar', 'Adrar'),
@@ -66,6 +67,14 @@ wilayas = [
 
 # Car Photos Serializer
 class CarPhotosSerializer(serializers.ModelSerializer):
+    photo = serializers.SerializerMethodField()
+
+    def get_photo(self, obj):
+        request = self.context.get('request')
+        if obj.photo and hasattr(obj.photo, 'url'):
+            return request.build_absolute_uri(obj.photo.url) if request else obj.photo.url
+        return None
+
     class Meta:
         model = CarPhotos
         fields = ['id', 'photo']
@@ -95,6 +104,7 @@ class CarSerializer(serializers.ModelSerializer):
         ('rented', 'Rented'),
         ('disabled', 'Disabled'),
     ], default='available')  # Make status writable with choices
+    rented_until = serializers.SerializerMethodField()
 
     def validate_manufacturing_year(self, value):
         current_year = datetime.datetime.now().year
@@ -107,6 +117,13 @@ class CarSerializer(serializers.ModelSerializer):
         if value not in [w[0] for w in wilayas]:
             raise serializers.ValidationError("Invalid wilaya name")
         return value
+
+    def get_rented_until(self, obj):
+        if obj.status == 'rented':
+            reservation = CarReservation.objects.filter(car=obj, status__in=['pending', 'completed']).order_by('-end_date').first()
+            if reservation:
+                return reservation.end_date
+        return None
 
     class Meta:
         model = Car
@@ -125,7 +142,8 @@ class CarSerializer(serializers.ModelSerializer):
             'seats',
             'fuel_type',
             'photos',
-            'status'
+            'status',
+            'rented_until',
         ]
         read_only_fields = ['owner', 'created_at', 'updated_at']
 
@@ -136,7 +154,8 @@ class HouseSerializer(serializers.ModelSerializer):  # Updated model name
     photos = HousePhotosSerializer(many=True, read_only=True)  # Include house photos
     la_wilaya = serializers.CharField()  # Accept Wilaya name as input
     price = serializers.DecimalField(max_digits=10, decimal_places=2)  # Use DecimalField for price
-    status = serializers.CharField(read_only=True)  # Add status field
+    status = serializers.CharField()
+    rented_until = serializers.SerializerMethodField()
 
     def validate_la_wilaya(self, value):
         # Ensure the Wilaya name is valid
@@ -152,6 +171,13 @@ class HouseSerializer(serializers.ModelSerializer):  # Updated model name
 
     def get_price(self, obj):
         return f"{obj.price} DZD"
+
+    def get_rented_until(self, obj):
+        if obj.status == 'rented':
+            reservation = HouseReservation.objects.filter(house=obj).order_by('-id').first()
+            if reservation:
+                return getattr(reservation, 'end_date', None)
+        return None
 
     class Meta:
         model = House  # Updated model name
@@ -169,7 +195,8 @@ class HouseSerializer(serializers.ModelSerializer):  # Updated model name
             'exact_location',  # Mandatory field
             'photos',  # Include photos
             'status',  # Include status field
-            'is_favorised'  # Explicitly include is_favorised
+            'is_favorised',  # Explicitly include is_favorised
+            'rented_until',
         ]
         read_only_fields = ['owner', 'created_at', 'updated_at', 'status']
 
@@ -218,21 +245,15 @@ class WilayaPhotosSerializer(serializers.ModelSerializer):
         model = WilayaPhotos
         fields = '__all__'
 
+class WilayaPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WilayaPhoto
+        fields = ['id', 'image', 'uploaded_at']
+
 # Wilaya Serializer
 class WilayaSerializer(serializers.ModelSerializer):
-    photo = serializers.SerializerMethodField()
-
-    def get_photo(self, obj):
-        # Return the URL of the first photo for this wilaya, or None
-        first_photo = obj.photos().first()
-        if first_photo and first_photo.photo:
-            request = self.context.get('request')
-            photo_url = first_photo.photo.url
-            if request is not None:
-                return request.build_absolute_uri(photo_url)
-            return photo_url
-        return None
+    photos = WilayaPhotoSerializer(many=True, read_only=True)
 
     class Meta:
         model = Wilaya
-        fields = ['id', 'name', 'photo']
+        fields = ['id', 'name', 'photos']

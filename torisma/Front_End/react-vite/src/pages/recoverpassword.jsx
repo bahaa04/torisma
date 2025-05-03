@@ -56,7 +56,7 @@ export default function PasswordReset() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="m_touchit@estin.dz"
+                  placeholder="example@gmail.com"
                   className="email-input"
                   disabled={isSubmitting}
                 />
