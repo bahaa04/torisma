@@ -1,0 +1,232 @@
+
+/* ./styles/Pourquoi.css */
+.pourquoi-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #34E0A1; /* Light green background */
+    color: #0a0a0a; /* Dark text color */
+    padding: 40px;
+    border-radius: 10px;
+    margin: 20px; /* Adjust margin as needed */
+    overflow: hidden;
+  }
+  
+  /* Reversed layout for images on the left */
+  .pourquoi-container.reversed {
+    flex-direction: row-reverse;
+  }
+  
+  .pourquoi-container.reversed .text-content {
+    padding-left: 0;
+    padding-right: 40px;
+  }
+  
+  .image-carousel {
+    background: linear-gradient(to right, #34E0A1, #34E0A1); /* Gradient background */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px; /* Adjust height as needed for the 3D carousel */
+    width: 400px; /* Adjust width as needed for the 3D carousel */
+  }
+  
+  .spinning-circle {
+    position: relative;
+    width: 200px; /* Adjust size of the spinning container */
+    height: 200px; /* Make it a circle */
+    transform-style: preserve-3d;
+    animation: rotate 30s linear infinite; /* Adjust speed */
+  }
+  
+  .spinning-circle span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    /* Corrected calculation for even distribution of 4 images */
+    transform: rotateY(calc(var(--i) * 90deg)) translateZ(120px); /* Adjust translateZ for radius */
+  }
+  
+  .spinning-circle span img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 120%;
+    border-radius: 10px; /* Adjust if you don't want circular images */
+    object-fit: cover;
+    transition: transform 0.5s ease-in-out; /* Smoother transition */
+  }
+  
+  .spinning-circle span:hover img {
+    transform: translateY(-20px) scale(1.1); /* Less aggressive hover effect */
+  }
+  
+  @keyframes rotate {
+    0% {
+      transform: perspective(500px) rotateY(0deg); /* Adjust perspective */
+    }
+    100% {
+      transform: perspective(500px) rotateY(360deg); /* Adjust perspective */
+    }
+  }
+  
+  /* Remove the individualRotate styles as they are not needed for this 3D carousel */
+  .circle-image {
+    display: none; /* Hide the styles for the previous rotation method */
+  }
+  
+  .text-content {
+    flex: 0 0 50%; /* Adjust width for the text section */
+  }
+  
+  .title-container {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  
+  .pourquoi-label {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #000000;
+    margin-right: 10px;
+  }
+  
+  .dz-label {
+    font-size: 1.2em;
+    color: #555;
+  }
+  
+  .main-title {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #000000;
+  }
+  
+  .description {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    color: #000000;
+  }
+  
+  .explore-button {
+    background-color: #000000;
+    color: #ffffff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .explore-button:hover {
+    background-color: #434448;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    
+        
+        .spinning-circle span img {
+          border-radius: 5px; /* Adjust for smaller screens */
+          height: 80px; /* <---- ADJUST THIS VALUE FOR SMALLER SCREENS */
+        }
+
+
+
+    .pourquoi-container {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      margin: 10px;
+    }
+  
+    .pourquoi-container.reversed {
+      flex-direction: column;
+    }
+  
+    .pourquoi-container.reversed .text-content {
+      padding-right: 0;
+    }
+  
+    .image-carousel {
+      width: 200px;
+      height: 200px;
+      margin-bottom: 30px;
+    }
+  
+    .spinning-circle {
+      width: 150px;
+      height: 150px;
+    }
+  
+    .spinning-circle span {
+      transform: rotateY(calc(var(--i) * 90deg)) translateZ(100px);
+    }
+  
+    .spinning-circle span img {
+      border-radius: 5px; /* Adjust for smaller screens */
+    }
+  
+    .text-content {
+      padding-left: 0;
+      width: 90%;
+    }
+  
+    .main-title {
+      font-size: 2em;
+    }
+  
+    .description {
+      font-size: 1em;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    
+        
+        .spinning-circle span img {
+          
+          height: 100px; /* <---- ADJUST THIS VALUE FOR MEDIUM SCREENS */
+        }
+        
+      
+    .pourquoi-container {
+      padding: 30px;
+      margin: 15px;
+    }
+  
+    .image-carousel {
+      flex: 0 0 50%;
+      width: 300px;
+      height: 300px;
+    }
+  
+    .spinning-circle {
+      width: 250px;
+      height: 250px;
+    }
+  
+    .spinning-circle span {
+      transform: rotateY(calc(var(--i) * 90deg)) translateZ(120px);
+    }
+  
+    .text-content {
+      padding-left: 30px;
+    }
+  
+    .main-title {
+      font-size: 2.2em;
+    }
+  }

@@ -1,0 +1,201 @@
+
+/* ./styles/BookingForm.css */
+
+.booking-form {
+  background-color: #E3E3E3;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  opacity: 100%;
+  
+  width: 90%; /* Make it responsive width */
+  max-width: 400px; /* Set a maximum width if needed */
+  margin: 40px auto; /* Center the form on the page */
+}
+
+.payment-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px; /* Add margin below the selector */
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between; /* Distribute space between promo and price */
+  align-items: center; /* Vertically align items */
+  margin-bottom: 15px;
+}
+
+.he {
+  /* Adjust positioning to be relative to the header */
+  margin-left: auto; /* Push to the right */
+  font-size: larger;
+  color: #34E0A1;
+}
+
+.promo-tag {
+  background-color: #34E0A1;
+  color: rgb(13, 12, 12);
+  padding: 5px 10px;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  box-shadow: #000000;
+}
+
+.discount {
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.price-container {
+  margin-bottom: 20px;
+  text-align: left; 
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #645f5f;
+  font-size: 14px;
+  margin-bottom: 5px; /* Add some space */
+}
+
+.discounted-price {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.availability {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #9c9292;
+}
+
+.availability-label {
+  color: #8e8686;
+  font-size: 14px;
+}
+
+.availability-status {
+  color: #34E0A1;
+  font-weight: 500;
+}
+
+.date-picker {
+  display: flex;
+  flex-direction: column; /* Stack date fields on smaller screens */
+  gap: 25px;
+  margin-bottom: 20px;
+  margin-right: 10px;
+}
+
+.date-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.date-field label {
+  font-size: 14px;
+  color: #000000;
+  margin-bottom: 5px;
+}
+
+.date-input {
+  padding: 10px;
+  border: 1px solid #D9D9D9;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.payment-method {
+  margin-bottom: 20px;
+}
+
+.payment-label {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.payment-option {
+  width: 100%; /* Make buttons full width on smaller screens */
+  padding: 12px 15px;
+  background-color: #fff;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+.payment-option:hover {
+  background-color: #eee;
+  transform: scale(1.03);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.payment-option.selected {
+  border-color: #000;
+  font-weight: 500;
+}
+
+.reserve-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #34E0A1;
+  color: #0f0f0f;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+.reserve-button:hover {
+  background-color: #e0e2e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Query for larger screens (e.g., tablets) */
+@media (min-width: 768px) {
+  .booking-form {
+    width: 60%; /* Adjust width for larger screens */
+    max-width: 500px; /* Increase max width if needed */
+    /* Restore side positioning if that was the intended layout */
+    margin-left: auto;
+    margin-right: 60px; /* Keep right margin */
+    transform: none; /* Remove the translate */
+    /* Adjust top positioning if needed */
+    top: auto;
+    bottom: auto;
+    left: auto;
+  }
+
+  .payment-selector {
+    flex-direction: row; /* Display buttons in a row */
+  }
+
+  .date-picker {
+    flex-direction: row; /* Display date fields in a row */
+  }
+}
+
+/* Media Query for even larger screens (desktops) */
+@media (min-width: 1024px) {
+  .booking-form {
+    width: 400px; /* Fixed width on desktop if desired */
+    margin-left: auto;
+    margin-right: 65px;
+    top: auto;
+    bottom: auto;
+    left: auto;
+  }
+}
