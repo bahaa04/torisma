@@ -66,6 +66,7 @@ const Connect = () => {
         <>
             <div className="container">
                 <NavBar2/>
+                <hr style={{border:"none" , height:"0.5px",backgroundColor:"#e0e0e0"}}  />
                 <main>
                     <div className="left-section" style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%" }}>
                         <div className="content fade-in" style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>

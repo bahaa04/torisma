@@ -17,6 +17,12 @@ export default function Add() {
     handleOptionSelect("logement");
     navigate("/addinfos");
   };
+  const handleClick2 = () => {
+    handleOptionSelect("voiture");
+    navigate("/add-voiture");
+  };
+
+
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
@@ -119,11 +125,11 @@ export default function Add() {
           
 
 
-          <motion.button
+    <motion.button
             className={`option-button ${
               selectedOption === "voiture" ? "selected" : ""
             }`}
-            onClick={() => handleOptionSelect("voiture")}
+            onClick={handleClick2}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >

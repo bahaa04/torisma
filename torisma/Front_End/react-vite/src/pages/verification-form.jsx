@@ -5,7 +5,6 @@ import {Link} from "react-router-dom"
 import "../styles/verification-form.css"
 import NavBar3 from "../components/navbar3"
 import Footer from "../components/footer";
-
 export default function VerificationForm({ email }) {
   const [code, setCode] = useState("")
   const [isLoading, setIsLoading] = useState(false)
