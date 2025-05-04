@@ -1,80 +1,11 @@
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
-from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto
+from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto, wilayas
 import datetime
 from resANDtran.models import CarReservation, HouseReservation
 
-wilayas = [
-        ('Adrar', 'Adrar'),
-        ('Chlef', 'Chlef'),
-        ('Laghouat', 'Laghouat'),
-        ('Oum El Bouaghi', 'Oum El Bouaghi'),
-        ('Batna', 'Batna'),
-        ('Béjaïa', 'Béjaïa'),
-        ('Biskra', 'Biskra'),
-        ('Béchar', 'Béchar'),
-        ('Blida', 'Blida'),
-        ('Bouira', 'Bouira'),
-        ('Tamanrasset', 'Tamanrasset'),
-        ('Tébessa', 'Tébessa'),
-        ('Tlemcen', 'Tlemcen'),
-        ('Tiaret', 'Tiaret'),
-        ('Tizi Ouzou', 'Tizi Ouzou'),
-        ('Algiers', 'Algiers'),
-        ('Djelfa', 'Djelfa'),
-        ('Jijel', 'Jijel'),
-        ('Sétif', 'Sétif'),
-        ('Saïda', 'Saïda'),
-        ('Skikda', 'Skikda'),
-        ('Sidi Bel Abbès', 'Sidi Bel Abbès'),
-        ('Annaba', 'Annaba'),
-        ('Guelma', 'Guelma'),
-        ('Constantine', 'Constantine'),
-        ('Médéa', 'Médéa'),
-        ('Mostaganem', 'Mostaganem'),
-        ('MSila', 'MSila'),
-        ('Mascara', 'Mascara'),
-        ('Ouargla', 'Ouargla'),
-        ('Oran', 'Oran'),
-        ('El Bayadh', 'El Bayadh'),
-        ('Illizi', 'Illizi'),
-        ('Bordj Bou Arréridj', 'Bordj Bou Arréridj'),
-        ('Boumerdès', 'Boumerdès'),
-        ('El Tarf', 'El Tarf'),
-        ('Tindouf', 'Tindouf'),
-        ('Tissemsilt', 'Tissemsilt'),
-        ('El Oued', 'El Oued'),
-        ('Khenchela', 'Khenchela'),
-        ('Souk Ahras', 'Souk Ahras'),
-        ('Tipaza', 'Tipaza'),
-        ('Mila', 'Mila'),
-        ('Aïn Defla', 'Aïn Defla'),
-        ('Naâma', 'Naâma'),
-        ('Aïn Témouchent', 'Aïn Témouchent'),
-        ('Ghardaïa', 'Ghardaïa'),
-        ('Relizane', 'Relizane'),
-        ('Timimoun', 'Timimoun'),
-        ('Bordj Badji Mokhtar', 'Bordj Badji Mokhtar'),
-        ('Ouled Djellal', 'Ouled Djellal'),
-        ('Béni Abbès', 'Béni Abbès'),
-        ('In Salah', 'In Salah'),
-        ('In Guezzam', 'In Guezzam'),
-        ('Touggourt', 'Touggourt'),
-        ('Djanet', 'Djanet'),
-        ('El MGhair', 'El MGhair'),
-        ('El Meniaa', 'El Meniaa'),
-    ]
-
 # Car Photos Serializer
 class CarPhotosSerializer(serializers.ModelSerializer):
-    photo = serializers.SerializerMethodField()
-
-    def get_photo(self, obj):
-        request = self.context.get('request')
-        if obj.photo and hasattr(obj.photo, 'url'):
-            return request.build_absolute_uri(obj.photo.url) if request else obj.photo.url
-        return None
-
     class Meta:
         model = CarPhotos
         fields = ['id', 'photo']
@@ -93,112 +24,29 @@ class WilayaPhotosSerializer(serializers.ModelSerializer):
 
 # Car Serializer
 class CarSerializer(serializers.ModelSerializer):
+    photos = CarPhotosSerializer(many=True, read_only=True)
+    wilaya = serializers.ChoiceField(choices=wilayas)
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
-    manufacturing_year = serializers.IntegerField()
-    photos = CarPhotosSerializer(many=True, read_only=True)  # Include car photos
-    la_wilaya = serializers.CharField()  # Accept Wilaya name as input
-    price = serializers.DecimalField(max_digits=10, decimal_places=2)  # Use DecimalField for price
-    status = serializers.ChoiceField(choices=[
-        ('available', 'Available'),
-        ('waiting for confirmation', 'Waiting for confirmation'),
-        ('rented', 'Rented'),
-        ('disabled', 'Disabled'),
-    ], default='available')  # Make status writable with choices
-    rented_until = serializers.SerializerMethodField()
-
-    def validate_manufacturing_year(self, value):
-        current_year = datetime.datetime.now().year
-        if value < 1900 or value > current_year:
-            raise serializers.ValidationError(f"Manufacturing year must be between 1900 and {current_year}")
-        return value
-
-    def validate_la_wilaya(self, value):
-        # Ensure the Wilaya name is valid
-        if value not in [w[0] for w in wilayas]:
-            raise serializers.ValidationError("Invalid wilaya name")
-        return value
-
-    def get_rented_until(self, obj):
-        if obj.status == 'rented':
-            reservation = CarReservation.objects.filter(car=obj, status__in=['pending', 'completed']).order_by('-end_date').first()
-            if reservation:
-                return reservation.end_date
-        return None
 
     class Meta:
         model = Car
-        fields = [
-            'id',
-            'owner',
-            'description',
-            'price',
-            'la_wilaya',
-            'created_at',
-            'updated_at',
-            'manufacture',
-            'model',
-            'manufacturing_year',
-            'location',
-            'seats',
-            'fuel_type',
-            'photos',
-            'status',
-            'rented_until',
-        ]
-        read_only_fields = ['owner', 'created_at', 'updated_at']
+        fields = ['id', 'owner', 'description', 'price', 'location', 'wilaya',
+                 'status', 'manufacture', 'model', 'manufacturing_year',
+                 'seats', 'fuel_type', 'created_at', 'photos']
+        read_only_fields = ['owner']
 
 # House Serializer
-class HouseSerializer(serializers.ModelSerializer):  # Updated model name
+class HouseSerializer(serializers.ModelSerializer):
+    photos = HousePhotosSerializer(many=True, read_only=True)
+    wilaya = serializers.ChoiceField(choices=wilayas)
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
-    is_favorised = serializers.SerializerMethodField()
-    photos = HousePhotosSerializer(many=True, read_only=True)  # Include house photos
-    la_wilaya = serializers.CharField()  # Accept Wilaya name as input
-    price = serializers.DecimalField(max_digits=10, decimal_places=2)  # Use DecimalField for price
-    status = serializers.CharField()
-    rented_until = serializers.SerializerMethodField()
-
-    def validate_la_wilaya(self, value):
-        # Ensure the Wilaya name is valid
-        if value not in dict(wilayas).keys():
-            raise serializers.ValidationError("Invalid Wilaya name.")
-        return value
-
-    def get_is_favorised(self, obj):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            return obj.favorised_by.filter(user=user).exists()
-        return False
-
-    def get_price(self, obj):
-        return f"{obj.price} DZD"
-
-    def get_rented_until(self, obj):
-        if obj.status == 'rented':
-            reservation = HouseReservation.objects.filter(house=obj).order_by('-id').first()
-            if reservation:
-                return getattr(reservation, 'end_date', None)
-        return None
 
     class Meta:
-        model = House  # Updated model name
-        fields = [
-            'id',
-            'owner',
-            'description',
-            'price',
-            'la_wilaya',
-            'created_at',
-            'updated_at',
-            'number_of_rooms',
-            'has_parking',
-            'has_wifi',
-            'exact_location',  # Mandatory field
-            'photos',  # Include photos
-            'status',  # Include status field
-            'is_favorised',  # Explicitly include is_favorised
-            'rented_until',
-        ]
-        read_only_fields = ['owner', 'created_at', 'updated_at', 'status']
+        model = House
+        fields = ['id', 'owner', 'description', 'price', 'wilaya',
+                 'exact_location', 'status', 'furnished', 'has_parking',
+                 'has_wifi', 'created_at', 'photos']
+        read_only_fields = ['owner']
 
 # Favorite Serializer
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -238,12 +86,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         )
         
         return favorite
-
-# Wilaya Photos Serializer
-class WilayaPhotosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WilayaPhotos
-        fields = '__all__'
 
 class WilayaPhotoSerializer(serializers.ModelSerializer):
     class Meta:

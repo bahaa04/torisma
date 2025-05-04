@@ -67,6 +67,14 @@ class User(AbstractUser):
             return True
         return super().has_perm(perm, obj)
 
+    @property
+    def cars(self):
+        return self.user_cars.all()
+
+    @property
+    def houses(self):
+        return self.user_houses.all()
+
     def __str__(self):
         return self.email
 

@@ -5,14 +5,14 @@ from django.contrib.auth.models import User
 
 
 class CarAdminForm(forms.ModelForm):
-    la_wilaya = forms.ChoiceField(choices=[(name, name) for name, _ in wilayas])  # Use predefined Wilayas
+    wilaya = forms.ChoiceField(choices=[(name, name) for name, _ in wilayas])  # Use predefined Wilayas
 
     class Meta:
         model = Car
         fields = '__all__'
 
-    def clean_la_wilaya(self):
-        wilaya_name = self.cleaned_data['la_wilaya']
+    def clean_wilaya(self):
+        wilaya_name = self.cleaned_data['wilaya']
         wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)  # Ensure Wilaya exists in the table
         return wilaya
 
@@ -22,17 +22,15 @@ class CarPhotosInline(admin.TabularInline):
     extra = 1
     fields = ['photo']
     can_delete = True  # Enable delete functionality
-    show_change_link = True  # Show link to edit individual photos
+    show_change_link = True
 
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
     form = CarAdminForm
-    list_display = ('manufacture', 'model', 'price', 'status', 'la_wilaya', 'location')
-    search_fields = ('manufacture', 'model', 'la_wilaya__name')
-    list_filter = ('fuel_type', 'manufacturing_year', 'la_wilaya')
-    fields = ('owner', 'description', 'price', 'la_wilaya', 'location',
-            'manufacture', 'model', 'manufacturing_year', 'seats', 'fuel_type', 'status')
+    list_display = ['manufacture', 'model', 'price', 'wilaya', 'status']  # Changed from la_wilaya to wilaya
+    list_filter = ['status', 'wilaya', 'fuel_type']  # Changed from la_wilaya to wilaya
+    search_fields = ['manufacture', 'model', 'description']
     inlines = [CarPhotosInline]
     actions = ['activate_items', 'deactivate_items']
 
@@ -46,14 +44,14 @@ class CarAdmin(admin.ModelAdmin):
 
 
 class HouseAdminForm(forms.ModelForm):
-    la_wilaya = forms.ChoiceField(choices=[(name, name) for name, _ in wilayas])  # Use predefined Wilayas
+    wilaya = forms.ChoiceField(choices=[(name, name) for name, _ in wilayas])  # Use predefined Wilayas
 
     class Meta:
         model = House
         fields = '__all__'
 
-    def clean_la_wilaya(self):
-        wilaya_name = self.cleaned_data['la_wilaya']
+    def clean_wilaya(self):
+        wilaya_name = self.cleaned_data['wilaya']
         wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)  # Ensure Wilaya exists in the table
         return wilaya
 
@@ -63,27 +61,15 @@ class HousePhotosInline(admin.TabularInline):
     extra = 1
     fields = ['photo']
     can_delete = True  # Enable delete functionality
-    show_change_link = True  # Show link to edit individual photos
+    show_change_link = True
 
 
 @admin.register(House)
 class HouseAdmin(admin.ModelAdmin):
-    form = HouseAdminForm
-    list_display = ('number_of_rooms', 'price', 'status', 'la_wilaya', 'exact_location')
-    search_fields = ('exact_location', 'la_wilaya__name')
-    list_filter = ('number_of_rooms', 'has_parking', 'has_wifi', 'la_wilaya')
-    fields = ('owner', 'description', 'price', 'la_wilaya', 'exact_location',
-            'number_of_rooms', 'has_parking', 'has_wifi', 'status')
+    list_display = ['wilaya', 'exact_location', 'price', 'status']
+    list_filter = ['status', 'wilaya', 'furnished']
+    search_fields = ['exact_location', 'description']
     inlines = [HousePhotosInline]
-    actions = ['activate_items', 'deactivate_items']
-
-    @admin.action(description='Activate selected houses')
-    def activate_items(self, request, queryset):
-        queryset.update(status='available')
-
-    @admin.action(description='Deactivate selected houses')
-    def deactivate_items(self, request, queryset):
-        queryset.update(status='disabled')
 
 
 @admin.register(Favorite)
@@ -93,10 +79,19 @@ class FavoriteAdmin(admin.ModelAdmin):
     search_fields = ('user__username',)
 
 
+class WilayaPhotoInline(admin.TabularInline):
+    model = WilayaPhoto
+    extra = 1
+    fields = ['image']
+    can_delete = True
+    show_change_link = True
+
+
 @admin.register(Wilaya)
 class WilayaAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+    inlines = [WilayaPhotoInline]
 
 
 @admin.register(WilayaPhotos)
