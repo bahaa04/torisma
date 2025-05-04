@@ -1,0 +1,89 @@
+
+
+
+.location-map {
+    position: relative;
+  }
+  
+
+.show-on-map-button {
+   
+    transition: background-color 0.2s, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out; /* Added transitions */
+  }
+  
+  .show-on-map-button:hover {
+    background-color: #34e0a1; /* Darker shade on hover */
+    transform: scale(1.03); /* Slight scale up on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow on hover */
+  }
+  
+  /* Optional pulse animation */
+  .animated-button {
+    animation: pulse 1.5s infinite alternate; /* Apply the pulse animation */
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+  }
+  .description-t {
+    font-size: 24px;
+    color: #67635e;
+    margin-bottom: 10px;
+    padding-left: 0px;
+  }
+  
+  .map-container {
+    width: 500px;
+    height: 350px;
+    padding-left: 0px;
+    border-radius: 30px;
+    display: flex;
+    justify-content: center; /* Center the placeholder if needed */
+    align-items: center; /* Center the placeholder if needed */
+    overflow: hidden; /* To contain the rounded corners of the image */
+  }
+  
+  .map-placeholder {
+    width: 100%; /* Make the placeholder take the full width of the container */
+    height: 100%; /* Make the placeholder take the full height of the container */
+    border-radius: 30px;
+    overflow: hidden; /* To contain the rounded corners of the image */
+  }
+  
+  .map-image {
+    width: 100%; /* Make the image fill the placeholder */
+    height: 100%; /* Make the image fill the placeholder */
+    border-radius: inherit; /* Inherit the border-radius from the parent */
+    object-fit: cover; /* Ensure the image covers the container without distortion */
+  }
+  
+  .show-on-map-button {
+    position: absolute;
+    bottom: 15px;
+    left: 40px; /* Adjusted left position */
+    background-color: #34E0A1;
+    color: rgb(6, 4, 4);
+    padding: 10px 15px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+    
+    top: 90%;
+    
+  }
+  
+  .show-on-map-button:hover {
+    background-color: #dbdcdc;
+  }

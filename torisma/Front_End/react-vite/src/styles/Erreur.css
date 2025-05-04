@@ -1,0 +1,130 @@
+
+/* ./styles/ErreurOverlay.css */
+
+.erreur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px; /* Add padding for smaller screens */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+.erreur-box {
+  background: #34E0A1;
+  padding: 20px; /* Adjust padding for smaller screens */
+  width: 95%; /* Make it take more width on smaller screens */
+  max-width: 400px;
+  position: relative;
+  border-radius: 25px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  justify-content: center; /* Center content vertically */
+}
+
+.erreur-box h2 {
+  color: rgb(0, 0, 0);
+  margin-bottom: 15px; /* Adjust margin */
+  font-size: 1.5em; /* Adjust font size for smaller screens */
+}
+
+.erreur-box p {
+  margin-top: 30px; /* Adjust margin */
+  margin-bottom: 30px; /* Adjust margin */
+  font-size: 1em; /* Adjust font size for smaller screens */
+  line-height: 1.4; /* Improve readability */
+}
+
+.button-group {
+  display: flex;
+  justify-content: center; /* Center buttons */
+  gap: 15px; /* Adjust gap */
+  margin-left: 0; /* Remove fixed left margin */
+}
+
+.retry-button,
+.cancel-button {
+  padding: 8px 16px; /* Adjust padding */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+  font-size: 0.9em; /* Adjust font size */
+}
+
+.retry-button {
+  background-color: #ffffff;
+  color: rgb(11, 10, 10);
+}
+
+.retry-button:hover {
+  background-color: #c5c4c2;
+}
+
+.cancel-button {
+  background-color: #fafafa;
+  color: rgb(7, 7, 7);
+}
+
+.cancel-button:hover {
+  background-color: #d3cdcd;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Media Query for larger screens (e.g., tablets) */
+@media (min-width: 768px) {
+  .erreur-box {
+    padding: 30px;
+    max-width: 500px;
+  }
+
+  .erreur-box h2 {
+    font-size: 1.9em;
+    margin-bottom: 20px;
+  }
+
+  .erreur-box p {
+    font-size: 1.1em;
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
+
+  .button-group {
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .retry-button,
+  .cancel-button {
+    padding: 10px 20px;
+    font-size: 1em;
+  }
+}
+
+/* Media Query for even larger screens (desktops) */
+@media (min-width: 1024px) {
+  .erreur-box {
+    max-width: 400px; /* Maintain max width on desktop */
+  }
+}

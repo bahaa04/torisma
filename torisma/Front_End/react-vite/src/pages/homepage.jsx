@@ -1,68 +1,144 @@
-import React, { useState, useEffect } from "react";
-import NavBar from "../components/navbar1";
-import Footer from "../components/footer";
-import Logo from "../components/logo";
-import "../styles/homepage.css";
-import DestinationList from "../components/destination-list";
+// src/pages/HomePage.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import NavBar from '../components/navbar1';
+import AuthNavBar from '../components/AuthNavBar';
+import Footer from '../components/footer';
+import Logo from '../components/logo';
+import DestinationList from '../components/destination-list';
+import '../styles/homepage.css';
+import { getAuthToken } from './connect'; // helper from Connect.jsx
+
+const destinations = [
+  {
+    id: 1,
+    location: 'Alger',
+    images: [
+      '/images/algeria1.jpg',
+      '/images/algeria2.jpg',
+      '/images/algeria3.jpg',
+    ],
+  },
+  // ...existing destination entries...
+];
 
 export default function HomePage() {
   const [dests, setDests] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isDestsLoaded, setIsDestsLoaded] = useState(false);
   const [error, setError] = useState(null);
 
+  const [userProfile, setUserProfile] = useState(null);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
+
+  const navigate = useNavigate();
+
+  const navigateToHouses = (wilaya) => {
+    navigate(`/houses/${wilaya}`);
+  };
+
+  const navigateToCars = (wilaya) => {
+    navigate(`/cars/${wilaya}`);
+  };
+
+  // 1) Try to load user profile if there's an auth token in localStorage
   useEffect(() => {
-    fetch("http://localhost:8000/api/listings/wilayas/")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
+    const token = getAuthToken();
+    console.log('Token:', token); // Debugging line
+    if (!token) {
+      // No auth token → skip profile fetch
+      setIsProfileLoading(false);
+      return;
+    }
+
+    (async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:8000/api/users/profile/', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error(`Unauthorized (${res.status})`);
+        const data = await res.json();
+        setUserProfile(data);
+      } catch (err) {
+        console.error('Profile fetch failed:', err);
+        // broken token? erase from storage and force login
+        localStorage.removeItem('auth');
+        localStorage.removeItem('refresh_token');
+        navigate('/connect');
+      } finally {
+        setIsProfileLoading(false);
+      }
+    })();
+  }, [navigate]);
+
+  // 2) Load wilayas
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:8000/api/listings/wilayas/');
+        if (!res.ok) {
+          throw new Error(`Server error: ${res.status}`);
         }
-        return response.json();
-      })
-      .then((data) => {
-        const formatted = data.map((item) => ({
+        const data = await res.json();
+        const formatted = data.map(item => ({
           id: item.id,
-          location: item.name,
+          location: item.name, // Use name directly without conversion
           images:
             item.photos && item.photos.length > 0
-              // extract the `image` URL from each photo object
-              ? item.photos.map((p) => p.image)
-              // fallback if no photos
-              : ["/default-wilaya.jpg"],
+              ? item.photos.map(p => p.image)
+              : ['/default-wilaya.jpg'],
         }));
         setDests(formatted);
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
+      } catch (err) {
+        console.error('Fetch error:', err);
         setError(err.message);
-      })
-      .finally(() => {
-        setIsLoaded(true);
-      });
+      } finally {
+        setIsDestsLoaded(true);
+      }
+    })();
   }, []);
 
-  if (!isLoaded) {
+  // Show loading until both profile (if any) and wilayas have loaded
+  if (isProfileLoading || !isDestsLoaded) {
+    // Show NavBar or AuthNavBar based on userProfile
     return (
       <div className="homepage">
-        <NavBar />
-        <div className="loading">Chargement des wilayas…</div>
+        {userProfile ? (
+          <AuthNavBar userProfile={userProfile} />
+        ) : (
+          <NavBar />
+        )}
+        <div className="loading">Chargement en cours…</div>
         <Footer />
       </div>
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="homepage">
-        <NavBar />
+        {userProfile ? (
+          <AuthNavBar userProfile={userProfile} />
+        ) : (
+          <NavBar />
+        )}
         <div className="error">Erreur : {error}</div>
         <Footer />
       </div>
     );
   }
 
+  // Success render
   return (
     <div className="homepage">
-      <NavBar />
+      {userProfile ? (
+        <AuthNavBar userProfile={userProfile} />
+      ) : (
+        <NavBar />
+      )}
 
       <div className="main-content">
         <div className="content-header">
@@ -81,11 +157,14 @@ export default function HomePage() {
 
         <div className="help-section">
           <p className="help-text">
-            Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci
+            Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci
           </p>
-          <a href="#" className="help-button">
+          <button
+            className="help-button"
+            onClick={() => alert('Fonctionnalité à venir !')}
+          >
             Aidez-moi
-          </a>
+          </button>
         </div>
       </div>
 

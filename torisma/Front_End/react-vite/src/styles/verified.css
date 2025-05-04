@@ -1,0 +1,32 @@
+.verified-container {
+  max-width: 430px;
+  margin: 60px auto 40px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 40px 32px 32px 32px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.verified-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.verified-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #1a202c;
+  text-align: center;
+}
+
+.verified-description {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 18px;
+  text-align: center;
+  line-height: 1.6;
+}
