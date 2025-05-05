@@ -15,7 +15,7 @@ export default function Add() {
 
   const handleClick = () => {
     handleOptionSelect("logement");
-    navigate("/infoadd");
+    navigate("/AddInfos");
   };
   const handleClick2 = () => {
     handleOptionSelect("voiture");

@@ -22,4 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
 .qodo
+
+# Explicitly track these directories
+!src/
+!src/pages/
+!src/pages/*.jsx
