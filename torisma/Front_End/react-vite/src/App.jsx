@@ -30,7 +30,6 @@ function App() {
       <Route path="/connect" element={<Connect />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/add" element={<Add />} />
-      /*<Route path="/addinfos" element={<addinfos />} />*/
       <Route path="/recoverpass" element={<PasswordReset />} />
       <Route path="/verification" element={<VerificationForm />} />
       <Route path="/reset" element={<ResetPassword />} />
