@@ -14,7 +14,7 @@ import Choose from './pages/choose';
 import Moi from './pages/Moi';
 import Voiture from './pages/voiture';
 import Location from './pages/localisation';
-import WhyAlgeria from './pages/whyalgeria';
+import WhyAlgeria from './pages/whyAlgeria';
 
 import './App.css';
 
