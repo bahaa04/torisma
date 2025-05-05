@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react"
 import "../styles/verification-form.css"
 import NavBar3 from "../components/navbar3"
 import Footer from "../components/footer";
-
 export default function VerificationForm({ email }) {
   const [isVisible, setIsVisible] = useState(false)
 
