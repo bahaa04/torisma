@@ -8,7 +8,6 @@ import Footer from '../components/footer';
 import Logo from '../components/logo';
 import DestinationList from '../components/destination-list';
 import '../styles/homepage.css';
-import { getAuthToken } from './connect'; // helper from Connect.jsx
 
 export default function HomePage() {
   const [dests, setDests] = useState([]);
@@ -30,7 +29,7 @@ export default function HomePage() {
 
   // 1) Try to load user profile if there's an auth token in localStorage
   useEffect(() => {
-    const token = getAuthToken();
+    const token = localStorage.getItem('auth');
     console.log('Token:', token); // Debugging line
     if (!token) {
       // No auth token → skip profile fetch

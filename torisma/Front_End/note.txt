@@ -1,3 +1,10 @@
+in the /pages folder there is AppInfos.jsx it didnt want to be pushed
+here's the code for it
+
+
+
+
+
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -24,8 +31,6 @@ export default function addinfos() {
     location: "",
     security: "",
     proximity: "",
-    price:"",
-    dispobible:"",
     priceNegotiation: "",
   });
 
@@ -45,7 +50,6 @@ export default function addinfos() {
   const [isExiting, setIsExiting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showDispoDropdown, setShowDispoDropdown] = useState(false);
 
 
   const handleInputChange = (e) => {
@@ -138,14 +142,6 @@ export default function addinfos() {
     },
   };
 
-
-
-  const dispo = [
-    "disponible",
-    "non disponible",
-   
-  ];
-
   
   const negotiationOptions = [
     "Non négociable",
@@ -153,11 +149,6 @@ export default function addinfos() {
     "Négociable",
     "Très négociable",
   ];
-  
-  
-  
-
-  
 
   return (
 
@@ -270,87 +261,6 @@ export default function addinfos() {
                 transition={{ duration: 0.3 }}
               />
             </div>
-
-
-
-
-{/* Price negotiation */}
-<div className="dropdown-group">
-              <div
-                className="dropdown-selector"
-                onClick={() => setShowDispoDropdown(!showDispoDropdown)}
-              >
-                <span className="dropdown-text">
-                  {formData.dispo || "disponibilité"}
-                </span>
-                <motion.div
-                  animate={{ rotate: showDispoDropdown ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ChevronDown className="dropdown-icon" />
-                </motion.div>
-              </div>
-
-              <AnimatePresence>
-                {showDispoDropdown && (
-                  <motion.div
-                    className="dropdown-menu"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {dispo.map((option, i) => (
-                      <motion.div
-                        key={i}
-                        className="dropdown-item"
-                        whileHover={{ backgroundColor: "#f3f4f6" }}
-                        onClick={() => {
-                          setFormData((p) => ({
-                            ...p,
-                            dispo: option,
-                          }));
-                          setShowDispoDropdown(false);
-                        }}
-                      >
-                        {option}
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-
-
-
-
-
-            <div className="input-group">
-            <DollarSign className="input-icon" />
-              <input
-                type="number"
-                name="price"
-                placeholder="prix en DA"
-                className="form-input"
-                value={formData.price}
-                onChange={handleInputChange}
-              />
-              <motion.div
-                className="input-highlight"
-                initial={{ width: "0%" }}
-                animate={{ width: formData.price ? "100%" : "0%" }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-
-
-
-
-
-
-
-
 
             {/* Price negotiation */}
             <div className="dropdown-group">
