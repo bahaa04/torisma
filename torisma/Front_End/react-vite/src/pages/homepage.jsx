@@ -10,19 +10,6 @@ import DestinationList from '../components/destination-list';
 import '../styles/homepage.css';
 import { getAuthToken } from './connect'; // helper from Connect.jsx
 
-const destinations = [
-  {
-    id: 1,
-    location: 'Alger',
-    images: [
-      '/images/algeria1.jpg',
-      '/images/algeria2.jpg',
-      '/images/algeria3.jpg',
-    ],
-  },
-  // ...existing destination entries...
-];
-
 export default function HomePage() {
   const [dests, setDests] = useState([]);
   const [isDestsLoaded, setIsDestsLoaded] = useState(false);

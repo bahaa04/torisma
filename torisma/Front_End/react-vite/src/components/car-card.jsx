@@ -33,7 +33,7 @@ export default function CarCard({ car, index }) {
   }
 
   const navigateToDetail = () => {
-    navigate(`/location/${car.id}`)
+    navigate(`/voiture`)
   }
 
   return (

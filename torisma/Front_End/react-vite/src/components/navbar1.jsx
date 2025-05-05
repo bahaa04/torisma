@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-import Logo from "../components/logo";
+import Logo from "./logo";
 
 const Navbar = () => {
     return(
@@ -23,7 +23,7 @@ const Navbar = () => {
              
             <div className="nav-links">
                 <a href="#" >Mon expérience</a>
-                <a href="#"> Pourquoi l'Algérie </a> 
+                <a href="/whyAlgeria"> Pourquoi l'Algérie </a> 
             </div>
         
             <div className="header-actions">

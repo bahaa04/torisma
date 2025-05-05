@@ -1,4 +1,3 @@
-
 import React from 'react'
 import '../styles/NavBar.css';
 import { Link } from 'react-router-dom';
@@ -27,18 +26,25 @@ const Navbar = () => {
              
             <div className="nav-links">
           <button className="link-button" onClick={() => console.log('Mon expérience clicked')}>Mon expérience</button>
-          <Link to="/whyalgeria" className="link-button"> Pourquoi l'Algérie </Link>
-            
-          
+          <Link to="/whyalgeria" className="link-button">Why Algeria</Link>
+          <Link to="/profile" className="link-button">Profile</Link>
+          <Link to="/voiture" className="link-button">Voiture</Link>
+          <Link to="/localisation" className="link-button">Localisation</Link>
         </div>
         
             <div className="header-actions">
-              <button className="globe-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="2" y1="12" x2="22" y2="12"></line>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                
+              <button className="icon-button">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                 </svg>
               </button>
               

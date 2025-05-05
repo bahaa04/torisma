@@ -69,7 +69,7 @@ export default function Connect() {
           <div className="content fade-in" style={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
             <p className="tagline">Discover the beauty of Algeria and beyond.</p>
             <p className="description">
-              Find stunning destinations, rent cars and homes with ease, and start your adventure today, all in one place
+            Trouvez des destinations époustouflantes, louez des voitures et des maisons en toute simplicité et commencez votre aventure dès aujourd'hui, le tout au même endroit
             </p>
             <div className="cta">
               <Link to="/register"><button className="join-btn">Join Now!</button></Link>

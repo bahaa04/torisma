@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import NavBar from '../components/NavBar';  // Fixed casing
+import { Suspense } from "react";
+import NavBar from '../components/navbar1';
 import ProfileInformations from "../components/ProfileInformations";
 import Footer from "../components/footer";
 

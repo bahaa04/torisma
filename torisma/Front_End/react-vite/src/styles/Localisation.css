@@ -65,14 +65,14 @@
 /* Media Query for even larger screens (desktops - 1024px and up) */
 @media (min-width: 1024px) {
   .localisation-container {
-    padding: 20px; /* Adjust padding */
+    padding: 0px; /* Adjust padding */
     gap: 30px;
     max-width: 1200px; /* Example: Set a maximum width */
     margin: 20px auto; /* Center the container */
   }
 
   .left-column {
-    gap: 20px;
+    gap: 0px;
     width: 350px; /* Slightly wider on desktop */
     top: 0px; /* Adjust top offset on desktop */
   }

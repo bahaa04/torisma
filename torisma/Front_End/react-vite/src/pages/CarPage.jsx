@@ -6,6 +6,27 @@ import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
 
+const buttonStyles = {
+  backContainer: {
+    padding: '20px',
+    marginTop: '0',
+    borderBottom: '1px solid #eee'
+  },
+  backButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '10px 20px',
+    backgroundColor: 'transparent',
+    color: '#666',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    transition: 'all 0.3s ease'
+  }
+};
+
 export default function CarPage() {
   const { wilaya, id: carId } = useParams();
   const navigate = useNavigate();
@@ -163,8 +184,17 @@ export default function CarPage() {
   return (
     <>
       <NavBar />
-      <div className="back-to-wilayas">
-        <button onClick={() => navigate('/')} className="back-button">
+      <div style={buttonStyles.backContainer}>
+        <button 
+          onClick={() => navigate('/')} 
+          style={buttonStyles.backButton}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+        >
           <ArrowLeft className="back-icon" /> Retour aux wilayas
         </button>
       </div>

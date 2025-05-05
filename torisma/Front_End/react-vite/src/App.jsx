@@ -6,15 +6,15 @@ import SignUp   from './pages/signup';
 import Add   from './pages/add';
 import AddInfos   from './pages/addinfos';
 import CarPage from './pages/CarPage'
-import HousePage from './pages/HousePage'
+import HousePage from './pages/housepage'
 import PasswordReset  from './pages/recoverpassword';
 import VerificationForm from './pages/verification-form';
 import ResetPassword from './pages/resetpassword';
 import Choose from './pages/choose';
 import Moi from './pages/Moi';
-import whyAlgeria from './pages/whyAlgeria';
-import localisation from './pages/localisation';
-import voiture from './pages/voiture';
+import Localisation from './pages/localisation';
+import Voiture from './pages/voiture';
+import WhyAlgeria from './pages/WhyAlgeria';
 
 import './App.css';
 
@@ -36,9 +36,10 @@ function App() {
       <Route path="/houses/:wilaya/:id" element={<HousePage />} />
       <Route path="/location/:wilaya/:id" element={<CarPage />} />
       <Route path="/moi" element={<Moi />} />
-      <Route path="/whyAlgeria" element={<whyAlgeria />} />
+      <Route path="/Pourquoi" element={<whyAlgeria />} />
+      <Route path="/whyalgeria" element={<WhyAlgeria />} />
       <Route path="/localisation" element={<Localisation />} />
-      <Route path="/voiture" element={<voiture />} />
+      <Route path="/voiture" element={<Voiture />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
