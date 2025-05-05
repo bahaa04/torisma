@@ -6,7 +6,7 @@ import SignUp from './pages/signup';
 import Add from './pages/add';
 /*import addinfos from './pages/AddInfos';*/
 import CarPage from './pages/CarPage';
-import HousePage from './pages/housepage';
+import HousePage from './pages/HousePage';
 import PasswordReset from './pages/recoverpassword';
 import VerificationForm from './pages/verification-form';
 import ResetPassword from './pages/resetpassword';
