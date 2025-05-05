@@ -82,7 +82,7 @@ main {
     color: #333;
     line-height: 1.6;
     margin-bottom: 25px;
-    max-width: 500px;
+    max-width: 600px;
 }
 
 .join-btn {
@@ -151,6 +151,28 @@ main {
     outline: none;
     border-color: #2ee59d;
     box-shadow: 0 0 0 2px rgba(46, 229, 157, 0.2);
+}
+
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.2rem;
+}
+
+.toggle-password:hover {
+    opacity: 0.8;
 }
 
 .forgot-password {

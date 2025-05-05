@@ -4,10 +4,9 @@ import HomePage from './pages/homepage'; // Adjust the path as needed
 import Connect from './pages/connect';
 import SignUp   from './pages/signup';
 import Add   from './pages/add';
-import AddLogement   from './pages/add-logement';
-import AddCar   from './pages/add-voiture';
+import AddInfos   from './pages/addinfos';
 import CarPage from './pages/CarPage'
-import HousePage from './pages/HousePage'
+import HousePage from './pages/housepage'
 import PasswordReset  from './pages/recoverpassword';
 import VerificationForm from './pages/verification-form';
 import ResetPassword from './pages/resetpassword';
@@ -26,8 +25,7 @@ function App() {
       <Route path="/connect" element={<Connect />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/add" element={<Add />} />
-      <Route path="/addinfos" element={<AddLogement />} />
-      <Route path="/addcar" element={<AddCar />} />
+      <Route path="/addinfos" element={<AddInfos />} />
       
      <Route path="/recoverpass" element={<PasswordReset />}  />
      <Route path="/verification" element={<VerificationForm />}  />

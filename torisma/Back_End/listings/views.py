@@ -7,8 +7,11 @@ from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from coupons.models import Coupon
-from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos
-from .serializers import CarSerializer, HouseSerializer, FavoriteSerializer, CarPhotosSerializer, HousePhotosSerializer, WilayaSerializer, WilayaPhotosSerializer
+from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto
+from .serializers import (
+    CarSerializer, HouseSerializer, FavoriteSerializer, CarPhotosSerializer,
+    HousePhotosSerializer, WilayaSerializer, WilayaPhotosSerializer, WilayaPhotoSerializer
+)
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -20,7 +23,7 @@ class CarListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
         'price': ['exact', 'gte', 'lte'],
-        'la_wilaya': ['exact'],
+        'wilaya': ['exact'],
         'status': ['exact'],
         'manufacturing_year': ['exact', 'gte', 'lte'],
         'seats': ['exact', 'gte', 'lte'],
@@ -58,9 +61,9 @@ class CarListView(generics.ListAPIView):
             queryset = queryset.filter(seats__lte=max_seats)
             
         # Handle wilaya filter
-        wilaya = self.request.query_params.get('la_wilaya')
+        wilaya = self.request.query_params.get('wilaya')
         if wilaya:
-            queryset = queryset.filter(la_wilaya__name=wilaya)
+            queryset = queryset.filter(wilaya__name=wilaya)
             
         return queryset
 
@@ -77,9 +80,9 @@ class HouseListView(ListAPIView):
 
     def get_queryset(self):
         queryset = House.objects.all()
-        wilaya = self.request.query_params.get('la_wilaya')
+        wilaya = self.request.query_params.get('wilaya')
         if wilaya:
-            queryset = queryset.filter(la_wilaya__name=wilaya)
+            queryset = queryset.filter(wilaya__name=wilaya)
         return queryset
 
 # 🔍 List & Create Listings
@@ -87,7 +90,7 @@ class CarListCreateView(generics.ListCreateAPIView):
     serializer_class = CarSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['la_wilaya', 'price', 'status']
+    filterset_fields = ['wilaya', 'price', 'status']
     search_fields = ['description', 'manufacture', 'model']
     ordering_fields = ['price', 'created_at']
     ordering = ['-created_at']
@@ -97,13 +100,13 @@ class CarListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        wilaya_name = serializer.validated_data.get('la_wilaya')
+        wilaya_name = serializer.validated_data.get('wilaya')
 
-        # Ensure the Wilaya exists in the table
-        wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)
+        # Ensure the wilaya exists in the table
+        wilaya_obj, created = Wilaya.objects.get_or_create(name=wilaya_name)
 
-        # Save the car with the associated Wilaya
-        car = serializer.save(owner=user, la_wilaya=wilaya)
+        # Save the car with the associated wilaya
+        car = serializer.save(owner=user, wilaya=wilaya_obj)
 
         # Handle multiple photos
         photos = self.request.FILES.getlist('photos')
@@ -124,7 +127,7 @@ class HouseListCreateView(generics.ListCreateAPIView):
     serializer_class = HouseSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['la_wilaya', 'price', 'type', 'status']
+    filterset_fields = ['wilaya', 'price', 'type', 'status']
     search_fields = ['description', 'exact_location']
     ordering_fields = ['price', 'created_at']
     ordering = ['-created_at']
@@ -134,13 +137,10 @@ class HouseListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        wilaya_name = serializer.validated_data.get('la_wilaya')
+        wilaya_name = serializer.validated_data.get('wilaya')
 
-        # Ensure the Wilaya exists in the table
-        wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)
-
-        # Save the house with the associated Wilaya
-        house = serializer.save(owner=user, la_wilaya=wilaya)
+        # Save the house with the wilaya name directly
+        house = serializer.save(owner=user)
 
         # Handle multiple photos
         photos = self.request.FILES.getlist('photos')
@@ -320,8 +320,7 @@ class HouseByWilayaListView(ListAPIView):
 
     def get_queryset(self):
         wilaya_name = self.kwargs.get('wilaya_name')
-        queryset = House.objects.filter(la_wilaya__name__iexact=wilaya_name).prefetch_related('photos')
-        return queryset
+        return House.objects.filter(wilaya__iexact=wilaya_name).prefetch_related('photos')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -334,17 +333,17 @@ class CarByWilayaListView(ListAPIView):
     search_fields = ['description', 'manufacture', 'model', 'location']
     ordering_fields = ['price', 'created_at', 'manufacturing_year']
     ordering = ['-created_at']
-    pagination_class = None  # Disable pagination to match frontend expectations
+    pagination_class = None
 
     def get_queryset(self):
         wilaya_name = self.kwargs.get('wilaya_name')
-        queryset = Car.objects.filter(la_wilaya__name__iexact=wilaya_name).prefetch_related('photos')
-        return queryset
+        return Car.objects.filter(wilaya__iexact=wilaya_name).prefetch_related('photos')
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True, context={'request': request})
-        return Response({'results': serializer.data})
+class CarsByWilayaView(APIView):
+    def get(self, request, wilaya):
+        cars = Car.objects.filter(wilaya=wilaya)
+        serializer = CarSerializer(cars, many=True)
+        return Response(serializer.data)
 
 class WilayaViewSet(viewsets.ModelViewSet):
     queryset = Wilaya.objects.all()
@@ -375,4 +374,45 @@ class HousePhotoViewSet(viewsets.ModelViewSet):
         house_id = self.request.data.get('house')
         house = get_object_or_404(House, id=house_id, owner=self.request.user)
         serializer.save(house=house)
+
+class WilayaPhotoViewSet(viewsets.ModelViewSet):
+    queryset = WilayaPhoto.objects.all()
+    serializer_class = WilayaPhotoSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class HousesByWilayaView(APIView):
+    def get(self, request, wilaya_name):
+        try:
+            print(f"Received wilaya_name: {wilaya_name}")
+            wilaya_name = wilaya_name.capitalize()
+            
+            # Special case for Alger
+            if wilaya_name.lower() in ['alger', 'alger']:
+                wilaya_name = 'Alger'
+            
+            houses = House.objects.filter(wilaya__iexact=wilaya_name).prefetch_related('photos')
+            serializer = HouseSerializer(houses, many=True, context={'request': request})
+            return Response({
+                'results': serializer.data,
+                'count': houses.count()
+            })
+        except Exception as e:
+            print(f"Error in HousesByWilayaView: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class HouseListByWilayaView(APIView):
+    def get(self, request, wilaya):
+        try:
+            houses = House.objects.filter(wilaya__iexact=wilaya)
+            serializer = HouseSerializer(houses, many=True)
+            return Response({
+                'results': serializer.data,
+                'count': houses.count()
+            })
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 

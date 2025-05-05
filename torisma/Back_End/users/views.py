@@ -1,6 +1,8 @@
 from rest_framework import generics, permissions, status
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from .serializers import UserSerializer, UserProfileSerializer
+from listings.serializers import CarSerializer, HouseSerializer  # Add this import
+from listings.models import Car, House  # Add this import
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
@@ -18,6 +20,7 @@ import logging
 from django.shortcuts import render
 from django.views import View
 import requests
+from rest_framework.parsers import MultiPartParser, FormParser
 
 logger = logging.getLogger(__name__)  # Add a logger for debugging
 
@@ -61,17 +64,23 @@ class UserRegisterView(generics.GenericAPIView):
 
 def send_verification_email(user, request):
     try:
+        # Generate the token and uidb64
         token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Create email context with these values
+        context = {
+            'user': user,
+            'token': token,
+            'uidb64': uidb64,
+        }
+        
         verification_link = request.build_absolute_uri(
-            reverse('verify_email', kwargs={'uidb64': uid, 'token': token})
+            reverse('verify_email', kwargs={'uidb64': uidb64, 'token': token})
         )
         
         # Use template rendering for better email formatting
-        context = {
-            'user': user,
-            'verification_link': verification_link
-        }
+        context['verification_link'] = verification_link
         # Update the template path to match the actual file location
         email_body = render_to_string('emails/Verification_email.html', context)
         
@@ -99,7 +108,7 @@ class VerifyEmailView(APIView):
             # Validate the token
             if not default_token_generator.check_token(user, token):
                 logger.error("Invalid token.")
-                return Response({'error': 'Invalid verification link.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'lien de verification invalide.'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Activate the user upon successful verification
             user.is_active = True
@@ -107,10 +116,10 @@ class VerifyEmailView(APIView):
             user.save()
 
             logger.info(f"User {user.email} verified successfully.")
-            return Response({'message': 'Email verified successfully. You can now log in.'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Email verifié avec succé.vous peuvez maintenant vous connecter.'}, status=status.HTTP_200_OK)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
             logger.error(f"Error during email verification: {e}")
-            return Response({'error': 'Invalid verification link.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'lien de verification invalide.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -135,6 +144,31 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             logger.error("Could not find user after successful authentication")
         return response
 
+class CustomLoginView(APIView):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            if not user.is_email_verified:
+                # Resend verification email
+                send_verification_email(user, request)
+                return Response(
+                    {"detail": "Email not verified. Verification email resent."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            # Generate and return JWT tokens
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"detail": "Invalid credentials."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
 class AdminUserManagementView(APIView):
     permission_classes = [IsAdminUser]
 
@@ -158,36 +192,52 @@ class AdminUserManagementView(APIView):
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
-        serializer = UserProfileSerializer(request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            user = request.user
+            profile_data = UserProfileSerializer(user).data
+            
+            # Get listings using the imported models
+            cars = Car.objects.filter(owner=user)
+            houses = House.objects.filter(owner=user)
+            
+            cars_data = CarSerializer(cars, many=True).data
+            houses_data = HouseSerializer(houses, many=True).data
+            
+            return Response({
+                **profile_data,
+                'cars': cars_data,
+                'houses': houses_data
+            })
+        except Exception as e:
+            logger.error(f"Profile fetch error: {str(e)}")
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def patch(self, request):
-        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            # Check if password is being changed
-            is_password_change = 'new_password' in request.data
-            
-            # Save the changes
-            serializer.save()
-            
-            # If password was changed, blacklist the current refresh token
-            if is_password_change:
-                try:
-                    refresh_token = request.data.get('refresh_token')
-                    if refresh_token:
-                        token = RefreshToken(refresh_token)
-                        token.blacklist()
-                        return Response(
-                            {"message": "Profile updated and password changed successfully. Please login again with your new password."},
-                            status=status.HTTP_200_OK
-                        )
-                except Exception as e:
-                    logger.error(f"Error blacklisting token: {e}")
-            
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = UserProfileSerializer(
+                request.user,
+                data=request.data,
+                partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            logger.error(f"Profile update error: {str(e)}")
+            return Response(
+                {'error': 'Failed to update profile'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -204,7 +254,7 @@ class LogoutView(APIView):
 
             # Get the authorization header
             auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-            if not auth_header.startswith('Bearer '):
+            if not auth_header.startswith('Bearer'):
                 return Response(
                     {"error": "Authentication token is required"}, 
                     status=status.HTTP_401_UNAUTHORIZED
@@ -447,9 +497,4 @@ class PasswordResetFormView(View):
                 'uidb64': uidb64,
                 'token': token
             })
-
-urlpatterns = [
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('forgot-password/', ForgotPasswordView.as_view(), name='forgot_password'),
-]
 

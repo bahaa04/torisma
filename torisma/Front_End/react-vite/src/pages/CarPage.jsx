@@ -6,81 +6,110 @@ import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
 
+const buttonStyles = {
+  backContainer: {
+    padding: '20px',
+    marginTop: '0',
+    borderBottom: '1px solid #eee'
+  },
+  backButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '10px 20px',
+    backgroundColor: 'transparent',
+    color: '#666',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    transition: 'all 0.3s ease'
+  }
+};
+
 export default function CarPage() {
-  // grab both params (one will be undefined)
   const { wilaya, id: carId } = useParams();
   const navigate = useNavigate();
 
-  // are we showing detail (carId) or a list (wilaya)?
   const isDetail = Boolean(carId);
   const param = isDetail ? carId : wilaya;
 
   const [cars, setCars] = useState([]);
-  const [car, setCar]   = useState(null);
+  const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error,   setError]   = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    const fetchCars = async () => {
+      try {
+        setLoading(true);
+        const baseUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
-    if (isDetail) {
-      // ─── DETAIL ───
-      fetch(`http://127.0.0.1:8000/api/listings/cars/${param}/`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
+        if (isDetail) {
+          const response = await fetch(`${baseUrl}/api/listings/cars/${param}/`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
           setCar({
-            id:         data.id,
-            location:   data.location || data.la_wilaya,
-            brand:      data.manufacture,
-            model:      data.model,
-            year:       data.manufacturing_year,
-            price:      parseFloat(data.price),
-            currency:   'DA',
-            seats:      data.seats,
-            fuelType:   data.fuel_type,
-            images:     data.photos?.length
-                         ? data.photos.map(p => p.photo)
-                         : ['/default-car.jpg'],
-            description:data.description,
-            status:     data.status,
+            id: data.id,
+            location: data.location || data.wilaya || '',
+            brand: data.manufacture,
+            model: data.model,
+            year: data.manufacturing_year,
+            price: parseFloat(data.price),
+            currency: 'DA',
+            seats: data.seats,
+            fuelType: data.fuel_type,
+            images: data.photos?.length
+              ? data.photos.map((p) => p.photo)
+              : ['/default-car.jpg'],
+            description: data.description,
+            status: data.status,
             rented_until: data.rented_until,
           });
-        })
-        .catch(err => setError(err.message))
-        .finally(() => setLoading(false));
-
-    } else {
-      // ─── LIST FOR WILAYA ───
-      fetch(`http://127.0.0.1:8000/api/listings/cars/by_wilaya/${encodeURIComponent(param)}/`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
+        } else {
+          // Format wilaya name for the API
+          const formattedWilaya = wilaya.charAt(0).toUpperCase() + wilaya.slice(1).toLowerCase();
+          
+          // Use the correct endpoint format
+          const response = await fetch(
+            `${baseUrl}/api/listings/cars/by_wilaya/${formattedWilaya}/`
+          );
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          // Parse the response - it's directly an array in your example
+          const data = await response.json();
+          
+          // Map the data to your component's format
           setCars(
-            (data.results || []).map(item => ({
-              id:       item.id,
-              location: item.location || item.la_wilaya,
-              brand:    item.manufacture,
-              model:    item.model,
-              price:    parseFloat(item.price),
+            data.map((item) => ({
+              id: item.id,
+              location: item.location || item.wilaya || 'Unknown',
+              brand: item.manufacture,
+              model: item.model,
+              price: parseFloat(item.price),
               currency: 'DA',
-              status:   item.status,
-              rented_until: item.rented_until,
-              images:   item.photos?.length
-                          ? item.photos.map(p => p.photo)
-                          : ['/default-car.jpg'],
+              status: item.status,
+              images: item.photos?.length
+                ? item.photos.map((p) => p.photo)
+                : ['/default-car.jpg'],
             }))
           );
-        })
-        .catch(err => setError(err.message))
-        .finally(() => setLoading(false));
-    }
-  }, [param, isDetail]);
+        }
+      } catch (error) {
+        console.error('Error fetching cars:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCars();
+  }, [param, isDetail, wilaya]);
 
   if (loading) {
     return (
@@ -96,7 +125,7 @@ export default function CarPage() {
     return (
       <>
         <NavBar />
-        <div className="error">Erreur : {error}</div>
+        <div className="error">Erreur : {error}</div>
         <Footer />
       </>
     );
@@ -126,14 +155,23 @@ export default function CarPage() {
               <img key={idx} src={src} alt={`${car.brand} ${idx}`} />
             ))}
           </div>
-          <p>Localisation : {car.location}</p>
-          <p>Places : {car.seats}</p>
-          <p>Carburant : {car.fuelType}</p>
-          <p>Prix : {car.price.toLocaleString()} {car.currency}</p>
-          <p>Statut : {car.status}{car.status === 'rented' && car.rented_until && (
-            <span> — Louée jusqu'au {new Date(car.rented_until).toLocaleDateString('fr-FR')}</span>
-          )}</p>
-          {car.description && <p>Description : {car.description}</p>}
+          <p>Localisation : {car.location}</p>
+          <p>Places : {car.seats}</p>
+          <p>Carburant : {car.fuelType}</p>
+          <p>
+            Prix : {car.price.toLocaleString()} {car.currency}
+          </p>
+          <p>
+            Statut : {car.status}
+            {car.status === 'rented' && car.rented_until && (
+              <span>
+                {' '}
+                — Louée jusqu'au{' '}
+                {new Date(car.rented_until).toLocaleDateString('fr-FR')}
+              </span>
+            )}
+          </p>
+          {car.description && <p>Description : {car.description}</p>}
           <button onClick={() => navigate(-1)} className="back-button">
             <ArrowLeft className="back-icon" /> Retour
           </button>
@@ -146,8 +184,17 @@ export default function CarPage() {
   return (
     <>
       <NavBar />
-      <div className="back-to-wilayas">
-        <button onClick={() => navigate('/')} className="back-button">
+      <div style={buttonStyles.backContainer}>
+        <button 
+          onClick={() => navigate('/')} 
+          style={buttonStyles.backButton}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+        >
           <ArrowLeft className="back-icon" /> Retour aux wilayas
         </button>
       </div>

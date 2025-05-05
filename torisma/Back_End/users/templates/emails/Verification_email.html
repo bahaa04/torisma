@@ -52,7 +52,7 @@
             <p>Hi {{ user.username }},</p>
             <p>Thank you for registering with <b>TorismA</b>. Please click the button below to verify your email address:</p>
             <p style="text-align: center;">
-                <a href="{{ verification_link }}" class="button">Verify Email</a>
+                <a href="http://localhost:5173/verified/{{ uidb64 }}/{{ token }}" class="button">Verify Email</a>
             </p>
             <p>This link will expire in 24 hours.</p>
             <p>If you did not create an account, please ignore this email.</p>

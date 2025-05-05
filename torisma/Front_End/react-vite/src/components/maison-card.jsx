@@ -32,9 +32,9 @@ export default function MaisonCard({ house, index }) {
     setCurrentImageIndex(imgIndex)
   }
 
-  // Navigate to the detail page for this house by its ID
+  // Navigate to the localisation page
   const navigateToDetail = () => {
-    navigate(`/houses/${house.id}`)
+    navigate('/localisation')
   }
 
   return (

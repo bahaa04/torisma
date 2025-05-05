@@ -1,0 +1,105 @@
+
+/* ./styles/Description.css (assuming you'll name the file this) */
+
+.description-container {
+  padding: 15px; /* Adjust padding for smaller screens */
+  width: 95%; /* Make it responsive width */
+  max-width: 500px; /* Maintain maximum width */
+  margin: 0 auto; /* Center the container */
+  padding-left: 0px;
+   margin-bottom: 40px;
+}
+
+.description-title {
+  font-size: 1.8em; /* Adjust font size for smaller screens */
+  color: #67635e;
+  margin-bottom: 8px; /* Adjust margin */
+  padding-left: 0px; /* Adjust left padding */
+}
+
+.description-box {
+  background-color: #34E0A1;
+  padding: 0px; /* Adjust padding for smaller screens */
+  border-radius: 10px;
+  color: black;
+  font-size: 1em; /* Adjust font size for smaller screens */
+  line-height: 1.6; /* Improve readability */
+}
+
+.description-box p {
+  margin-bottom: 8px; /* Adjust margin */
+  display: flex;
+  align-items: center;
+}
+
+.description-box ul {
+  margin-left: 0px; /* Adjust margin */
+  margin-top: 5px;
+  margin-bottom: 10px; /* Adjust margin */
+  padding-left: 0px; /* Add some visual separation */
+}
+
+.description-box li {
+  margin-bottom: 3px;
+  
+  font-size: 0.95em; /* Slightly reduce list item font size */
+}
+
+.icon {
+  margin-right: 6px; /* Adjust margin */
+  font-size: 0.9em; /* Adjust icon size if using a font icon */
+}
+
+/* Media Query for larger screens (e.g., tablets) */
+@media (min-width: 768px) {
+  .description-container {
+    padding: 0px;
+    width: 70%; /* Adjust width for larger screens */
+    max-width: 700px; /* Increase max width if needed */
+    padding-left: 0px;
+  }
+
+  .description-title {
+    font-size: 2em;
+    margin-bottom: 10px;
+    padding-left: 0px;
+  }
+
+  .description-box {
+    padding: 20px;
+    font-size: 1.1em;
+    
+  }
+
+  .description-box ul {
+    margin-left: 30px;
+    margin-bottom: 15px;
+  }
+
+  .description-box li {
+    margin-bottom: 5px;
+    font-size: 1em;
+  }
+
+  .icon {
+    margin-right: 8px;
+    font-size: 1em;
+  }
+}
+
+/* Media Query for even larger screens (desktops) */
+@media (min-width: 1024px) {
+  .description-container {
+    width: 500px; /* Restore fixed width on desktop if desired */
+    padding-left: 0px;
+  }
+
+  .description-title {
+    font-size: 24px;
+    padding-left: 0px;
+  }
+
+  .description-box {
+    font-size: 16px;
+  }
+}

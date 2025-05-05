@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                     ("Tlemcen", "Tlemcen"),
                     ("Tiaret", "Tiaret"),
                     ("Tizi Ouzou", "Tizi Ouzou"),
-                    ("Algiers", "Algiers"),
+                    ("Alger", "Alger"),
                     ("Djelfa", "Djelfa"),
                     ("Jijel", "Jijel"),
                     ("Sétif", "Sétif"),

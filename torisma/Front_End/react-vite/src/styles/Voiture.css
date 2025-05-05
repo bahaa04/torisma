@@ -1,0 +1,72 @@
+
+
+.localisation-container {
+    display: flex;
+    
+    flex-direction: row; /* Arrange left and right columns in a row */
+    align-items: flex-start; /* Align items to the top */
+    padding: 15px; /* Add some padding around the main content */
+    gap: 15px;
+  }
+     
+  .left-column {
+    display: flex;
+    flex-direction: column; /* Stack the three components vertically */
+    flex: 1; /* Allow it to take up available space */
+    gap: 15px; /* Spacing between the three components */
+  }
+  
+  .right-column {
+    flex: 0 0 400px; 
+    margin-left: 20px; 
+    width: 550px;
+  
+  }
+  /* Responsive adjustments for smaller screens */
+  @media (max-width: 767px) {
+    .localisation-container {
+      flex-direction: column; /* Stack left and right columns vertically */
+    }
+  
+    .right-column {
+      width: 100%; 
+    }
+  }
+  
+  /* Media Query for larger screens (e.g., tablets - 768px and up) */
+  @media (min-width: 768px) {
+    .localisation-container {
+      flex-direction: row; /* Keep left and right columns in a row */
+    }
+  
+    .left-column {
+      flex-direction: column; /* Ensure the three components stay stacked vertically */
+    }
+  
+    .right-column {
+      flex-basis: 400px; 
+      margin-left: 20px; /* Adjust left margin on larger screens if needed */
+    }
+  }
+  
+  /* Media Query for even larger screens (desktops - 1024px and up) */
+  @media (min-width: 1024px) {
+    .localisation-container {
+      padding: 0px;
+      
+      gap: 30px; 
+      max-width: 1000px; /* Example: Set a maximum width of 1200 pixels */
+      margin-left: 50px; /* Add larger left margin */
+      margin-right: 50px; 
+    }
+  
+    .left-column {
+      gap: 20px;
+      
+    }
+  
+    .right-column {
+      flex-basis: 450px;
+      margin-left: 0px; /* Adjust left margin on larger desktops if needed */
+    }
+  }

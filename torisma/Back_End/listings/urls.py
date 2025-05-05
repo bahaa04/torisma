@@ -13,6 +13,10 @@ from .views import (
     WilayaPhotosViewSet,
     HouseByWilayaListView,
     CarByWilayaListView,
+    WilayaPhotoViewSet,  # <-- add this import
+    HousesByWilayaView,  # <-- add this import
+    HouseListByWilayaView,  # <-- add this import
+    CarsByWilayaView,  # <-- add this import
 )
 
 wilaya_router = DefaultRouter()
@@ -24,13 +28,13 @@ urlpatterns = [
     path('cars/create/', CarListCreateView.as_view(), name='car-create'),
     path('cars/<uuid:pk>/', CarRetrieveUpdateDestroyView.as_view(), name='car-detail'),
     path('cars/by_wilaya/<str:wilaya_name>/', CarByWilayaListView.as_view(), name='wilaya-car-list'),
-
+    
     # House endpoints
     path('houses/', HouseListView.as_view(), name='house-list'),
     path('houses/create/', HouseListCreateView.as_view(), name='house-create'),
     path('houses/<uuid:pk>/', HouseRetrieveUpdateDestroyView.as_view(), name='house-detail'),
     path('houses/by_wilaya/<str:wilaya_name>/', HouseByWilayaListView.as_view(), name='wilaya-house-list'),
-
+    
     # Favorite endpoints
     path('favorites/', AddFavoriteView.as_view(), name='favorites-list'),
     path('<uuid:item_id>/favorite/', AddFavoriteView.as_view(), name='add-favorite'),
@@ -40,4 +44,5 @@ urlpatterns = [
     path('wilayas/', WilayaListView.as_view(), name='wilaya-list'),
     path('wilayas/photos/', WilayaPhotosViewSet.as_view({'get': 'list', 'post': 'create'}), name='wilaya-photos-list'),
     path('wilayas/photos/<int:pk>/', WilayaPhotosViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='wilaya-photos-detail'),
+    
 ]
