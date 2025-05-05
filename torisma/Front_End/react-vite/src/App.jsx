@@ -12,7 +12,7 @@ import VerificationForm from './pages/verification-form';
 import ResetPassword from './pages/resetpassword';
 import Choose from './pages/choose';
 import Moi from './pages/Moi';
-import Voiture from './pages/Voiture';
+import Voiture from './pages/voiture';
 import Location from './pages/localisation';
 import WhyAlgeria from './pages/whyalgeria';
 
