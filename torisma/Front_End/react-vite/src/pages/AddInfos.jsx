@@ -12,7 +12,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/addinfos.css";
+import "../styles/AddInfos.css";
 import Footer from "../components/footer";
 import Logo from "../components/logo";
 import { Link } from "react-router-dom";
