@@ -5,7 +5,7 @@
   padding: 15px; /* Adjust padding for smaller screens */
   width: 95%; /* Make it responsive width */
   max-width: 500px; /* Maintain maximum width */
-  margin: 0 auto; /* Center the container */
+ /* Center the container */
   padding-left: 0px;
    margin-bottom: 40px;
 }
