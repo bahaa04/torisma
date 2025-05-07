@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'coupons',
     'resANDtran',
     'drf_yasg',
+    'rating',
 ]
 
 MIDDLEWARE = [
