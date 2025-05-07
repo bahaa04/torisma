@@ -8,6 +8,15 @@ const Connect = () => {
     const [isValid, setIsValid] = useState(true);
     const [signingIn, setSigningIn] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
+
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
 
     useEffect(() => {
         // Add animation styles
@@ -34,23 +43,36 @@ const Connect = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const form = e.target;
-        const inputs = form.querySelectorAll('.form-control');
+        const emailInput = form.querySelector('input[type="text"]');
+        const passwordInput = form.querySelector('input[type="password"]');
         let formIsValid = true;
 
-        inputs.forEach(input => {
-            if (!input.value.trim()) {
-                formIsValid = false;
-                input.style.borderColor = '#ff6b6b';
-                input.style.animation = 'shake 0.5s';
-                
+        if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
+            formIsValid = false;
+            emailInput.style.borderColor = '#ff6b6b';
+            emailInput.style.animation = 'shake 0.5s';
+            setError("Format d'email invalide");
+            
+            setTimeout(() => {
+                emailInput.style.animation = '';
                 setTimeout(() => {
-                    input.style.animation = '';
-                    setTimeout(() => {
-                        input.style.borderColor = '#e1e1e1';
-                    }, 2000);
-                }, 500);
-            }
-        });
+                    emailInput.style.borderColor = '#e1e1e1';
+                }, 2000);
+            }, 500);
+        }
+
+        if (!passwordInput.value.trim()) {
+            formIsValid = false;
+            passwordInput.style.borderColor = '#ff6b6b';
+            passwordInput.style.animation = 'shake 0.5s';
+            
+            setTimeout(() => {
+                passwordInput.style.animation = '';
+                setTimeout(() => {
+                    passwordInput.style.borderColor = '#e1e1e1';
+                }, 2000);
+            }, 500);
+        }
 
         setIsValid(formIsValid);
         
@@ -90,6 +112,7 @@ const Connect = () => {
                                 <div className="form-group">
                                     <input type="password" placeholder="Password" className="form-control"/>
                                 </div>
+                                {error && <p className="error-message">{error}</p>}
                                 <div className="forgot-password">
                                     <Link to="/recoverpass">Recover Password</Link>
                                 </div>

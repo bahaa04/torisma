@@ -142,15 +142,6 @@ export default function HomePage() {
         </div>
 
         <div className="help-section">
-          <p className="help-text">
-            Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci
-          </p>
-          <button
-            className="help-button"
-            onClick={() => alert('Fonctionnalité à venir !')}
-          >
-            Aidez-moi
-          </button>
         </div>
       </div>
 
@@ -159,7 +150,6 @@ export default function HomePage() {
           width="100%"
           height="100%"
           className="vid"
-          controls
           autoPlay
           muted
           loop

@@ -1,23 +1,32 @@
 "use client"
 
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom";  // Add this import
 import "../styles/recoverpassword.css";
 import NavBar3 from "../components/navbar3";
 import Footer from "../components/footer";
-import {Link} from "react-router-dom";
 
 export default function PasswordReset() {
   const [email, setEmail] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState("")
+  const navigate = useNavigate();  // Add this line
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
 
     // Email validation
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email || !validateEmail(email)) {
       setError("Veuillez entrer une adresse e-mail valide.")
       return
     }
@@ -28,6 +37,7 @@ export default function PasswordReset() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500))
       setIsSuccess(true)
+      navigate('/recmsg')  // Add navigation after success
     } catch (err) {
       setError("Une erreur s'est produite. Veuillez réessayer.")
     } finally {
@@ -63,9 +73,11 @@ export default function PasswordReset() {
                 {error && <p className="error-message">{error}</p>}
               </div>
 
-
-<Link to="/verification">
-              <button type="submit" disabled={isSubmitting} className="submit-button slide-up-delay">
+              <button 
+                type="submit" 
+                disabled={isSubmitting} 
+                className="submit-button slide-up-delay"
+              >
                 {isSubmitting ? (
                   <div className="spinner-container">
                     <div className="spinner"></div>
@@ -74,9 +86,6 @@ export default function PasswordReset() {
                   "Continuer"
                 )}
               </button>
-</Link>
-
-
             </form>
           </div>
         ) : (
@@ -96,10 +105,6 @@ export default function PasswordReset() {
             <p className="success-description">
               Veuillez vérifier votre boîte de réception pour les instructions de réinitialisation.
             </p>
-
-            {/* <button onClick={() => setIsSuccess(false)} className="back-button"> */}
-              {/* Retour */}
-            {/* </button> */}
           </div>
         )}
       </div>

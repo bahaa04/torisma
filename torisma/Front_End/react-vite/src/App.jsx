@@ -4,7 +4,7 @@ import HomePage from './pages/homepage';
 import Connect from './pages/connect';
 import SignUp from './pages/signup';
 import Add from './pages/add';
-import AddInfos from './pages/AddInfos';
+import AddHouse from './pages/add-logement';
 import CarPage from './pages/CarPage';
 import HousePage from './pages/HousePage';
 import PasswordReset from './pages/recoverpassword';
@@ -15,13 +15,21 @@ import Moi from './pages/Moi';
 import Voiture from './pages/voiture';
 import Location from './pages/localisation';
 import WhyAlgeria from './pages/whyAlgeria';
+import MaisonListe from './pages/maisonListe';
+import VoitureListe from './pages/voitureListe';
+import AddCar from './pages/add-voiture';
+import RecMsg from './pages/recovermsg';
 
 import './App.css';
 
 function App() {
   return (
     <Routes>
-      <Route path="/addinfos" element={<AddInfos />} />
+      <Route path="/recmsg" element={<RecMsg />} />
+      <Route path="/addcar" element={<AddCar />} />
+      <Route path="/voiture-liste" element={<VoitureListe />} />
+      <Route path="/maison-liste" element={<MaisonListe />} />
+      <Route path="/addhouse" element={<AddHouse />} />
       <Route path="/" element={<HomePage />} />
       <Route path="/moi" element={<Moi />} />
       <Route path="/voiture" element={<Voiture />} />

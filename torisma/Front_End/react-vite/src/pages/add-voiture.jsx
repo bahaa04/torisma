@@ -10,13 +10,12 @@ import {
   DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/AddInfos.css";
+import "../styles/addInfos.css";
 import Footer from "../components/footer";
 import Logo from "../components/logo";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AddCar() {
-
   const [formData, setFormData] = useState({
     typevoiture: "",
     location: "",
@@ -40,9 +39,10 @@ export default function AddCar() {
   const [isExiting, setIsExiting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
- 
   const [showDispoDropdown, setShowDispoDropdown] = useState(false);
   const [showPriceDropdown, setShowPriceDropdown] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,15 +68,39 @@ export default function AddCar() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const filledPhotos = photos.filter((p) => p !== "").length;
-    alert(`Form submitted with ${filledPhotos} photos!`);
+    
+    // Check if all fields are filled
+    const requiredFields = ['typevoiture', 'location', 'motorization', 'puissance', 'price', 'dispo', 'priceNegotiation'];
+    const isFormValid = requiredFields.every(field => formData[field]);
+    const hasPhoto = photos[0]; // Check if first photo exists
+
+    if (!isFormValid || !hasPhoto) {
+      alert('Veuillez remplir tous les champs et ajouter au moins une photo');
+      return;
+    }
+
+    // Create new car entry
+    const newCar = {
+      id: Date.now(),
+      name: `${formData.typevoiture} - ${formData.location}`,
+      src: photos[0], // Use first photo as card image
+      ...formData
+    };
+
+    // Get existing cars from localStorage
+    const existingCars = JSON.parse(localStorage.getItem('cars') || '[]');
+    
+    // Add new car and save back to localStorage
+    localStorage.setItem('cars', JSON.stringify([...existingCars, newCar]));
+
+    // Navigate back to car list
+    navigate('/voiture-liste');
   };
 
   const handleCancel = () => {
     setIsExiting(true);
     setTimeout(() => {
-      alert("Opération annulée");
-      setIsExiting(false);
+      navigate('/voiture-liste');
     }, 500);
   };
 
@@ -112,46 +136,37 @@ export default function AddCar() {
     "Négociable",
     "Très négociable",
   ];
-  
-  
-  
-
-  
 
   return (
+    <>
+      <header>
+        <div className="logo-container">
+          <Logo />
+          <h1 className="logoText">
+            <span className="highlight">T</span>ourism
+            <span className="highlight">A</span>
+          </h1>
+        </div>
 
-     <>
+        <Link to="/signup">
+          <div className="register-btn">
+            <button>Register</button>
+          </div>
+        </Link>
+      </header>
 
+      <div className="property-form-page">
+        <motion.div
+          className="property-form-container"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isExiting ? "exit" : "visible"}
+        >
+          <motion.h1 className="property-form-title" variants={itemVariants}>
+            Complétez vos informations
+          </motion.h1>
 
-<header>
-            <div className="logo-container">
-                <Logo/>
-                <h1 className="logoText"><span className="highlight">T</span>ourism<span className="highlight">A</span></h1>
-            </div>
-
-            <Link to="/signup">
-            <div className="register-btn">
-                <button>Register</button>
-            </div>
-            </Link>
-</header>
-
-
-
-
-
-    <div className="property-form-page">
-      <motion.div
-        className="property-form-container"
-        variants={containerVariants}
-        initial="hidden"
-        animate={isExiting ? "exit" : "visible"}
-      >
-        <motion.h1 className="property-form-title" variants={itemVariants}>
-          Complétez vos informations
-        </motion.h1>
-
-        <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <motion.div className="form-fields" variants={itemVariants}>
               {/* typevoiture */}
               <div className="input-group">
@@ -345,112 +360,109 @@ export default function AddCar() {
               </div>
             </motion.div>
 
-
-          {/* Photo upload */}
-          <motion.div className="photo-section" variants={itemVariants}>
-            <h2 className="photo-title">
-              Veuillez insérer six photos de votre voiture
-            </h2>
-            <motion.div className="photo-grid" variants={photoGridVariants}>
-              {Array(6)
-                .fill(0)
-                .map((_, idx) => (
-                  <motion.div
-                    key={idx}
-                    className="photo-upload-container"
-                    variants={photoItemVariants}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handlePhotoClick(idx)}
-                  >
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={(el) => (fileInputRefs.current[idx] = el)}
-                      onChange={(e) => handlePhotoUpload(idx, e)}
-                      className="hidden-input"
-                    />
-                    {photos[idx] ? (
-                      <motion.div
-                        className="photo-preview"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <img
-                          src={photos[idx]}
-                          alt={`Property photo ${idx + 1}`}
-                        />
-                        <div className="photo-overlay">
-                          <Check className="check-icon" />
+            {/* Photo upload */}
+            <motion.div className="photo-section" variants={itemVariants}>
+              <h2 className="photo-title">
+                Veuillez insérer six photos de votre voiture
+              </h2>
+              <motion.div className="photo-grid" variants={photoGridVariants}>
+                {Array(6)
+                  .fill(0)
+                  .map((_, idx) => (
+                    <motion.div
+                      key={idx}
+                      className="photo-upload-container"
+                      variants={photoItemVariants}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handlePhotoClick(idx)}
+                    >
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={(el) => (fileInputRefs.current[idx] = el)}
+                        onChange={(e) => handlePhotoUpload(idx, e)}
+                        className="hidden-input"
+                      />
+                      {photos[idx] ? (
+                        <motion.div
+                          className="photo-preview"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <img
+                            src={photos[idx]}
+                            alt={`Property photo ${idx + 1}`}
+                          />
+                          <div className="photo-overlay">
+                            <Check className="check-icon" />
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <div className="upload-placeholder">
+                          <Upload className="upload-icon" />
                         </div>
-                      </motion.div>
-                    ) : (
-                      <div className="upload-placeholder">
-                        <Upload className="upload-icon" />
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
+                      )}
+                    </motion.div>
+                  ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
 
-        
-          <motion.div
-            className="warning-section"
-            variants={itemVariants}
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-          >
-            <div className="warning-dot" />
-            <p className="warning-text">
-              Merci de noter qu'il est strictement interdit d'ajouter une voiture fictive ou de fournir des informations fausses. Tout
-              manquement à cette règle entraînera des sanctions conformément à
-              nos conditions d'utilisation.
-            </p>
-
-            <AnimatePresence>
-              {showTooltip && (
-                <motion.div
-                  className="tooltip"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                >
-                  <p>
-                    Nous vérifions toutes les annonces pour garantir la qualité
-                    de notre plateforme.
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Actions */}
-          <motion.div className="form-actions" variants={itemVariants}>
-            <motion.button
-              type="submit"
-              className="submit-button"
-              whileHover={{ scale: 1.03, backgroundColor: "#28b67d" }}
-              whileTap={{ scale: 0.97 }}
+            <motion.div
+              className="warning-section"
+              variants={itemVariants}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
             >
-              Continuer
-            </motion.button>
-            <motion.button
-              type="button"
-              className="cancel-button"
-              onClick={handleCancel}
-              whileHover={{ textDecoration: "underline" }}
-            >
-              Annuler
-            </motion.button>
-          </motion.div>
-        </form>
-      </motion.div>
-    </div>
-    <Footer/>
+              <div className="warning-dot" />
+              <p className="warning-text">
+                Merci de noter qu'il est strictement interdit d'ajouter une
+                voiture fictive ou de fournir des informations fausses. Tout
+                manquement à cette règle entraînera des sanctions conformément
+                à nos conditions d'utilisation.
+              </p>
 
+              <AnimatePresence>
+                {showTooltip && (
+                  <motion.div
+                    className="tooltip"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                  >
+                    <p>
+                      Nous vérifions toutes les annonces pour garantir la
+                      qualité de notre plateforme.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
+            {/* Actions */}
+            <motion.div className="form-actions" variants={itemVariants}>
+              <motion.button
+                type="submit"
+                className="submit-button"
+                whileHover={{ scale: 1.03, backgroundColor: "#28b67d" }}
+                whileTap={{ scale: 0.97 }}
+              >
+                Créer
+              </motion.button>
+              <motion.button
+                type="button"
+                className="cancel-button"
+                onClick={handleCancel}
+                whileHover={{ textDecoration: "underline" }}
+              >
+                Annuler
+              </motion.button>
+            </motion.div>
+          </form>
+        </motion.div>
+      </div>
+      <Footer />
     </>
   );
 }

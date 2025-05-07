@@ -12,13 +12,13 @@ import {
   DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import "./AddInfos.css";
+import "./addhouse.css";
 import Footer from "../components/footer";
 import Logo from "../components/logo";
 import { Link } from "react-router-dom";
 import Navbar from "../components/navbar1";
 
-export default function AddInfos() {
+export default function addhouse() {
  
   const [formData, setFormData] = useState({
     bedrooms: "",
