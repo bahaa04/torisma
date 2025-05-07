@@ -10,7 +10,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/addInfos.css";
+import "./addInfos.css";
 import Footer from "../components/footer";
 import Logo from "../components/logo";
 import { Link, useNavigate } from "react-router-dom";
