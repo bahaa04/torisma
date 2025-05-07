@@ -26,7 +26,11 @@ export default function TwoCards() {
   return (
     <div className="cards-grid">
       {items.map(item => (
-        <div key={item.id} className="photo-card">
+        <div 
+          key={item.id} 
+          className="photo-card"
+          onClick={() => navigate('/house', { state: { item } })}
+        >
           <div className="photo-card-image-wrapper">
             <img src={item.src} alt={item.name} className="photo-card-image" />
           </div>

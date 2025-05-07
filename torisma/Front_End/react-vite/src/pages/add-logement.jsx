@@ -12,10 +12,10 @@ import {
   DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import "./AddInfos.css";
+import "../styles/AddInfos.css";
 import Footer from "../components/footer";
-import Logo from "../components/logo";
 import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../components/navbar1-connected";
 
 export default function AddHouse() {
   const [formData, setFormData] = useState({
@@ -156,7 +156,7 @@ export default function AddHouse() {
     },
   };
 
-  const dispo = ["disponible", "non disponible"];
+  const dispo = ["disponible", "undisponible"];
 
   const negotiationOptions = [
     "Non négociable",
@@ -167,22 +167,7 @@ export default function AddHouse() {
 
   return (
     <>
-      <header>
-        <div className="logo-container">
-          <Logo />
-          <h1 className="logoText">
-            <span className="highlight">T</span>ourism
-            <span className="highlight">A</span>
-          </h1>
-        </div>
-
-        <Link to="/signup">
-          <div className="register-btn">
-            <button>Register</button>
-          </div>
-        </Link>
-      </header>
-
+      <Navbar />
       <div className="property-form-page">
         <motion.div
           className="property-form-container"

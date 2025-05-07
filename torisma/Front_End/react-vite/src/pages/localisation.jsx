@@ -19,11 +19,30 @@ function Localisation() {
   const [showPayment, setShowPayment] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+
+  const handlePhotoClick = (photoUrl) => {
+    setSelectedPhoto(photoUrl);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedPhoto(null);
+  };
 
   return (
     <div>
       <Navbar />
-      <PropertyGallery />
+      <PropertyGallery onPhotoClick={handlePhotoClick} />
+      
+      {/* Photo Modal */}
+      {selectedPhoto && (
+        <div className="photo-modal" onClick={handleCloseModal}>
+          <div className="modal-content">
+            <img src={selectedPhoto} alt="Selected property" />
+            <button className="close-button" onClick={handleCloseModal}>×</button>
+          </div>
+        </div>
+      )}
       
       <div className="localisation-container">
         <div className="right-column">

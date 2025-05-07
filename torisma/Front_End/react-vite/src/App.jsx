@@ -19,12 +19,16 @@ import MaisonListe from './pages/maisonListe';
 import VoitureListe from './pages/voitureListe';
 import AddCar from './pages/add-voiture';
 import RecMsg from './pages/recovermsg';
+import CProfile from './pages/carProfile';
+import HProfile from './pages/houseProfile';
 
 import './App.css';
 
 function App() {
   return (
     <Routes>
+      <Route path="/car" element={<CProfile />} />
+      <Route path="/house" element={<HProfile />} />
       <Route path="/recmsg" element={<RecMsg />} />
       <Route path="/addcar" element={<AddCar />} />
       <Route path="/voiture-liste" element={<VoitureListe />} />
