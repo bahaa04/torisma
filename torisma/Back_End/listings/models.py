@@ -177,7 +177,13 @@ class House(models.Model):
     has_parking = models.BooleanField(default=False)
     has_wifi = models.BooleanField(default=False)
     wilaya = models.CharField(max_length=100, choices=wilayas, default='Alger')  # Added default
-    exact_location = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    gps_location = models.URLField(
+        help_text="Google Maps link to the property location",
+        max_length=500,
+        null=True,  # Allow null values
+        blank=True  # Allow blank in forms
+    )
 
     class Meta:
         verbose_name = "House"
@@ -190,7 +196,7 @@ class House(models.Model):
         return self.owner == user
 
     def __str__(self):
-        return f"House in {self.wilaya}, {self.exact_location} - {self.price} DZD"
+        return f"House in {self.wilaya}, {self.city} - {self.price} DZD"
 
 class Favorite(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favorites")
