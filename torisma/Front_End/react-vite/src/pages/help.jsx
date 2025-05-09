@@ -11,7 +11,6 @@ const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [csrfToken, setCsrfToken] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -23,10 +22,6 @@ const ChatPage = () => {
   }, [messages]);
 
   useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('access_token');
-    setIsAuthenticated(!!token);
-    
     // Fetch CSRF token when component mounts
     const fetchCsrfToken = async () => {
       try {
@@ -49,19 +44,13 @@ const ChatPage = () => {
     setIsLoading(true);
 
     try {
-      const headers = {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken
-      };
-      
-      // Add authorization header only if user is authenticated
-      if (isAuthenticated) {
-        headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;
-      }
-
       const response = await fetch(`${API_URL}/recommendations/api/recommend/`, {
         method: 'POST',
-        headers: headers,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          'X-CSRFToken': csrfToken
+        },
         body: JSON.stringify({ query: inputValue })
       });
 
@@ -70,11 +59,11 @@ const ChatPage = () => {
       if (!response.ok) {
         if (response.status === 401 && data.login_required) {
           const authMessage = {
-            text: data.error || "Vous devez être connecté pour utiliser cette fonctionnalité.",
+            text: data.error,
             isUser: false,
             loginRequired: true,
-            loginUrl: data.login_url || "/connect",
-            loginText: data.login_text || "Se connecter"
+            loginUrl: data.login_url,
+            loginText: data.login_text
           };
           setMessages(prev => [...prev, authMessage]);
           return;
@@ -121,7 +110,7 @@ const ChatPage = () => {
 
   return (
     <div className="chat-page-container">
-      {isAuthenticated ? <NavBarC /> : <NavBar />}
+      <NavBarC />
       
       <div className="chat-main-container">
         <h2 className="chat-header">
@@ -129,13 +118,6 @@ const ChatPage = () => {
         </h2>
 
         <div className="messages-container">
-          {messages.length === 0 && (
-            <div className="message-wrapper bot">
-              <div className="message-bubble bot-message">
-                Bonjour! Je suis votre assistant de voyage. Comment puis-je vous aider aujourd'hui?
-              </div>
-            </div>
-          )}
           {messages.map((msg, index) => (
             <div key={index} className={`message-wrapper ${msg.isUser ? 'user' : 'bot'}`}>
               {renderMessage(msg)}
