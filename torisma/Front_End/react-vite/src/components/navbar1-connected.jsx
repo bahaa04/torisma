@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from "./logo";
 
-const Navbar = () => {
+const NavbarC = () => {
     return(
         <header>
             <Link to="/" className="logo-link">
@@ -36,4 +36,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default NavbarC;

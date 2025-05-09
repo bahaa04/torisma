@@ -21,12 +21,21 @@ import AddCar from './pages/add-voiture';
 import RecMsg from './pages/recovermsg';
 import CProfile from './pages/carProfile';
 import HProfile from './pages/houseProfile';
+import PaymentPage from './pages/PayementPage';
+import ChatPage from './pages/help';
+import Verified from './pages/verified';
+import Terms from './pages/terms';
+import WhyTourisma from './pages/whyTourisma';
 
 import './App.css';
 
 function App() {
   return (
     <Routes>
+      <Route path="/whyToursimA" element={<WhyTourisma />} />
+      <Route path="/terms-&-conditions" element={<Terms />} />
+      <Route path="/verified/:uidb64/:token" element={<Verified />} />
+      <Route path="/help" element={<ChatPage />} />
       <Route path="/car" element={<CProfile />} />
       <Route path="/house" element={<HProfile />} />
       <Route path="/recmsg" element={<RecMsg />} />
@@ -50,6 +59,7 @@ function App() {
       <Route path="/cars/:wilaya" element={<CarPage />} />
       <Route path="/houses/:wilaya/:id" element={<HousePage />} />
       <Route path="/location/:wilaya/:id" element={<CarPage />} />
+      <Route path="/payment" element={<PaymentPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

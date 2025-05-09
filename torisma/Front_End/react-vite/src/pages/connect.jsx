@@ -112,6 +112,12 @@ const Connect = () => {
                                 <div className="form-group">
                                     <input type="password" placeholder="Password" className="form-control"/>
                                 </div>
+                                <div className="terms-checkbox">
+                                    <input type="checkbox" id="terms" required />
+                                    <label htmlFor="terms">
+                                        J'accepte les <Link to="/terms-&-conditions" className="terms-link">conditions générales</Link> du site
+                                    </label>
+                                </div>
                                 {error && <p className="error-message">{error}</p>}
                                 <div className="forgot-password">
                                     <Link to="/recoverpass">Recover Password</Link>

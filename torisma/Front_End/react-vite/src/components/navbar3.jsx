@@ -1,33 +1,37 @@
 import React from 'react';
-import "../styles/connect.css";
-import Logo from "../components/logo";
+import { Link } from 'react-router-dom'; 
+import Logo from "./logo";
 
-const NavBar3 = () => {
-  const handleLogoClick = () => {
-    window.location.href = '/';
-  };
-
-  return (
-    <div className="header">
-      <div 
-        className="logo-container" 
-        onClick={handleLogoClick}
-        style={{ cursor: 'pointer' }}
-        role="button"
-        tabIndex={0}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            handleLogoClick();
-          }
-        }}
-      >
-        <Logo/>
-        <h1 className="logoText">
-          <span className="highlight">T</span>ourism<span className="highlight">A</span>
-        </h1>
-      </div>
-    </div>
-  );
+const Navbar = () => {
+    return(
+        <header>
+            <Link to="/" className="logo-link">
+                <div className="logo-container">
+                    <Logo/>
+                    <div className="logo-text">
+                        <span className="highlighted">T</span>
+                        <span>o</span>
+                        <span>u</span>
+                        <span>r</span>
+                        <span>i</span>
+                        <span>s</span>
+                        <span>m</span>
+                        <span className="highlighted">A</span>
+                    </div>
+                </div>
+            </Link>
+             
+            <div className="nav-links">
+                <a href="/whyAlgeria"> Pourquoi l'Algérie </a> 
+            </div>
+        
+            <div className="header-actions">
+                <Link to="/connect" className="login-button">
+                    Connect
+                </Link>
+            </div>
+        </header>
+    );
 };
-
-export default NavBar3;
+  
+export default Navbar;

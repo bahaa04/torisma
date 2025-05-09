@@ -1,0 +1,250 @@
+/* General Page Setup */
+.why-tourisma-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #121815; /* Dark background for the page */
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.why-tourisma-container {
+    max-width: 1000px; /* Adjusted for better timeline spread */
+    margin: 40px auto;
+    padding: 40px 20px; /* Added horizontal padding */
+    flex: 1;
+    position: relative; /* For stacking context if needed */
+}
+
+/* Main Heading */
+.why-tourisma-container h1 {
+    color: #03d186; /* Accent color for heading */
+    font-size: 2.8rem;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.why-tourisma-container h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #03d186, #2ee59d);
+    border-radius: 2px;
+}
+
+/* Introductory Paragraph */
+.intro {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #b0b0b0; /* Lighter gray for intro text */
+    margin-bottom: 70px; /* More space before timeline */
+    text-align: center;
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 300;
+}
+
+/* --- Timeline Styles --- */
+.features-timeline {
+    position: relative;
+    margin: 0 auto;
+    padding: 40px 0; /* Padding top/bottom for spacing */
+    width: 100%;
+}
+
+/* The central vertical line */
+.features-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #03d186 0%, #2ee59d 70%, transparent 100%);
+    border-radius: 2px;
+    z-index: 1; /* Above background, below items */
+}
+
+/* Container for each timeline item (card + dot + connector) */
+.timeline-item {
+    position: relative; /* Crucial for positioning dot and card */
+    width: 50%;
+    padding: 10px 40px; /* Space around the card content */
+    box-sizing: border-box;
+    margin-bottom: 50px; /* Space between items */
+    z-index: 2; /* Above the line */
+}
+
+/* Left-aligned items */
+.timeline-item.left {
+    left: 0;
+    padding-left: 0; /* No padding on the side of the line */
+    animation: slideInFromLeft 0.8s ease-out forwards;
+}
+
+/* Right-aligned items */
+.timeline-item.right {
+    left: 50%; /* Start at the midline */
+    padding-right: 0; /* No padding on the side of the line */
+    animation: slideInFromRight 0.8s ease-out forwards;
+}
+
+/* The actual feature card */
+.feature-card {
+    background: #1c2520; /* Darker card background */
+    color: #e0e0e0;
+    padding: 25px 30px;
+    border-radius: 12px; /* Softer radius */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(3, 209, 134, 0.2); /* Subtle border and shadow */
+    position: relative; /* For pseudo-elements if needed */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(3, 209, 134, 0.15), 0 0 0 1px rgba(3, 209, 134, 0.3);
+}
+
+.feature-card h2 {
+    color: #03d186; /* Accent color */
+    font-size: 1.3rem;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+    color: #c0c0c0; /* Slightly lighter for paragraph */
+}
+
+/* The dot on the timeline */
+.timeline-dot {
+    content: '';
+    position: absolute;
+    top: 50%; /* Vertically center relative to the card's perceived middle */
+    width: 18px;
+    height: 18px;
+    background: #121815; /* Page background to "punch out" the dot */
+    border: 4px solid #03d186; /* Accent color border */
+    border-radius: 50%;
+    z-index: 3; /* Above line and card edge */
+    transform: translateY(-50%); /* Precise vertical centering */
+}
+
+.timeline-item.left .timeline-dot {
+    right: -9px; /* Half of its width to sit on the line from the left */
+    transform: translate(50%, -50%);
+}
+
+.timeline-item.right .timeline-dot {
+    left: -9px; /* Half of its width to sit on the line from the right */
+    transform: translate(-50%, -50%);
+}
+
+
+/* Conclusion Section */
+.conclusion {
+    text-align: center;
+    max-width: 750px;
+    margin: 70px auto 30px auto; /* More space above */
+    padding: 30px;
+    background: #1c2520; /* Consistent with card background */
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(3, 209, 134, 0.2);
+}
+
+.conclusion p {
+    color: #e0e0e0;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    font-weight: 300;
+}
+
+/* Animations */
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-80px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(80px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .features-timeline::before {
+        left: 20px; /* Move line to the left */
+        transform: translateX(0);
+    }
+
+    .timeline-item,
+    .timeline-item.left,
+    .timeline-item.right {
+        width: 100%;
+        left: 0; /* Reset left positioning */
+        padding-left: 50px; /* Space for cards to the right of the line */
+        padding-right: 15px; /* General padding */
+        margin-bottom: 30px;
+    }
+    
+    .timeline-item.left .timeline-dot,
+    .timeline-item.right .timeline-dot {
+        left: 20px; /* Align dot with the moved line */
+        transform: translate(-50%, -50%); /* Center dot on the line */
+    }
+
+    .why-tourisma-container h1 {
+        font-size: 2.2rem;
+    }
+
+    .intro {
+        font-size: 1rem;
+        margin-bottom: 50px;
+    }
+
+    .feature-card {
+        padding: 20px 25px;
+    }
+
+    .feature-card h2 {
+        font-size: 1.15rem;
+    }
+
+    .feature-card p {
+        font-size: 0.9rem;
+    }
+
+    .conclusion {
+        padding: 25px;
+    }
+
+    .conclusion p {
+        font-size: 1rem;
+    }
+}

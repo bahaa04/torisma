@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from '../components/navbar1-connected';
+import NavBarC from '../components/navbar1-connected';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/footer';
 import TwoCards from '../components/profileCardsHouse';
@@ -48,7 +48,7 @@ function MaisonListe() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBar />
+      <NavBarC />
       <div style={buttonStyles.backContainer}>
         <button 
           onClick={() => navigate('/')} 

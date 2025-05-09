@@ -22,14 +22,16 @@ import debug_toolbar
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
+from django.views.decorators.csrf import csrf_exempt
+from corsheaders.defaults import default_headers
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="TorismA API",
+      title="TourismA API",
       default_version='v1',
-      description="API documentation for the TorismA project",
+      description="API documentation for the TourismA project",
       terms_of_service="https://www.example.com/terms/",
-      contact=openapi.Contact(email="support@torisma.com"),
+      contact=openapi.Contact(email="support@TourismA.com"),
       license=openapi.License(name="BSD License"),
    ),
    public=True,
@@ -44,7 +46,20 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/listings/', include('listings.urls')),
     path('api/coupons/', include('coupons.urls')),
-    path('api/reservations/', include('resANDtran.urls')),
+    path('api/reservations/', include('reservations.urls')),
     path('__debug__/', include('debug_toolbar.urls')),
     path('', include('rating.urls')),
+    path('recommendations/', include('recommendations.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Add CORS headers to all responses
+def add_cors_headers(response):
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response["Access-Control-Allow-Headers"] = ", ".join(default_headers)
+    return response
+
+# Apply CORS headers to all views
+for pattern in urlpatterns:
+    if hasattr(pattern, '_callback'):
+        pattern._callback = add_cors_headers(pattern._callback)

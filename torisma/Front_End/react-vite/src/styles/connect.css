@@ -328,3 +328,32 @@ main {
 .logo-container:hover {
     opacity: 0.8;
 }
+
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.terms-checkbox label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.terms-link {
+    color: #03d186;
+    text-decoration: none;
+    margin: 0 4px;
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}

@@ -143,6 +143,11 @@ export default function HomePage() {
 
         <div className="help-section">
         </div>
+        <div className="help-section">
+        <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
+        <a href="/help" className="help-button">Aidez-moi</a>
+        </div>
+
       </div>
 
       <div className="video-banner">
@@ -167,3 +172,4 @@ export default function HomePage() {
     </div>
   );
 }
+

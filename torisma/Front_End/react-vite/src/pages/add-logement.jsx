@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "./AddInfos.css";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../components/navbar1-connected";
+import NavbarC from "../components/navbar1-connected";
 
 export default function AddHouse() {
   const [formData, setFormData] = useState({
@@ -167,7 +167,7 @@ export default function AddHouse() {
 
   return (
     <>
-      <Navbar />
+      <NavbarC />
       <div className="property-form-page">
         <motion.div
           className="property-form-container"

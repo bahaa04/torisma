@@ -30,7 +30,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'r.stripe.com',
+    'js.stripe.com',
+    'api.stripe.com',
+    *os.getenv('ALLOWED_HOSTS', '').split(','),
+]
 
 
 # Application definition
@@ -51,9 +58,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'debug_toolbar',
     'coupons',
-    'resANDtran',
+    'reservations',
     'drf_yasg',
     'rating',
+    'recommendations',
 ]
 
 MIDDLEWARE = [
@@ -94,7 +102,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'torisma'),
+        'NAME': os.getenv('DB_NAME', 'TourismA'),
         'USER': os.getenv('DB_USER', 'postgres'),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', 'localhost'),
@@ -150,9 +158,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    ],
+    'EXCEPTION_HANDLER': 'recommendations.views.custom_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,  # Show 10 items per page
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -192,26 +201,16 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Default backend
 ]
 
-# CORS configuration
-CORS_ALLOW_ALL_ORIGINS = True
-
-internal_ips = [
-    '127.0.0.1',
+# CORS Settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
 ]
 
-# Email Configuration
-
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
 
-CORS_ALLOW_HEADERS = [
+CORS_ALLOWED_HEADERS = [
     'accept',
     'accept-encoding',
     'authorization',
@@ -221,13 +220,50 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'stripe-signature',
+    'sec-fetch-site',
+    'sec-fetch-mode',
+    'sec-fetch-dest',
 ]
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:3000,http://localhost:8000,http://127.0.0.1:3000,http://127.0.0.1:8000').split(',')
+# CORS Origins Whitelist for Stripe
+CORS_ORIGIN_WHITELIST = [
+    "https://js.stripe.com",
+    "https://api.stripe.com",
+    "https://r.stripe.com",
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+
+# Add Stripe domains to CSRF trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://js.stripe.com",
+    "https://api.stripe.com",
+    "https://r.stripe.com",
+]
+
+# Security Settings
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False  # Set to True in production
+SESSION_COOKIE_SECURE = False  # Set to True in production
+CSRF_COOKIE_SECURE = False  # Set to True in production
+
+# Add Stripe to CSP settings
+CSP_DEFAULT_SRC = ("'self'", "*.stripe.com")
+CSP_SCRIPT_SRC = ("'self'", "*.stripe.com")
+CSP_FRAME_SRC = ("'self'", "*.stripe.com")
+CSP_CONNECT_SRC = ("'self'", "*.stripe.com")
+
+# Additional security headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False 
+
 # Coupon Settings
 COUPON_AUTO_NOTIFY = True  # Set to False to disable automatic notifications
 COUPON_NOTIFICATION_SUBJECT = 'New Coupon Available!'
@@ -251,24 +287,41 @@ STRIPE_PUBLISHER_KEY = os.getenv('STRIPE_PUBLISHER_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 
+# Frontend URL for Stripe redirects (update this with your frontend URL)
+FRONTEND_URL = 'http://localhost:5173'  # Change this to your actual frontend URL
+
+# Stripe Settings
+STRIPE_API_VERSION = '2025-03-31.basil'  # Add the API version you received
+
 # Ensure the logs directory exists
 LOG_DIR = BASE_DIR / 'logs'
 LOG_DIR.mkdir(exist_ok=True)
 
+# Logging Configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
         'file': {
-            'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': LOG_DIR / 'errors.log',  # Use the LOG_DIR path
+            'filename': 'debug.log',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
+        'recommendations': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     },
@@ -281,3 +334,7 @@ CELERY_TASK_SERIALIZER = 'json'  # Serialize tasks in JSON format
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Store task results in Redis
 CELERY_TIMEZONE = TIME_ZONE  # Use the same timezone as Django
 
+
+
+# Gemini API Configuration
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')

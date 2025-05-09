@@ -10,12 +10,13 @@ from .views import (
     ForgotPasswordView,
     PasswordResetConfirmView,
     PasswordResetFormView,
+    CustomLoginView,
 )
 
 # Authentication URLs
 auth_patterns = [
     path('auth/register/', UserRegisterView.as_view(), name='register'),
-    path('auth/login/', CustomTokenObtainPairView.as_view(), name='login'),
+    path('auth/login/', CustomLoginView.as_view(), name='login'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('auth/verify-email/<str:uidb64>/<str:token>/', VerifyEmailView.as_view(), name='verify_email'),

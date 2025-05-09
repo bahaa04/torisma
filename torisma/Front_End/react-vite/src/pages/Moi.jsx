@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import NavBar from '../components/navbar1-connected';
+import NavBarC from '../components/navbar1-connected';
 import Sidebar from '../components/Sidebar';
 import ProfileInformations from "../components/ProfileInformations";
 import Footer from '../components/footer';
@@ -29,7 +29,7 @@ const buttonStyles = {
 function Moi() {
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBar />
+      <NavBarC />
       <div style={buttonStyles.backContainer}>
         <button 
           onClick={() => navigate('/')} 

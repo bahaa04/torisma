@@ -72,22 +72,16 @@ def send_verification_email(user, request):
         context = {
             'user': user,
             'token': token,
-            'uidb64': uidb64,
+            'uidb64': uidb64
         }
         
-        verification_link = request.build_absolute_uri(
-            reverse('verify_email', kwargs={'uidb64': uidb64, 'token': token})
-        )
-        
         # Use template rendering for better email formatting
-        context['verification_link'] = verification_link
-        # Update the template path to match the actual file location
         email_body = render_to_string('emails/Verification_email.html', context)
         
         email = EmailMessage(
             subject='Verify your email address',
             body=email_body,
-            from_email=settings.DEFAULT_FROM_EMAIL,  # Use DEFAULT_FROM_EMAIL instead of EMAIL_FROM_ADDRESS
+            from_email=settings.DEFAULT_FROM_EMAIL,
             to=[user.email]
         )
         email.content_subtype = "html"  # Set email content type to HTML
@@ -99,8 +93,15 @@ def send_verification_email(user, request):
         raise e
 
 class VerifyEmailView(APIView):
+    permission_classes = [permissions.AllowAny]  # Allow unauthenticated access
+
     def get(self, request, uidb64, token):
         try:
+            # Add padding if needed
+            padding = len(uidb64) % 4
+            if padding:
+                uidb64 += '=' * (4 - padding)
+            
             # Decode the user ID from uidb64
             user_id = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=user_id)
@@ -108,7 +109,17 @@ class VerifyEmailView(APIView):
             # Validate the token
             if not default_token_generator.check_token(user, token):
                 logger.error("Invalid token.")
-                return Response({'error': 'lien de verification invalide.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'error': 'lien de verification invalide.'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Check if user is already verified
+            if user.is_email_verified:
+                return Response(
+                    {'message': 'Email déjà vérifié. Vous pouvez vous connecter.'}, 
+                    status=status.HTTP_200_OK
+                )
 
             # Activate the user upon successful verification
             user.is_active = True
@@ -116,10 +127,16 @@ class VerifyEmailView(APIView):
             user.save()
 
             logger.info(f"User {user.email} verified successfully.")
-            return Response({'message': 'Email verifié avec succé.vous peuvez maintenant vous connecter.'}, status=status.HTTP_200_OK)
+            return Response(
+                {'message': 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.'}, 
+                status=status.HTTP_200_OK
+            )
         except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
             logger.error(f"Error during email verification: {e}")
-            return Response({'error': 'lien de verification invalide.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'lien de verification invalide.'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -148,22 +165,49 @@ class CustomLoginView(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
-        user = authenticate(request, email=email, password=password)
-        if user is not None:
+        
+        try:
+            user = User.objects.get(email=email)
+            
+            # Check if user is banned
+            if user.is_banned:
+                return Response(
+                    {"detail": "This account has been banned."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Check if email is verified
             if not user.is_email_verified:
                 # Resend verification email
                 send_verification_email(user, request)
                 return Response(
-                    {"detail": "Email not verified. Verification email resent."},
+                    {"detail": "Email not verified. A new verification email has been sent."},
                     status=status.HTTP_403_FORBIDDEN
                 )
-            # Generate and return JWT tokens
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }, status=status.HTTP_200_OK)
-        else:
+            
+            # Check if user is active
+            if not user.is_active:
+                return Response(
+                    {"detail": "This account is inactive."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Try to authenticate
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                # Generate and return JWT tokens
+                refresh = RefreshToken.for_user(user)
+                return Response({
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {"detail": "Invalid credentials."},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+                
+        except User.DoesNotExist:
             return Response(
                 {"detail": "Invalid credentials."},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -497,4 +541,3 @@ class PasswordResetFormView(View):
                 'uidb64': uidb64,
                 'token': token
             })
-

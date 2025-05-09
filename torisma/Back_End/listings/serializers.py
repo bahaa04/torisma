@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto, wilayas
 import datetime
-from resANDtran.models import CarReservation, HouseReservation
+from reservations.models import CarReservation, HouseReservation  # Updated import path
 
 # Car Photos Serializer
 class CarPhotosSerializer(serializers.ModelSerializer):

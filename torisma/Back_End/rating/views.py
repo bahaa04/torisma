@@ -5,8 +5,10 @@ from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import JsonResponse
-from .models import CarRating, HouseRating
+from django.shortcuts import get_object_or_404
+from .models import CarRating, HouseRating, UserCarRating, UserHouseRating
 from .serializers import CarRatingSerializer, HouseRatingSerializer
+from listings.models import Car, House
 
 def validate_rating_request(request):
     """
@@ -54,22 +56,34 @@ def validate_rating_request(request):
     return (entity_id, score), None
 
 @api_view(['POST'])
-@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def rate_car(request):
-    """
-    Body: { "car_id": "xyz", "score": 4.5 }
-    Accepts both JSON and form data
-    Requires JWT authentication
-    """
-    result, error = validate_rating_request(request)
-    if error:
-        return error
+    car_id = request.data.get('car_id')
+    score = float(request.data.get('score', 0))
     
-    car_id, score = result
-    obj, _ = CarRating.objects.get_or_create(car_id=car_id)
-    obj.add_rating(score)
-    return Response(CarRatingSerializer(obj).data, status=status.HTTP_200_OK)
+    try:
+        car = Car.objects.get(id=car_id)
+        car_rating, _ = CarRating.objects.get_or_create(car_id=car)
+        
+        # Get or update user's rating
+        user_rating, created = UserCarRating.objects.get_or_create(
+            user=request.user,
+            car=car,
+            defaults={'score': score}
+        )
+        
+        if not created:
+            user_rating.score = score
+            user_rating.save()
+            
+        car_rating.recalculate_rating()
+        return Response({
+            'average': car_rating.average,
+            'rating_count': car_rating.rating_count,
+            'your_rating': score
+        })
+    except Car.DoesNotExist:
+        return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def get_car_rating(request, car_id):
@@ -84,22 +98,34 @@ def get_car_rating(request, car_id):
     return Response(CarRatingSerializer(obj).data)
 
 @api_view(['POST'])
-@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def rate_house(request):
-    """
-    Body: { "house_id": "abc", "score": 5 }
-    Accepts both JSON and form data
-    Requires JWT authentication
-    """
-    result, error = validate_rating_request(request)
-    if error:
-        return error
+    house_id = request.data.get('house_id')
+    score = float(request.data.get('score', 0))
     
-    house_id, score = result
-    obj, _ = HouseRating.objects.get_or_create(house_id=house_id)
-    obj.add_rating(score)
-    return Response(HouseRatingSerializer(obj).data, status=status.HTTP_200_OK)
+    try:
+        house = House.objects.get(id=house_id)
+        house_rating, _ = HouseRating.objects.get_or_create(house_id=house)
+        
+        # Get or update user's rating
+        user_rating, created = UserHouseRating.objects.get_or_create(
+            user=request.user,
+            house=house,
+            defaults={'score': score}
+        )
+        
+        if not created:
+            user_rating.score = score
+            user_rating.save()
+            
+        house_rating.recalculate_rating()
+        return Response({
+            'average': house_rating.average,
+            'rating_count': house_rating.rating_count,
+            'your_rating': score
+        })
+    except House.DoesNotExist:
+        return Response({'error': 'House not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def get_house_rating(request, house_id):

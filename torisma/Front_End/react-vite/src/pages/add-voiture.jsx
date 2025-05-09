@@ -14,7 +14,7 @@ import "./AddInfos.css";
 import Footer from "../components/footer";
 import Logo from "../components/logo";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../components/navbar1-connected";
+import NavbarC from "../components/navbar1-connected";
 
 export default function AddCar() {
   const [formData, setFormData] = useState({
@@ -140,7 +140,7 @@ export default function AddCar() {
 
   return (
     <>
-      <Navbar />
+      <NavbarC />
       
       <div className="property-form-page">
         <motion.div
