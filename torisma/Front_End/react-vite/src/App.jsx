@@ -1,4 +1,5 @@
 import React from 'react';
+import { Analytics } from "@vercel/analytics/react"
 import { Routes, Route, Navigate } from 'react-router-dom'
 import HomePage from './pages/homepage';
 import Connect from './pages/connect';
@@ -14,7 +15,7 @@ import Choose from './pages/choose';
 import Moi from './pages/Moi';
 import Voiture from './pages/voiture';
 import Location from './pages/localisation';
-import WhyAlgeria from './pages/whyAlgeria';
+import WhyAlgeria from './pages/whyalgeria';
 import MaisonListe from './pages/maisonListe';
 import VoitureListe from './pages/voitureListe';
 import AddCar from './pages/add-voiture';
@@ -32,7 +33,7 @@ import './App.css';
 function App() {
   return (
     <Routes>
-      <Route path="/whyToursimA" element={<WhyTourisma />} />
+      <Route path="/whytourisma" element={<WhyTourisma />} />
       <Route path="/terms-&-conditions" element={<Terms />} />
       <Route path="/verified/:uidb64/:token" element={<Verified />} />
       <Route path="/help" element={<ChatPage />} />

@@ -23,8 +23,8 @@ const NavbarC = () => {
 
 
             <div className="nav-links">
-                <a href="/whyToursimA">Pourquoi TourismA</a>
-                <a href="/whyAlgeria">Pourquoi l'Algérie</a>
+                <a href="/whytourisma">Pourquoi TourismA</a>
+                <a href="/whyalgeria">Pourquoi l'Algérie</a>
             </div>
 
             <div className="header-actions">

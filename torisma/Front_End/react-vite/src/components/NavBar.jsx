@@ -24,7 +24,7 @@ const Navbar = () => {
             </Link>
              
             <div className="nav-links">
-                <Link to="/whyToursimA" className="link-button">Pourquoi TourismA</Link>
+                <Link to="/whytourisma" className="link-button">Pourquoi TourismA</Link>
                 <Link to="/whyalgeria" className="link-button">Pourquoi l'Algérie</Link>
             </div>
         
