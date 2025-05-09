@@ -15,7 +15,7 @@ current_year = timezone.now().year
 
 status_choices = [
     ('available', 'Available'),
-    ('waiting for confirmation', 'Waiting for confirmation'),
+    ('pending', 'Pending'),
     ('rented', 'Rented'),
     ('disabled', 'Disabled'),
 ]
@@ -167,10 +167,7 @@ class House(models.Model):
     updated_at = models.DateTimeField(auto_now=True)  # Add this field
     status = models.CharField(
         max_length=20,
-        choices=[
-            ('available', 'Available'),
-            ('rented', 'Rented'),
-        ],
+        choices=status_choices,
         default='available'
     )
     furnished = models.BooleanField(default=False)

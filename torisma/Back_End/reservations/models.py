@@ -22,7 +22,8 @@ PAYMENT_STATUS_CHOICES = [
     ('pending', 'Pending'),
     ('confirmed', 'Confirmed'),
     ('completed', 'Completed'),
-    ('cancelled', 'Cancelled')
+    ('cancelled', 'Cancelled'),
+    ('failed', 'Failed')
 ]
 
 class MastercardPayment(models.Model):
@@ -63,6 +64,7 @@ class CarReservation(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='cash')
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+    payment_details = models.JSONField(null=True, blank=True)
     payment_reference = models.CharField(max_length=255, null=True, blank=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
@@ -79,11 +81,7 @@ class HouseReservation(models.Model):
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_at = models.DateTimeField(default=timezone.now)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='cash')
-    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
-    payment_reference = models.CharField(max_length=255, null=True, blank=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    created_at = models.DateTimeField(default=timezone.now) # Temporary default
 
     class Meta:
         ordering = ['-created_at']

@@ -24,6 +24,11 @@ class CarReservationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         reservation = serializer.save(user=self.request.user)
+        # Update car status to pending
+        car = reservation.car
+        car.status = 'pending'
+        car.save()
+        
         if reservation.payment_method == 'cash':
             reservation.payment_status = 'pending'
             reservation.save()
@@ -71,7 +76,37 @@ class HouseReservationViewSet(viewsets.ModelViewSet):
     serializer_class = HouseReservationSerializer
     permission_classes = [IsAuthenticated]
 
-    # Similar implementation as CarReservationViewSet
+    def perform_create(self, serializer):
+        reservation = serializer.save(user=self.request.user)
+        # Update house status to pending
+        house = reservation.house
+        house.status = 'pending'
+        house.save()
+        
+        if reservation.payment_method == 'cash':
+            reservation.payment_status = 'pending'
+            reservation.save()
+            self.send_cash_confirmation(reservation)
+        return reservation
+
+    def send_cash_confirmation(self, reservation):
+        context = {
+            'username': reservation.user.username,
+            'item_title': reservation.house.title,
+            'start_date': reservation.start_date,
+            'end_date': reservation.end_date,
+            'total_price': reservation.total_price,
+            'owner_phone': reservation.house.owner.phone_number
+        }
+        html_message = render_to_string('email/transaction_confirmation.html', context)
+        plain_message = strip_tags(html_message)
+        send_mail(
+            subject='House Reservation Confirmation',
+            message=plain_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[reservation.user.email],
+            html_message=html_message
+        )
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -114,16 +149,67 @@ def initiate_cash_payment(request, reservation_id):
 def confirm_cash_payment(request, reservation_id):
     try:
         reservation = CarReservation.objects.get(id=reservation_id)
+        
+        # Check if confirmation link is expired (more than 1 day after start date)
+        if timezone.now() > reservation.start_date + timedelta(days=1):
+            # Expired - set to cancelled and return car to available
+            reservation.status = 'cancelled'
+            reservation.payment_status = 'cancelled'
+            reservation.save()
+            
+            # Return car to available
+            car = reservation.car
+            car.status = 'available'
+            car.save()
+            
+            return Response({"error": "Confirmation expired", "status": "cancelled"}, status=400)
+            
         if reservation.seller != request.user:
             return Response({"error": "Not authorized"}, status=403)
         
+        # Set reservation to confirmed
         reservation.payment_status = 'completed'
         reservation.status = 'confirmed'
         reservation.save()
+        
+        # Set car to rented
+        car = reservation.car
+        car.status = 'rented'
+        car.save()
+        
         return Response({"status": "Payment confirmed"})
     except CarReservation.DoesNotExist:
-        # Similar logic for HouseReservation
-        pass
+        try:
+            reservation = HouseReservation.objects.get(id=reservation_id)
+            
+            # Check if confirmation link is expired
+            if timezone.now() > reservation.start_date + timedelta(days=1):
+                # Expired - set to cancelled and return house to available
+                reservation.status = 'cancelled'
+                reservation.save()
+                
+                # Return house to available
+                house = reservation.house
+                house.status = 'available'
+                house.save()
+                
+                return Response({"error": "Confirmation expired", "status": "cancelled"}, status=400)
+            
+            if reservation.house.owner != request.user:
+                return Response({"error": "Not authorized"}, status=403)
+            
+            # Set reservation to confirmed
+            reservation.status = 'confirmed'
+            reservation.save()
+            
+            # Set house to rented
+            house = reservation.house
+            house.status = 'rented'
+            house.save()
+            
+            return Response({"status": "Payment confirmed"})
+        except HouseReservation.DoesNotExist:
+            return Response({"error": "Reservation not found"}, status=404)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -184,9 +270,51 @@ def stripe_webhook_handler(request):
                     reservation.status = 'confirmed'
                     reservation.payment_reference = payment_intent.id
                     reservation.save()
+                    
+                    # Update car status to rented
+                    car = reservation.car
+                    car.status = 'rented'
+                    car.save()
                 except CarReservation.DoesNotExist:
-                    # Try HouseReservation
-                    pass
+                    try:
+                        reservation = HouseReservation.objects.get(id=reservation_id)
+                        reservation.status = 'confirmed'
+                        reservation.save()
+                        
+                        # Update house status to rented
+                        house = reservation.house
+                        house.status = 'rented'
+                        house.save()
+                    except HouseReservation.DoesNotExist:
+                        pass
+
+        elif event['type'] == 'payment_intent.payment_failed':
+            # Handle failed payment
+            payment_intent = event['data']['object']
+            reservation_id = payment_intent.metadata.get('reservation_id')
+            if reservation_id:
+                try:
+                    reservation = CarReservation.objects.get(id=reservation_id)
+                    reservation.payment_status = 'failed'
+                    reservation.status = 'cancelled'
+                    reservation.save()
+                    
+                    # Return car to available
+                    car = reservation.car
+                    car.status = 'available'
+                    car.save()
+                except CarReservation.DoesNotExist:
+                    try:
+                        reservation = HouseReservation.objects.get(id=reservation_id)
+                        reservation.status = 'cancelled'
+                        reservation.save()
+                        
+                        # Return house to available
+                        house = reservation.house
+                        house.status = 'available'
+                        house.save()
+                    except HouseReservation.DoesNotExist:
+                        pass
 
         return JsonResponse({'status': 'success'})
     except Exception as e:

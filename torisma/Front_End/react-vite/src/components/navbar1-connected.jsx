@@ -23,11 +23,11 @@ const NavbarC = () => {
 
 
             <div className="nav-links">
-                <a href="/whyAlgeria"> Pourquoi l'Algérie </a>
+                <a href="/whyToursimA">Pourquoi TourismA</a>
+                <a href="/whyAlgeria">Pourquoi l'Algérie</a>
             </div>
 
             <div className="header-actions">
-
                 <Link to="/moi" className="profile-button">
                     <img src="/profile.jpg" alt="Profile" style={{ width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover' }} />
                 </Link>
