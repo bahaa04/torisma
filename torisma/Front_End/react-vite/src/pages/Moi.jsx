@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import NavBarC from '../components/navbar1-connected';
 import Sidebar from '../components/Sidebar';
 import ProfileInformations from "../components/ProfileInformations";
@@ -27,6 +28,8 @@ const buttonStyles = {
 };
 
 function Moi() {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen flex flex-col">
       <NavBarC />

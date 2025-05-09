@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/ProfileInformations.css';
 
 const ProfileInformations = () => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     email: '',
     username: '',
@@ -131,6 +133,17 @@ const ProfileInformations = () => {
             value={userData.phone_number}
             onChange={handleInputChange}
           />
+        </div>
+
+        <div className="form-group">
+          <label style={{visibility: 'hidden'}}>Mot de passe</label>
+          <button 
+            type="button"
+            className="password-change-button"
+            onClick={() => navigate('/recmsg')}
+          >
+            Changer le mot de passe
+          </button>
         </div>
       </div>
 

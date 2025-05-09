@@ -127,6 +127,34 @@
   background-color: #a2a8a5;
 }
 
+.password-change-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-self: flex-end;
+}
+
+.password-change-button {
+  background-color: transparent;
+  color: #555;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-weight: 500;
+  width: 100%;
+  height: 43px;
+  box-sizing: border-box;
+}
+
+.password-change-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: #aaa;
+}
+
 .image-upload {
   position: relative;
   margin-top: 10px;
