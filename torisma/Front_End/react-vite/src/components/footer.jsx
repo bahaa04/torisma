@@ -10,7 +10,7 @@ const Footer = () => {
 
         <div className="footer-column about-TourismA">
           <h3>À propos de TourismA</h3>
-          <a href="/whytourisma">À propos de TourismA</a>
+          <a href="/whyToursimA">À propos de TourismA</a>
           <div className="footer-column terms-conditions">
             <h3>Conditions d'utilisation</h3>
             <a href="/terms-&-conditions">Conditions générales</a>
