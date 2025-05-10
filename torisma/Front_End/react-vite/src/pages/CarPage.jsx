@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar from '../components/navbar1';
+import NavBar11 from '../components/navbar11';
 import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
 
 const buttonStyles = {
   backContainer: {
-    padding: '20px',
+    padding: '40px',
     marginTop: '0',
-    borderBottom: '1px solid #eee',
+    borderBottom: '1px solid #eee'
   },
   backButton: {
     display: 'flex',
@@ -23,8 +23,8 @@ const buttonStyles = {
     borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '16px',
-    transition: 'all 0.3s ease',
-  },
+    transition: 'all 0.3s ease'
+  }
 };
 
 export default function CarPage() {
@@ -109,7 +109,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container"></div>
-        <NavBar />
+        <NavBar11 />
         <div className="error">Erreur : {error}</div>
         <Footer />
         <div />
@@ -134,7 +134,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container">
-          <NavBar />
+          <NavBar11 />
           <div className="car-detail">
             <h2>
               {car.brand} {car.model} ({car.year})
@@ -173,7 +173,7 @@ export default function CarPage() {
 
   return (
     <>
-      <NavBar />
+      <NavBar11 />
       <div style={buttonStyles.backContainer}>
         <button
           onClick={() => navigate('/')}

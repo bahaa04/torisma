@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import NavBar from '../components/navbar1';
+import NavBar1 from '../components/navbar1';
 import AuthNavBar from '../components/AuthNavBar';
 import Footer from '../components/footer';
 import Logo from '../components/logo';
@@ -91,7 +91,7 @@ export default function HomePage() {
         {userProfile ? (
           <AuthNavBar userProfile={userProfile} />
         ) : (
-          <NavBar />
+          <NavBar1 />
         )}
         <div className="loading">Chargement en cours…</div>
         <Footer />
@@ -106,7 +106,7 @@ export default function HomePage() {
         {userProfile ? (
           <AuthNavBar userProfile={userProfile} />
         ) : (
-          <NavBar />
+          <NavBar1 />
         )}
         <div className="error">Erreur : {error}</div>
         <Footer />
@@ -116,12 +116,14 @@ export default function HomePage() {
 
   // Success render
   return (
-    <div className="homepage">
+    <>
+    <div className="container">
       {userProfile ? (
         <AuthNavBar userProfile={userProfile} />
       ) : (
-        <NavBar />
+        <NavBar1 />
       )}
+         <hr style={{ border: "none", height: "0.5px", backgroundColor: "#e0e0e0" }} />
 
       <div className="main-content">
         <div className="content-header">
@@ -164,5 +166,6 @@ export default function HomePage() {
 
       <Footer />
     </div>
+    </>
   );
 }

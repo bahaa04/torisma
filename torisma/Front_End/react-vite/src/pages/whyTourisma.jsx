@@ -1,6 +1,6 @@
 import React from 'react';
 import "../styles/whyTourisma.css";
-import NavBar from "../components/navbar1";
+import NavBar11 from "../components/navbar11";
 import Footer from "../components/footer";
 
 const WhyTourisma = () => {
@@ -49,7 +49,8 @@ const WhyTourisma = () => {
 
     return (
        <>
-            <NavBar />
+       <div className="container">
+            <NavBar11 />
              <div className="why-tourisma-page">
             <div className="why-tourisma-container">
                 <h1>Pourquoi Choisir TourismA ?</h1>
@@ -75,6 +76,7 @@ const WhyTourisma = () => {
                 </div>
             </div>
             <Footer />
+        </div>
         </div>
         </>
     );
