@@ -1,163 +1,227 @@
+.profile-page-container {
+  display: flex;
+  max-width: 900px; /* Adjust as needed */
+  margin: 40px auto;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* To contain rounded borders of children */
+}
 
-.profile-informations-container {
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    width: 90%; /* Adjust width as needed */
-    max-width: 600px; /* Maximum width */
-    margin: 20px auto;
-    margin-bottom: 60px;
-    margin-top: 60px;
-  }
-  
-  .profile-header {
-    display: flex;
+.profile-navigation {
+  background-color: #f8f8f8;
+  border-right: 1px solid #eee;
+  padding: 20px;
+  width: 200px; /* Adjust sidebar width */
+}
+
+.profile-navigation ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-navigation li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-navigation li:hover {
+  background-color: #eee;
+}
+
+.profile-navigation li.active {
+  background-color: #34E0A1;
+  color: white;
+  font-weight: bold;
+}
+
+.profile-content {
+  padding: 30px;
+  flex-grow: 1; /* Takes up remaining space */
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-image-container {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #34E0A1; /* Light green border */
+  margin-bottom: 10px;
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  padding: 10px 15px;
+  width: 100%;
+  color: #333;
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #34E0A1;
+}
+
+.save-button {
+  background-color: #34E0A1; /* Light green button */
+  color: #000000;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: auto; /* Adjust width as needed */
+}
+
+.save-button:hover {
+  background-color: #a2a8a5;
+}
+
+.password-change-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-self: flex-end;
+}
+
+.password-change-button {
+  background-color: transparent;
+  color: #555;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-weight: 500;
+  width: 100%;
+  height: 43px;
+  box-sizing: border-box;
+}
+
+.password-change-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: #aaa;
+}
+
+.image-upload {
+  position: relative;
+  margin-top: 10px;
+}
+
+.upload-label {
+  background-color: #34E0A1;
+  color: #000000;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease;
+}
+
+.upload-label:hover {
+  background-color: #a2a8a5;
+}
+
+.hidden {
+  display: none;
+}
+
+select {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  padding: 10px 15px;
+  width: 100%;
+  color: #333;
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease-in-out;
+}
+
+select:focus {
+  outline: none;
+  border-color: #34E0A1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-page-container {
     flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 40px;
   }
-  
-  .profile-image-container {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #34E0A1; /* Light green border */
-    margin-bottom: 10px;
-  }
-  
-  .profile-image {
+
+  .profile-navigation {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    border-right: none;
+    border-bottom: 1px solid #eee;
   }
-  
-  /* Profile image animation */
-  .animated-profile {
-    animation: pulse 2s infinite alternate;
+
+  .profile-navigation ul {
+    display: flex;
+    overflow-x: auto;
   }
-  
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(1.05);
-    }
+
+  .profile-navigation li {
+    flex-shrink: 0;
+    padding: 10px 20px;
   }
-  
-  .profile-name {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: #000000;
-    margin-bottom: 5px;
+
+  .profile-content {
+    padding: 20px;
   }
-  
-  .download-icon {
-    color: #777;
-    cursor: pointer;
-    margin-top: 5px;
-  }
-  
+
   .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
+    grid-template-columns: 1fr;
   }
-  
-  /* Target the container of Nom and Prénom */
-  .form-grid > div:nth-child(1) { /* Assuming Nom is the first div */
-    display: flex;
-    gap: 0; /* Remove gap between Nom and Prénom */
-  }
-  
-  .form-grid > div:nth-child(1) .form-group {
-    flex: 1; /* Distribute equal width */
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group.full-width {
-    grid-column: 1 / -1;
-  }
-  
-  .form-group label {
-    font-size: 0.9em;
-    color: #555;
-    margin-bottom: 5px;
-  }
-  
-  .form-group input {
-    border: 1px solid #9a9898;
-    border-radius: 10px;
-    font-size: 1em;
-    padding: 12px 20px;
-    width: 100%; /* Make inputs take full width of their container */
-    color: #333;
-    background-color: #fff;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease-in-out;
-    margin-left: 0; /* Ensure no extra left margin */
-  }
-  
-  /* Target the Nom input specifically */
-  .form-grid > div:nth-child(1) .form-group:nth-child(1) input {
-    /* Remove any right margin that might be present */
-    margin-right: 0;
-  }
-  
-  /* Target the Prénom input specifically */
-  .form-grid > div:nth-child(1) .form-group:nth-child(2) input {
-    /* Remove any left margin that might be present */
-    margin-left: 0;
-  }
-  
-  .form-group input:focus {
-    outline: none; /* Remove default focus outline */
-    border-color: #34E0A1; /* Initial green on focus */
-  }
-  
-  /* Green border when information is entered (example - you'll need to handle this with JavaScript state) */
-  .form-group input.has-value {
-    border-color: #34E0A1;
-  }
-  
-  .disconnect-button {
-    background-color: #34E0A1; /* Light green button */
-    color: #000000;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    width: 50%;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    text-align: center;
-    box-sizing: border-box;
-  }
-  
-  .disconnect-button:hover {
-    background-color: #a2a8a5;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 480px) {
-    .form-grid {
-      grid-template-columns: 1fr;
-    }
-  
-    /* Stack Nom and Prénom on smaller screens */
-    .form-grid > div:nth-child(1) {
-      flex-direction: column;
-      gap: 15px; /* Add gap when stacked */
-    }
-  }
+}

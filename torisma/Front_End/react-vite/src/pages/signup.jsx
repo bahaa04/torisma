@@ -27,6 +27,14 @@ export default function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   const handleFileClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -48,6 +56,12 @@ export default function SignUp() {
     setError('');
     setSuccess('');
     setIsSubmitting(true);
+
+    if (!validateEmail(formData.email)) {
+      setError('Format d\'email invalide');
+      setIsSubmitting(false);
+      return;
+    }
 
     if (formData.password !== confirmPassword) {
       setError('Les mots de passe ne correspondent pas.');

@@ -1,0 +1,279 @@
+TORISMA API ENDPOINTS DOCUMENTATION
+=================================
+
+1. AUTHENTICATION & USER MANAGEMENT
+--------------------------------
+POST /api/users/register/
+  Request: {
+    "email": string,
+    "username": string,
+    "password": string,
+    "first_name": string,
+    "last_name": string,
+    "phone_number": string,
+    "gender": string
+  }
+  Response: {
+    "message": "Verification email sent. Please check your inbox."
+  }
+
+POST /api/users/token/
+  Request: {
+    "email": string,
+    "password": string
+  }
+  Response: {
+    "access": "JWT_token",
+    "refresh": "refresh_token",
+    "role": "user|admin"
+  }
+
+GET /api/users/profile/
+  Response: {
+    "id": "uuid",
+    "email": string,
+    "username": string,
+    "first_name": string,
+    "last_name": string,
+    "phone_number": string,
+    "gender": string,
+    "profile_picture": string,
+    "cars": [Car],
+    "houses": [House]
+  }
+
+2. LISTINGS MANAGEMENT
+---------------------
+Cars:
+GET/POST /api/listings/cars/
+  Response: {
+    "id": "uuid",
+    "owner": "user_id",
+    "description": string,
+    "price": decimal,
+    "location": string,
+    "wilaya": string,
+    "status": string,
+    "manufacture": string,
+    "model": string,
+    "manufacturing_year": integer,
+    "seats": integer,
+    "fuel_type": string,
+    "created_at": datetime,
+    "photos": [
+      {
+        "id": integer,
+        "photo": string(url)
+      }
+    ]
+  }
+
+Houses:
+GET/POST /api/listings/houses/
+  Response: {
+    "id": "uuid",
+    "owner": "user_id",
+    "description": string,
+    "price": decimal,
+    "wilaya": string,
+    "city": string,
+    "gps_location": string(url),
+    "status": string,
+    "furnished": boolean,
+    "has_parking": boolean,
+    "has_wifi": boolean,
+    "created_at": datetime,
+    "photos": [
+      {
+        "id": integer,
+        "photo": string(url)
+      }
+    ]
+  }
+
+3. FAVORITES
+-----------
+GET/POST /api/listings/favorites/
+  Response: {
+    "id": "uuid",
+    "user": "user_id",
+    "item_type": "car|house",
+    "item_id": "uuid",
+    "created_at": datetime
+  }
+
+4. RATINGS
+---------
+GET /api/ratings/cars/<car_id>/
+  Response: {
+    "car_id": "uuid",
+    "average": float,
+    "rating_count": integer,
+    "updated_at": datetime
+  }
+
+GET /api/ratings/houses/<house_id>/
+  Response: {
+    "house_id": "uuid",
+    "average": float,
+    "rating_count": integer,
+    "updated_at": datetime
+  }
+
+5. RESERVATIONS & PAYMENTS
+-------------------------
+Car Reservations:
+GET/POST /api/reservations/car-reservations/
+  Request: {
+    "car": "car_id",
+    "start_date": "YYYY-MM-DD",
+    "end_date": "YYYY-MM-DD",
+    "payment_method": "cash|mastercard"
+  }
+  Response: {
+    "id": "uuid",
+    "user": "user_id",
+    "car": "car_id",
+    "seller": "seller_id",
+    "start_date": "YYYY-MM-DD",
+    "end_date": "YYYY-MM-DD",
+    "status": "pending|confirmed|completed|cancelled",
+    "payment_method": "cash|mastercard",
+    "payment_status": "pending|completed",
+    "payment_details": {},
+    "payment_reference": "string",
+    "total_price": "decimal",
+    "created_at": "datetime",
+    "updated_at": "datetime"
+  }
+
+House Reservations:
+GET/POST /api/reservations/house-reservations/
+  Request: {
+    "house": "house_id",
+    "start_date": "YYYY-MM-DD",
+    "end_date": "YYYY-MM-DD",
+    "payment_method": "cash|mastercard"
+  }
+  Response: {
+    "id": "uuid",
+    "user": "user_id",
+    "house": "house_id",
+    "seller": "seller_id",
+    "start_date": "YYYY-MM-DD",
+    "end_date": "YYYY-MM-DD",
+    "status": "pending|confirmed|completed|cancelled",
+    "payment_method": "cash|mastercard",
+    "payment_status": "pending|completed",
+    "payment_details": {},
+    "payment_reference": "string",
+    "total_price": "decimal",
+    "created_at": "datetime",
+    "updated_at": "datetime"
+  }
+
+Payment Endpoints:
+POST /api/reservations/car-reservations/{pk}/process_payment/
+  Response: {
+    "client_secret": "string",  // For Stripe payments
+    "reservation_id": "uuid"
+  }
+
+POST /api/reservations/cash-payment/{reservation_id}/initiate/
+  Response: {
+    "status": "Cash payment initiated"
+  }
+
+POST /api/reservations/cash-payment/{reservation_id}/verify/
+  Response: {
+    "status": "success",
+    "message": "Payment instructions sent"
+  }
+
+POST /api/reservations/cash-payment/{reservation_id}/confirm/
+  Response: {
+    "status": "Payment confirmed"
+  }
+
+POST /api/reservations/stripe/create-payment/{reservation_id}/
+  Response: {
+    "client_secret": "string",
+    "reservation_id": "uuid"
+  }
+
+POST /api/reservations/stripe/verify-payment/
+  Request: {
+    "payment_intent_id": "string",
+    "reservation_id": "uuid"
+  }
+  Response: {
+    "status": "success"
+  }
+
+GET /api/reservations/payment/{reservation_id}/status/
+  Response: {
+    "status": "pending|completed",
+    "payment_method": "cash|mastercard"
+  }
+
+6. COUPONS
+---------
+GET/POST /api/coupons/
+  Response: {
+    "id": "uuid",
+    "code": string,
+    "discount_percentage": integer,
+    "valid_from": datetime,
+    "valid_to": datetime,
+    "description": string,
+    "is_active": boolean,
+    "is_valid": boolean,
+    "created_at": datetime,
+    "updated_at": datetime
+  }
+
+POST /api/listings/car/{car_id}/validate-coupon/
+  Request: {
+    "coupon_code": string
+  }
+  Response: {
+    "valid": boolean,
+    "original_price": decimal,
+    "discount_percentage": integer,
+    "discount_amount": decimal,
+    "final_price": decimal,
+    "coupon_code": string
+  }
+
+POST /api/listings/house/{house_id}/validate-coupon/
+  Request: {
+    "coupon_code": string
+  }
+  Response: {
+    "valid": boolean,
+    "original_price": decimal,
+    "discount_percentage": integer,
+    "discount_amount": decimal,
+    "final_price": decimal,
+    "coupon_code": string
+  }
+
+Error Responses for Coupon Validation:
+- 400 Bad Request: {"valid": false, "error": "Coupon has expired"}
+- 400 Bad Request: {"valid": false, "error": "Invalid coupon code"}
+- 404 Not Found: {"error": "Listing not found"}
+
+HTTP Status Codes:
+----------------
+200: Success
+201: Created
+400: Bad Request
+401: Unauthorized
+403: Forbidden
+404: Not Found
+500: Internal Server Error
+
+Authentication:
+-------------
+All protected endpoints require JWT token in header:
+Authorization: Bearer <access_token>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 0 0 5px 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .details {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Transaction Confirmation Required</h1>
+    </div>
+    <div class="content">
+        <p>Hello {{ username }},</p>
+        <p>Your transaction has been processed successfully. Please review the details below and confirm your rental.</p>
+        
+        <div class="details">
+            <h3>Transaction Details:</h3>
+            <p><strong>Item:</strong> {{ item_title }}</p>
+            <p><strong>Rental Period:</strong> {{ start_date }} to {{ end_date }}</p>
+            <p><strong>Daily Rate:</strong> {{ daily_price }} DZD</p>
+            <p><strong>Total Days:</strong> {{ total_days }}</p>
+            <p><strong>Total Price:</strong> {{ total_price }} DZD</p>
+            <p><strong>Owner Contact:</strong> {{ owner_phone }}</p>
+        </div>
+
+        <p>When you confirm your renting situation, please click the button below:</p>
+        <a href="{{ confirmation_url }}" class="button">Confirm Rental</a>
+
+        <p>If you wish to cancel this rental, please click here: <a href="{{ cancellation_url }}">Cancel Rental</a></p>
+
+        <p>If you encountered any problems before or after confirming the reservation, reach out to us via email: <a href="mailto:TourismA.contact@gmail.com">TourismA.contact@gmail.com</a></p>
+        
+        <p>Note: You can cancel this rental until {{ cancellation_date }}.</p>
+    </div>
+    <div class="footer">
+        <p>This is an automated message. Please do not reply to this email.</p>
+        <p>&copy; 2024 TourismA. All rights reserved.</p>
+    </div>
+</body>
+</html>

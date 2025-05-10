@@ -11,11 +11,19 @@ class CustomAuthBackend(ModelBackend):
             user = UserModel.objects.get(
                 Q(username=username) | Q(email=username)
             )
+            
+            # Check if user is active and not banned
+            if not user.is_active or user.is_banned:
+                return None
+                
+            # Check if email is verified
+            if not user.is_email_verified:
+                return None
+                
+            if user.check_password(password):
+                return user
         except UserModel.DoesNotExist:
             return None
-
-        if user.check_password(password):
-            return user
         return None
 
     def get_user(self, user_id):

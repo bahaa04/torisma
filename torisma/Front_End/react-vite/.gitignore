@@ -25,6 +25,8 @@ dist-ssr
 
 .qodo
 
+.env
+
 # Explicitly track these directories
 !src/
 !src/pages/

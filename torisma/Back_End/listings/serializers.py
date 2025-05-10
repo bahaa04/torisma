@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto, wilayas
 import datetime
-from resANDtran.models import CarReservation, HouseReservation
+from reservations.models import CarReservation, HouseReservation  # Updated import path
 
 # Car Photos Serializer
 class CarPhotosSerializer(serializers.ModelSerializer):
@@ -38,15 +38,34 @@ class CarSerializer(serializers.ModelSerializer):
 # House Serializer
 class HouseSerializer(serializers.ModelSerializer):
     photos = HousePhotosSerializer(many=True, read_only=True)
-    wilaya = serializers.ChoiceField(choices=wilayas)
+    wilaya = serializers.ChoiceField(choices=wilayas, required=True)
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    city = serializers.CharField(required=True)
+    gps_location = serializers.URLField(required=True)
+    description = serializers.CharField(required=True)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, required=True)
+    has_parking = serializers.BooleanField(required=True)
+    has_wifi = serializers.BooleanField(required=True)
+    furnished = serializers.BooleanField(required=True)
 
     class Meta:
         model = House
         fields = ['id', 'owner', 'description', 'price', 'wilaya',
-                 'exact_location', 'status', 'furnished', 'has_parking',
-                 'has_wifi', 'created_at', 'photos']
-        read_only_fields = ['owner']
+                 'city', 'gps_location', 'status', 'furnished', 
+                 'has_parking', 'has_wifi', 'created_at', 'photos']
+        read_only_fields = ['id', 'owner', 'created_at']
+
+    def validate(self, data):
+        """
+        Extra validation for house data.
+        """
+        if not data.get('city'):
+            raise serializers.ValidationError("City is required")
+        if not data.get('gps_location'):
+            raise serializers.ValidationError("GPS location link is required")
+        if not data.get('description'):
+            raise serializers.ValidationError("Description is required")
+        return data
 
 # Favorite Serializer
 class FavoriteSerializer(serializers.ModelSerializer):

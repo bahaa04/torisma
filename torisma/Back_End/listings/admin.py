@@ -44,16 +44,18 @@ class CarAdmin(admin.ModelAdmin):
 
 
 class HouseAdminForm(forms.ModelForm):
-    wilaya = forms.ChoiceField(choices=[(name, name) for name, _ in wilayas])  # Use predefined Wilayas
+    wilaya = forms.ChoiceField(choices=wilayas)
+    city = forms.CharField(required=True)
+    gps_location = forms.URLField(required=True, help_text="Google Maps link to the property location")
+    price = forms.DecimalField(required=True)
+    description = forms.CharField(widget=forms.Textarea, required=True)
+    has_parking = forms.BooleanField(required=False)
+    has_wifi = forms.BooleanField(required=False)
 
     class Meta:
         model = House
-        fields = '__all__'
-
-    def clean_wilaya(self):
-        wilaya_name = self.cleaned_data['wilaya']
-        wilaya, created = Wilaya.objects.get_or_create(name=wilaya_name)  # Ensure Wilaya exists in the table
-        return wilaya
+        fields = ['description', 'price', 'status', 'has_parking', 
+                 'has_wifi', 'wilaya', 'city', 'gps_location']
 
 
 class HousePhotosInline(admin.TabularInline):
@@ -66,9 +68,21 @@ class HousePhotosInline(admin.TabularInline):
 
 @admin.register(House)
 class HouseAdmin(admin.ModelAdmin):
-    list_display = ['wilaya', 'exact_location', 'price', 'status']
-    list_filter = ['status', 'wilaya', 'furnished']
-    search_fields = ['exact_location', 'description']
+    form = HouseAdminForm
+    list_display = ['wilaya', 'city', 'price', 'status', 'has_wifi', 'has_parking']
+    list_filter = ['status', 'wilaya', 'has_wifi', 'has_parking']
+    search_fields = ['city', 'description']
+    fieldsets = (
+        ('Location', {
+            'fields': ('wilaya', 'city', 'gps_location')
+        }),
+        ('Details', {
+            'fields': ('description', 'price', 'status')
+        }),
+        ('Amenities', {
+            'fields': ('has_parking', 'has_wifi')
+        }),
+    )
     inlines = [HousePhotosInline]
 
 

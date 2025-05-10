@@ -5,26 +5,14 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     color: black;
   }
-  .container{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-
-    background-color: #ffffff;
-    color: #333;
-    min-height: 100vh;
-   padding: 10px;
-    margin: 0 auto;
-  }
+  
   
   header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 12px 16px;
     border-bottom: 1px solid #e5e5e5;
-    padding: 0;
-    background-color: #fefdfd;
   
   }
   
@@ -52,16 +40,13 @@
   
 
 .logo-text {
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: -1px;
-  color: #333;
-
-  padding-left: 6px;   
+font-weight: bold;      
+font-size: 2rem;  
+color: #03d186;    
 }
 
 .logo-text .highlighted {
-color: #2ee59d;         
+color: rgb(81, 163, 81);         
 }
 
 .logo-text span { 
@@ -544,7 +529,7 @@ display: block;
   .footer {
     background-color: #f2f2f2;
     padding: 40px 20px;
-   
+    position: relative;
     
   }
   
@@ -707,6 +692,71 @@ display: block;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.footer-column.about-TourismA {
+  text-align: center;
+}
+
+.footer-column.about-TourismA .terms-conditions {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer-column.about-TourismA .terms-conditions h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.footer-column.about-TourismA .terms-conditions a {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.footer-column.about-TourismA .terms-conditions a:hover {
+  text-decoration: underline;
+}
+
+.footer-column.about-TourismA h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.footer-column.about-TourismA a {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.footer-column.about-TourismA a:hover {
+  text-decoration: underline;
+}
+
+.footer-column.terms-conditions {
+  text-align: center;
+}
+
+.footer-column.terms-conditions h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.footer-column.terms-conditions a {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.footer-column.terms-conditions a:hover {
+  text-decoration: underline;
 }
 
 .center-footer .footer-divider {

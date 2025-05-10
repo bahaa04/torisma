@@ -1,0 +1,144 @@
+:root {
+    --primary-color: #2d5f5d;
+    --secondary-color: #8ab17d;
+    --accent-color: #e9c46a;
+    --background-color: #f8f9fa;
+    --input-border: #8ab17d;
+  }
+  
+  .chat-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .chat-main-container {
+    max-width: 800px;
+    margin: 20px auto;
+    width: 90%;
+    padding: 20px;
+    background-color: var(--background-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex: 1;
+  }
+  
+  .chat-header {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+    font-family: 'Arial, sans-serif';
+  }
+  
+  .messages-container {
+    height: 60vh;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--secondary-color);
+  }
+  
+  .message-wrapper {
+    margin: 10px 0;
+  }
+  
+  .message-wrapper.user {
+    text-align: right;
+  }
+  
+  .message-wrapper.bot {
+    text-align: left;
+  }
+  
+  .message-bubble {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-break: break-word;
+    color: white;
+  }
+  
+  .user-message {
+    background-color: var(--primary-color);
+  }
+  
+  .bot-message {
+    background-color: var(--secondary-color);
+  }
+  
+  .input-container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .chat-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 25px;
+    outline: none;
+    font-size: 16px;
+  }
+  
+  .chat-input:focus {
+    border-color: var(--primary-color);
+  }
+  
+  .send-button {
+    padding: 12px 25px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .send-button:hover:not(:disabled) {
+    background-color: #1f4a48;
+  }
+  
+  .send-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  /* Scrollbar styling */
+  .messages-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .messages-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .messages-container::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+  }
+  
+  .messages-container::-webkit-scrollbar-thumb:hover {
+    background: #769b6a;
+  }
+  
+  .login-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .login-link:hover {
+    background-color: #0056b3;
+    text-decoration: none;
+    color: white;
+  }

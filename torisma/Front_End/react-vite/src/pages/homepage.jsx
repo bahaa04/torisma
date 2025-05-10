@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import NavBar from '../components/NavBar';
+import NavBar from '../components/navbar1';
 import AuthNavBar from '../components/AuthNavBar';
 import Footer from '../components/footer';
 import Logo from '../components/logo';
@@ -119,7 +119,7 @@ export default function HomePage() {
 
   // Success render
   return (
-    <div className="container">
+    <div className="homepage">
       {userProfile ? (
         <AuthNavBar userProfile={userProfile} />
       ) : (
@@ -129,7 +129,7 @@ export default function HomePage() {
       <div className="main-content">
         <div className="content-header">
           <h1 className="content-title">
-          Explorez les wilayas d'Algérie et faites votre choix
+            Explorez les wilayas d'Algérie et faites votre choix
           </h1>
           <p className="content-subtitle">
             Partez à la découverte des wilayas d'Algérie et choisissez votre
@@ -141,7 +141,13 @@ export default function HomePage() {
           <DestinationList dests={dests} />
         </div>
 
-      
+        <div className="help-section">
+        </div>
+        <div className="help-section">
+        <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
+        <a href="/help" className="help-button">Aidez-moi</a>
+        </div>
+
       </div>
 
       <div className="video-banner">
@@ -149,7 +155,6 @@ export default function HomePage() {
           width="100%"
           height="100%"
           className="vid"
-          controls
           autoPlay
           muted
           loop
@@ -167,3 +172,4 @@ export default function HomePage() {
     </div>
   );
 }
+

@@ -2,29 +2,37 @@ import React from 'react';
 import { Link } from 'react-router-dom'; 
 import Logo from "./logo";
 
-const NavBar1 = () => {
-    return(    
+const Navbar = () => {
+    return(
         <header>
-           <Link to="/" className="logo-link">
-        <div className="logo-container">
-          <Logo/>
-          <h1 className="logoText"><span className="highlight">T</span>ourism<span className="highlight">A</span></h1>
-        </div>
-      </Link>
+            <Link to="/" className="logo-link">
+                <div className="logo-container">
+                    <Logo/>
+                    <div className="logo-text">
+                        <span className="highlighted">T</span>
+                        <span>o</span>
+                        <span>u</span>
+                        <span>r</span>
+                        <span>i</span>
+                        <span>s</span>
+                        <span>m</span>
+                        <span className="highlighted">A</span>
+                    </div>
+                </div>
+            </Link>
              
             <div className="nav-links">
-                <a href="/whyAlgeria"> Pourquoi l'Algérie </a> 
+                <a href="/whyToursimA">Pourquoi TourismA</a>
+                <a href="/whyAlgeria">Pourquoi l'Algérie</a>
             </div>
         
             <div className="header-actions">
-               
-        
                 <Link to="/connect" className="login-button">
-                    se connecter
+                    Connect
                 </Link>
             </div>
         </header>
     );
 };
   
-export default NavBar1;
+export default Navbar;

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import "../styles/recoverpassword.css";
+import "../styles/PropertyGallery.css"; 
 import NavBar3 from "../components/navbar3";
 import Footer from "../components/footer";
 import {Link} from "react-router-dom";
