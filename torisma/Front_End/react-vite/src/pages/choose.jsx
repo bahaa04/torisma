@@ -4,7 +4,7 @@ import React from 'react';
 import { Home, Car } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import NavBar from '../components/navbar1';
+import NavBar from '../components/NavBar';
 import Footer from '../components/footer';
 import '../styles/choose.css';
 
@@ -53,8 +53,9 @@ export default function Choose() {
 
   return (
     <>
-      <NavBar />
-      <div className="choose-page">
+     <div className="container">
+      <NavBar/>
+     
         <motion.div
           className="choose-cards-container"
           variants={containerVariants}

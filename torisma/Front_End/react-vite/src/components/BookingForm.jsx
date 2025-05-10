@@ -102,7 +102,7 @@ function BookingForm({ originalPrice, discountedPrice, discount, onReserve }) {
             className={`payment-option en-ligne-button ${paymentMethod === 'En ligne' ? 'selected' : ''}`}
             onClick={() => setPaymentMethod('En ligne')}
           >
-            MasterCard
+            En ligne
           </button>
         </div>
       </div>

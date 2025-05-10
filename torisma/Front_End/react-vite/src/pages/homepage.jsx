@@ -1,3 +1,4 @@
+// src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,6 +30,7 @@ export default function HomePage() {
   // 1) Try to load user profile if there's an auth token in localStorage
   useEffect(() => {
     const token = localStorage.getItem('auth');
+    console.log('Token:', token); // Debugging line
     if (!token) {
       // No auth token → skip profile fetch
       setIsProfileLoading(false);
@@ -86,6 +88,7 @@ export default function HomePage() {
 
   // Show loading until both profile (if any) and wilayas have loaded
   if (isProfileLoading || !isDestsLoaded) {
+    // Show NavBar or AuthNavBar based on userProfile
     return (
       <div className="homepage">
         {userProfile ? (
@@ -139,9 +142,12 @@ export default function HomePage() {
         </div>
 
         <div className="help-section">
-          <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
-          <a href="/help" className="help-button">Aidez-moi</a>
         </div>
+        <div className="help-section">
+        <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
+        <a href="/help" className="help-button">Aidez-moi</a>
+        </div>
+
       </div>
 
       <div className="video-banner">
@@ -166,3 +172,4 @@ export default function HomePage() {
     </div>
   );
 }
+
