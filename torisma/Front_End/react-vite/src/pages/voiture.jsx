@@ -7,7 +7,7 @@ import LocationMap2 from '../components/LocationMap2';
 import PropertyDescription2 from '../components/PropertyDescription2';
 import Footer from '../components/footer';
 import NavBar from '../components/navbar1';
-import BookingConfirmationForm from '../components/BookingConfirmationForm';
+
 import PaymentConfirmation from '../components/PaymentConfirmation';
 import SuccessMessage2 from '../components/SuccessMessage2';
 import Erreur from '../components/Erreur';

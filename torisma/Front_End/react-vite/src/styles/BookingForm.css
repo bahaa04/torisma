@@ -45,6 +45,44 @@
   box-shadow: #000000;
 }
 
+
+
+
+.promo-code-section {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.promo-code-input {
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.apply-promo-button {
+  padding: 8px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.promo-message {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #28a745;
+}
+
+
+
+
+
+
+
+
 .discount {
   margin-left: 10px;
   font-size: 20px;

@@ -48,8 +48,9 @@ const WhyTourisma = () => {
     ];
 
     return (
-        <div className="why-tourisma-page">
+       <>
             <NavBar />
+             <div className="why-tourisma-page">
             <div className="why-tourisma-container">
                 <h1>Pourquoi Choisir TourismA ?</h1>
                 
@@ -75,6 +76,7 @@ const WhyTourisma = () => {
             </div>
             <Footer />
         </div>
+        </>
     );
 };
 

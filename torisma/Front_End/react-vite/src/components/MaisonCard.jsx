@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import '../styles/car-card.css'
 
-export default function MaisonCard({ house, index }) {
+export default function MaisonCard({ house, index, onClick }) {
   const navigate = useNavigate()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
@@ -35,16 +35,16 @@ export default function MaisonCard({ house, index }) {
   // Navigate to the localisation page
   const navigateToDetail = () => {
     if (house.customPath) {
-      navigate(house.customPath); // Navigate to the specific customPath
+      navigate(house.customPath); // Use customPath for navigation
     } else {
-      console.error('No customPath provided for this house.');
+      navigate('/localisation'); // Fallback navigation
     }
   }
 
   return (
     <div
       className={`car-card ${isVisible ? 'visible' : ''}`}
-      onClick={navigateToDetail}
+      onClick={onClick} // Use the onClick prop here
     >
       <div className="car-image-container">
         <div className="carousel">

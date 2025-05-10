@@ -5,7 +5,8 @@ import HomePage from './pages/homepage';
 import Connect from './pages/connect';
 import SignUp from './pages/signup';
 import Add from './pages/add';
-import AddHouse from './pages/add-logement';
+import AddInfos from './pages/add-logement';
+import AddCar from './pages/add-voiture';
 import CarPage from './pages/CarPage';
 import HousePage from './pages/HousePage';
 import PasswordReset from './pages/recoverpassword';
@@ -18,7 +19,7 @@ import Location from './pages/localisation';
 import WhyAlgeria from './pages/whyAlgeria';
 import MaisonListe from './pages/maisonListe';
 import VoitureListe from './pages/voitureListe';
-import AddCar from './pages/add-voiture';
+
 import RecMsg from './pages/recovermsg';
 import CProfile from './pages/carProfile';
 import HProfile from './pages/houseProfile';
@@ -40,10 +41,10 @@ function App() {
       <Route path="/car" element={<CProfile />} />
       <Route path="/house" element={<HProfile />} />
       <Route path="/recmsg" element={<RecMsg />} />
-      <Route path="/addcar" element={<AddCar />} />
+      <Route path="/add-voiture" element={<AddCar />} />
       <Route path="/voiture-liste" element={<VoitureListe />} />
       <Route path="/maison-liste" element={<MaisonListe />} />
-      <Route path="/addhouse" element={<AddHouse />} />
+ <Route path="/add-logement" element={<AddInfos />} />
       <Route path="/" element={<HomePage />} />
       <Route path="/moi" element={<Moi />} />
       <Route path="/voiture" element={<Voiture />} />
@@ -56,10 +57,13 @@ function App() {
       <Route path="/verification" element={<VerificationForm />} />
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/choose" element={<Choose />} />
-      <Route path="/houses/:wilaya" element={<HousePage />} />
+
+
+        <Route path="/houses/:wilaya" element={<HousePage />} />
       <Route path="/cars/:wilaya" element={<CarPage />} />
       <Route path="/houses/:wilaya/:id" element={<HousePage />} />
       <Route path="/location/:wilaya/:id" element={<CarPage />} />
+      <Route path="/house-details/:id" element={<HousePage />} />
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

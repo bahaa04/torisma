@@ -10,14 +10,16 @@ import {
   Shield,
   Home,
   DollarSign,
-} from "lucide-react";
+  Users,
+  Map,
+} from "lucide-react"; // Added appropriate icons
 import { motion, AnimatePresence } from "framer-motion";
-import "./AddInfos.css";
+import "../styles/addinfos.css";
 import Footer from "../components/footer";
-import { Link, useNavigate } from "react-router-dom";
-import NavbarC from "../components/navbar1-connected";
+import Logo from "../components/logo";
+import { Link } from "react-router-dom";
 
-export default function AddHouse() {
+export default function AddInfos() {
   const [formData, setFormData] = useState({
     bedrooms: "",
     location: "",
@@ -40,10 +42,6 @@ export default function AddHouse() {
 
   const [isExiting, setIsExiting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [showDispoDropdown, setShowDispoDropdown] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,40 +70,15 @@ export default function AddHouse() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Check if all fields are filled
-    const requiredFields = ['bedrooms', 'location', 'security', 'proximity', 'price', 'dispo', 'priceNegotiation'];
-    const isFormValid = requiredFields.every(field => formData[field]);
-    const hasPhoto = photos[0]; // Check if first photo exists
-
-    if (!isFormValid || !hasPhoto) {
-      alert('Veuillez remplir tous les champs et ajouter au moins une photo');
-      return;
-    }
-
-    // Create new house entry
-    const newHouse = {
-      id: Date.now(),
-      name: `${formData.bedrooms} Chambres - ${formData.location}`,
-      src: photos[0], // Use first photo as card image
-      ...formData
-    };
-
-    // Get existing houses from localStorage
-    const existingHouses = JSON.parse(localStorage.getItem('houses') || '[]');
-    
-    // Add new house and save back to localStorage
-    localStorage.setItem('houses', JSON.stringify([...existingHouses, newHouse]));
-
-    // Navigate back to house list
-    navigate('/maison-liste');
+    const filledPhotos = photos.filter((p) => p !== "").length;
+    alert(`Form submitted with ${filledPhotos} photos!`);
   };
 
-  // Handle cancel with exit animation
   const handleCancel = () => {
     setIsExiting(true);
     setTimeout(() => {
-      navigate('/maison-liste');
+      alert("Opération annulée");
+      setIsExiting(false);
     }, 500);
   };
 
@@ -156,18 +129,24 @@ export default function AddHouse() {
     },
   };
 
-  const dispo = ["disponible", "undisponible"];
-
-  const negotiationOptions = [
-    "Non négociable",
-    "Légèrement négociable",
-    "Négociable",
-    "Très négociable",
-  ];
-
   return (
     <>
-      <NavbarC />
+      <header>
+         <Link to="/" className="no-underline">
+        <div className="logo-container">
+          <Logo />
+          <h1 className="logoText">
+            <span className="highlight">T</span>ourism<span className="highlight">A</span>
+          </h1>
+        </div>
+</Link>
+        <Link to="/signup">
+          <div className="register-btn">
+            <button>Register</button>
+          </div>
+        </Link>
+      </header>
+
       <div className="property-form-page">
         <motion.div
           className="property-form-container"
@@ -185,13 +164,12 @@ export default function AddHouse() {
               <div className="input-group">
                 <Home className="input-icon" />
                 <input
-                  type="number"
+                  type="text"
                   name="bedrooms"
-                  placeholder="Nombre de chambres"
+                  placeholder="Type e.g Appartement F4"
                   className="form-input"
                   value={formData.bedrooms}
                   onChange={handleInputChange}
-                  min="1"
                 />
                 <motion.div
                   className="input-highlight"
@@ -207,7 +185,7 @@ export default function AddHouse() {
                 <input
                   type="text"
                   name="location"
-                  placeholder="Lieu de localisation"
+                  placeholder="Lieu de localisation e.g El Biar"
                   className="form-input"
                   value={formData.location}
                   onChange={handleInputChange}
@@ -241,7 +219,7 @@ export default function AddHouse() {
 
               {/* Proximity */}
               <div className="input-group">
-                <Info className="input-icon" />
+                <Map className="input-icon" />
                 <input
                   type="text"
                   name="proximity"
@@ -258,59 +236,13 @@ export default function AddHouse() {
                 />
               </div>
 
-              {/* Price negotiation */}
-              <div className="dropdown-group">
-                <div
-                  className="dropdown-selector"
-                  onClick={() => setShowDispoDropdown(!showDispoDropdown)}
-                >
-                  <span className="dropdown-text">
-                    {formData.dispo || "disponibilité"}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: showDispoDropdown ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChevronDown className="dropdown-icon" />
-                  </motion.div>
-                </div>
-
-                <AnimatePresence>
-                  {showDispoDropdown && (
-                    <motion.div
-                      className="dropdown-menu"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {dispo.map((option, i) => (
-                        <motion.div
-                          key={i}
-                          className="dropdown-item"
-                          whileHover={{ backgroundColor: "#f3f4f6" }}
-                          onClick={() => {
-                            setFormData((p) => ({
-                              ...p,
-                              dispo: option,
-                            }));
-                            setShowDispoDropdown(false);
-                          }}
-                        >
-                          {option}
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
+              {/* Price */}
               <div className="input-group">
                 <DollarSign className="input-icon" />
                 <input
                   type="number"
                   name="price"
-                  placeholder="prix en DA"
+                  placeholder="Prix en DA"
                   className="form-input"
                   value={formData.price}
                   onChange={handleInputChange}
@@ -322,54 +254,6 @@ export default function AddHouse() {
                   transition={{ duration: 0.3 }}
                 />
               </div>
-
-              {/* Price negotiation */}
-              <div className="dropdown-group">
-                <DollarSign className="input-icon" />
-                <div
-                  className="dropdown-selector"
-                  onClick={() => setShowDropdown(!showDropdown)}
-                >
-                  <span className="dropdown-text">
-                    {formData.priceNegotiation || "Négociation sur le prix"}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: showDropdown ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChevronDown className="dropdown-icon" />
-                  </motion.div>
-                </div>
-
-                <AnimatePresence>
-                  {showDropdown && (
-                    <motion.div
-                      className="dropdown-menu"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {negotiationOptions.map((option, i) => (
-                        <motion.div
-                          key={i}
-                          className="dropdown-item"
-                          whileHover={{ backgroundColor: "#f3f4f6" }}
-                          onClick={() => {
-                            setFormData((p) => ({
-                              ...p,
-                              priceNegotiation: option,
-                            }));
-                            setShowDropdown(false);
-                          }}
-                        >
-                          {option}
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
             </motion.div>
 
             {/* Photo upload */}
@@ -378,7 +262,7 @@ export default function AddHouse() {
                 Veuillez insérer six photos de votre logement
               </h2>
               <motion.div className="photo-grid" variants={photoGridVariants}>
-                {Array(6)
+                {Array(5)
                   .fill(0)
                   .map((_, idx) => (
                     <motion.div
@@ -421,6 +305,7 @@ export default function AddHouse() {
               </motion.div>
             </motion.div>
 
+            {/* Warning Section */}
             <motion.div
               className="warning-section"
               variants={itemVariants}
@@ -460,7 +345,7 @@ export default function AddHouse() {
                 whileHover={{ scale: 1.03, backgroundColor: "#28b67d" }}
                 whileTap={{ scale: 0.97 }}
               >
-                Créer
+                Continuer
               </motion.button>
               <motion.button
                 type="button"

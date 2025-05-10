@@ -3,7 +3,6 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: #121815; /* Dark background for the page */
     color: #e0e0e0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -44,13 +43,13 @@
 .intro {
     font-size: 1.15rem;
     line-height: 1.7;
-    color: #b0b0b0; /* Lighter gray for intro text */
+    color: #636060; /* Lighter gray for intro text */
     margin-bottom: 70px; /* More space before timeline */
     text-align: center;
     max-width: 750px;
     margin-left: auto;
     margin-right: auto;
-    font-weight: 300;
+
 }
 
 /* --- Timeline Styles --- */
@@ -101,7 +100,7 @@
 
 /* The actual feature card */
 .feature-card {
-    background: #1c2520; /* Darker card background */
+    background: #edfff8; /* Darker card background */
     color: #e0e0e0;
     padding: 25px 30px;
     border-radius: 12px; /* Softer radius */
@@ -127,7 +126,7 @@
     font-size: 0.95rem;
     line-height: 1.65;
     margin-bottom: 0;
-    color: #c0c0c0; /* Slightly lighter for paragraph */
+    color: #605858; /* Slightly lighter for paragraph */
 }
 
 /* The dot on the timeline */
@@ -161,13 +160,13 @@
     max-width: 750px;
     margin: 70px auto 30px auto; /* More space above */
     padding: 30px;
-    background: #1c2520; /* Consistent with card background */
+    background: #dfffee; /* Consistent with card background */
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(3, 209, 134, 0.2);
 }
 
 .conclusion p {
-    color: #e0e0e0;
+    color: #3b3636;
     font-size: 1.1rem;
     line-height: 1.7;
     font-weight: 300;
