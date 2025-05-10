@@ -13,11 +13,15 @@ const NavBar2 = () => {
         </div>
       </Link>
 
+      <div className="transp">vous n'avez pas de compte ? </div>
+      <hr/> <hr/><hr/><hr/>
       <Link to="/signup">
         <div className="register-btn">
+          
           <button>Register</button>
         </div>
       </Link>
+      
     </div>
   );
 };

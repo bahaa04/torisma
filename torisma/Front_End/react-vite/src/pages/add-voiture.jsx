@@ -2,21 +2,23 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import {
-  ChevronDown,
+
   Upload,
-  Info,
+  
   Check,
   MapPin,
   DollarSign,
-} from "lucide-react";
+  Car,
+  Fuel,
+  Settings,
+} from "lucide-react"; // Import icons
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/AddInfos.css";
 import Footer from "../components/footer";
 import Logo from "../components/logo";
 import { Link } from "react-router-dom";
+import "../styles/addinfos.css";
 
 export default function AddCar() {
-
   const [formData, setFormData] = useState({
     typevoiture: "",
     location: "",
@@ -39,10 +41,6 @@ export default function AddCar() {
 
   const [isExiting, setIsExiting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-
- 
-  const [showDispoDropdown, setShowDispoDropdown] = useState(false);
-  const [showPriceDropdown, setShowPriceDropdown] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -97,68 +95,63 @@ export default function AddCar() {
 
   const photoGridVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { delayChildren: 0.6, staggerChildren: 0.1 } },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.6,
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const photoItemVariants = {
     hidden: { opacity: 0, scale: 0.8 },
-    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { type: "spring", stiffness: 300, damping: 24 },
+    },
   };
 
-  const dispo = ["disponible", "non disponible"];
-  const negotiationOptions = [
-    "Non négociable",
-    "Légèrement négociable",
-    "Négociable",
-    "Très négociable",
-  ];
-  
-  
-  
-
-  
-
   return (
+    <>
+      <header>
+         <Link to="/" className="no-underline">
+        <div className="logo-container">
+          <Logo />
+          <h1 className="logoText">
+            <span className="highlight">T</span>ourism<span className="highlight">A</span>
+          </h1>
+        </div>
+         </Link>
 
-     <>
+        <Link to="/signup">
+          <div className="register-btn">
+            <button>Register</button>
+          </div>
+        </Link>
+      </header>
 
+      <div className="property-form-page">
+        <motion.div
+          className="property-form-container"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isExiting ? "exit" : "visible"}
+        >
+          <motion.h1 className="property-form-title" variants={itemVariants}>
+            Complétez vos informations
+          </motion.h1>
 
-<header>
-            <div className="logo-container">
-                <Logo/>
-                <h1 className="logoText"><span className="highlight">T</span>ourism<span className="highlight">A</span></h1>
-            </div>
-
-            <Link to="/signup">
-            <div className="register-btn">
-                <button>Register</button>
-            </div>
-            </Link>
-</header>
-
-
-
-
-
-    <div className="property-form-page">
-      <motion.div
-        className="property-form-container"
-        variants={containerVariants}
-        initial="hidden"
-        animate={isExiting ? "exit" : "visible"}
-      >
-        <motion.h1 className="property-form-title" variants={itemVariants}>
-          Complétez vos informations
-        </motion.h1>
-
-        <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <motion.div className="form-fields" variants={itemVariants}>
               {/* typevoiture */}
               <div className="input-group">
+                <Car className="input-icon" />
                 <input
                   type="text"
                   name="typevoiture"
-                  placeholder="type de voiture"
+                  placeholder="Type de voiture e.g Mercedes Class C"
                   className="form-input"
                   value={formData.typevoiture}
                   onChange={handleInputChange}
@@ -177,7 +170,7 @@ export default function AddCar() {
                 <input
                   type="text"
                   name="location"
-                  placeholder="Lieu de localisation"
+                  placeholder="Lieu de localisation e.g Bab EL ZZOUAR, Alger"
                   className="form-input"
                   value={formData.location}
                   onChange={handleInputChange}
@@ -192,10 +185,11 @@ export default function AddCar() {
 
               {/* motorization */}
               <div className="input-group">
+                <Fuel className="input-icon" />
                 <input
                   type="text"
                   name="motorization"
-                  placeholder="Motorization"
+                  placeholder="Motorization e.g Essence"
                   className="form-input"
                   value={formData.motorization}
                   onChange={handleInputChange}
@@ -210,11 +204,11 @@ export default function AddCar() {
 
               {/* puissance */}
               <div className="input-group">
-                <Info className="input-icon" />
+                <Settings className="input-icon" />
                 <input
                   type="text"
                   name="puissance"
-                  placeholder="Puissance"
+                  placeholder="Puissance e.g De 163 à 680 chevaux"
                   className="form-input"
                   value={formData.puissance}
                   onChange={handleInputChange}
@@ -227,60 +221,13 @@ export default function AddCar() {
                 />
               </div>
 
-              {/* disponibilité */}
-              <div className="dropdown-group">
-                <div
-                  className="dropdown-selector"
-                  onClick={() => {
-                    setShowDispoDropdown((v) => !v);
-                    setShowPriceDropdown(false);
-                  }}
-                >
-                  <span className="dropdown-text">
-                    {formData.dispo || "disponibilité"}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: showDispoDropdown ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChevronDown className="dropdown-icon" />
-                  </motion.div>
-                </div>
-
-                <AnimatePresence>
-                  {showDispoDropdown && (
-                    <motion.div
-                      className="dropdown-menu"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {dispo.map((option, i) => (
-                        <motion.div
-                          key={i}
-                          className="dropdown-item"
-                          whileHover={{ backgroundColor: "#f3f4f6" }}
-                          onClick={() => {
-                            setFormData((p) => ({ ...p, dispo: option }));
-                            setShowDispoDropdown(false);
-                          }}
-                        >
-                          {option}
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
               {/* prix en DA */}
               <div className="input-group">
                 <DollarSign className="input-icon" />
                 <input
                   type="number"
                   name="price"
-                  placeholder="prix en DA"
+                  placeholder="Prix en DA"
                   className="form-input"
                   value={formData.price}
                   onChange={handleInputChange}
@@ -292,165 +239,112 @@ export default function AddCar() {
                   transition={{ duration: 0.3 }}
                 />
               </div>
+            </motion.div>
 
-              {/* négociation sur le prix */}
-              <div className="dropdown-group">
-                <DollarSign className="input-icon" />
-                <div
-                  className="dropdown-selector"
-                  onClick={() => {
-                    setShowPriceDropdown((v) => !v);
-                    setShowDispoDropdown(false);
-                  }}
-                >
-                  <span className="dropdown-text">
-                    {formData.priceNegotiation || "Négociation sur le prix"}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: showPriceDropdown ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChevronDown className="dropdown-icon" />
-                  </motion.div>
-                </div>
-
-                <AnimatePresence>
-                  {showPriceDropdown && (
+            {/* Photo upload */}
+            <motion.div className="photo-section" variants={itemVariants}>
+              <h2 className="photo-title">
+                Veuillez insérer six photos de votre voiture
+              </h2>
+              <motion.div className="photo-grid" variants={photoGridVariants}>
+                {Array(5)
+                  .fill(0)
+                  .map((_, idx) => (
                     <motion.div
-                      className="dropdown-menu"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
+                      key={idx}
+                      className="photo-upload-container"
+                      variants={photoItemVariants}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handlePhotoClick(idx)}
                     >
-                      {negotiationOptions.map((option, i) => (
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={(el) => (fileInputRefs.current[idx] = el)}
+                        onChange={(e) => handlePhotoUpload(idx, e)}
+                        className="hidden-input"
+                      />
+                      {photos[idx] ? (
                         <motion.div
-                          key={i}
-                          className="dropdown-item"
-                          whileHover={{ backgroundColor: "#f3f4f6" }}
-                          onClick={() => {
-                            setFormData((p) => ({
-                              ...p,
-                              priceNegotiation: option,
-                            }));
-                            setShowPriceDropdown(false);
-                          }}
+                          className="photo-preview"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
                         >
-                          {option}
+                          <img
+                            src={photos[idx]}
+                            alt={`Car photo ${idx + 1}`}
+                          />
+                          <div className="photo-overlay">
+                            <Check className="check-icon" />
+                          </div>
                         </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
-
-
-          {/* Photo upload */}
-          <motion.div className="photo-section" variants={itemVariants}>
-            <h2 className="photo-title">
-              Veuillez insérer six photos de votre voiture
-            </h2>
-            <motion.div className="photo-grid" variants={photoGridVariants}>
-              {Array(6)
-                .fill(0)
-                .map((_, idx) => (
-                  <motion.div
-                    key={idx}
-                    className="photo-upload-container"
-                    variants={photoItemVariants}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handlePhotoClick(idx)}
-                  >
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={(el) => (fileInputRefs.current[idx] = el)}
-                      onChange={(e) => handlePhotoUpload(idx, e)}
-                      className="hidden-input"
-                    />
-                    {photos[idx] ? (
-                      <motion.div
-                        className="photo-preview"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <img
-                          src={photos[idx]}
-                          alt={`Property photo ${idx + 1}`}
-                        />
-                        <div className="photo-overlay">
-                          <Check className="check-icon" />
+                      ) : (
+                        <div className="upload-placeholder">
+                          <Upload className="upload-icon" />
                         </div>
-                      </motion.div>
-                    ) : (
-                      <div className="upload-placeholder">
-                        <Upload className="upload-icon" />
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
+                      )}
+                    </motion.div>
+                  ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
 
-        
-          <motion.div
-            className="warning-section"
-            variants={itemVariants}
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-          >
-            <div className="warning-dot" />
-            <p className="warning-text">
-              Merci de noter qu'il est strictement interdit d'ajouter une voiture fictive ou de fournir des informations fausses. Tout
-              manquement à cette règle entraînera des sanctions conformément à
-              nos conditions d'utilisation.
-            </p>
-
-            <AnimatePresence>
-              {showTooltip && (
-                <motion.div
-                  className="tooltip"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                >
-                  <p>
-                    Nous vérifions toutes les annonces pour garantir la qualité
-                    de notre plateforme.
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Actions */}
-          <motion.div className="form-actions" variants={itemVariants}>
-            <motion.button
-              type="submit"
-              className="submit-button"
-              whileHover={{ scale: 1.03, backgroundColor: "#28b67d" }}
-              whileTap={{ scale: 0.97 }}
+            {/* Warning Section */}
+            <motion.div
+              className="warning-section"
+              variants={itemVariants}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
             >
-              Continuer
-            </motion.button>
-            <motion.button
-              type="button"
-              className="cancel-button"
-              onClick={handleCancel}
-              whileHover={{ textDecoration: "underline" }}
-            >
-              Annuler
-            </motion.button>
-          </motion.div>
-        </form>
-      </motion.div>
-    </div>
-    <Footer/>
+              <div className="warning-dot" />
+              <p className="warning-text">
+                Merci de noter qu'il est strictement interdit d'ajouter une
+                voiture fictive ou de fournir des informations fausses. Tout
+                manquement à cette règle entraînera des sanctions conformément
+                à nos conditions d'utilisation.
+              </p>
 
+              <AnimatePresence>
+                {showTooltip && (
+                  <motion.div
+                    className="tooltip"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                  >
+                    <p>
+                      Nous vérifions toutes les annonces pour garantir la
+                      qualité de notre plateforme.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
+            {/* Actions */}
+            <motion.div className="form-actions" variants={itemVariants}>
+              <motion.button
+                type="submit"
+                className="submit-button"
+                whileHover={{ scale: 1.03, backgroundColor: "#28b67d" }}
+                whileTap={{ scale: 0.97 }}
+              >
+                Continuer
+              </motion.button>
+              <motion.button
+                type="button"
+                className="cancel-button"
+                onClick={handleCancel}
+                whileHover={{ textDecoration: "underline" }}
+              >
+                Annuler
+              </motion.button>
+            </motion.div>
+          </form>
+        </motion.div>
+      </div>
+      <Footer />
     </>
   );
 }

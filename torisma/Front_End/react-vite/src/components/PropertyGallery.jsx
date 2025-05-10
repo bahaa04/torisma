@@ -1,11 +1,11 @@
 
 import React from 'react';
 import '../styles/PropertyGallery.css';
-import app1 from '/app1.jpg';
-import app2 from '/app2.jpg';
-import app3 from '/app3.jpg';
-import app4 from '/app4.jpg';
-import app5 from '/app5.jpg';
+import app1 from '/hydra.jpg';
+import app2 from '/hydra1.jpg';
+import app3 from '/hydra2.jpg';
+import app4 from '/hydra4.jpg';
+import app5 from '/hydra5.jpg';
 
 function PropertyGallery({ images }) {
   return (

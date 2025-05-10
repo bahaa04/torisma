@@ -2,45 +2,29 @@ import React from 'react';
 import { Link } from 'react-router-dom'; 
 import Logo from "./logo";
 
-const Navbar = () => {
-    return(
+const NavBar1 = () => {
+    return(    
         <header>
-            <Link to="/" className="logo-link">
-                <div className="logo-container">
-                    <Logo/>
-                    <div className="logo-text">
-                        <span className="highlighted">T</span>
-                        <span>o</span>
-                        <span>u</span>
-                        <span>r</span>
-                        <span>i</span>
-                        <span>s</span>
-                        <span>m</span>
-                        <span className="highlighted">A</span>
-                    </div>
-                </div>
-            </Link>
+           <Link to="/" className="logo-link">
+        <div className="logo-container">
+          <Logo/>
+          <h1 className="logoText"><span className="highlight">T</span>ourism<span className="highlight">A</span></h1>
+        </div>
+      </Link>
              
             <div className="nav-links">
-                <a href="#" >Mon expérience</a>
                 <a href="/whyAlgeria"> Pourquoi l'Algérie </a> 
             </div>
         
             <div className="header-actions">
-                <button className="globe-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                </button>
+               
         
                 <Link to="/connect" className="login-button">
-                    Connect
+                    se connecter
                 </Link>
             </div>
         </header>
     );
 };
   
-export default Navbar;
+export default NavBar1;

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar from '../components/navbar1';
+import NavBar1 from '../components/navbar1';
 import OptionMaison from '../components/optionmaison';
 import MaisonList from '../components/maison-list';
 import Footer from '../components/footer';
 
+
 const buttonStyles = {
   backContainer: {
-    padding: '20px',
+    padding: '40px',
     marginTop: '0',
     borderBottom: '1px solid #eee'
   },
@@ -77,8 +78,8 @@ export default function HousePage() {
         })
         .then(data => {
           setHouses(
-            (data.results || []).map(item => ({
-              id: item.id,
+            (data.results || []).map((item, index) => ({
+              id: index === 0 ? 1 : index === 1 ? 2 : index === 2 ? 3 : item.id || index + 1, // Assign ID=1 to the first house, ID=2 to the second, and ID=3 to the third
               rooms: item.number_of_rooms,
               price: parseFloat(item.price),
               currency: 'DA',
@@ -86,6 +87,7 @@ export default function HousePage() {
               status: item.status,
               rented_until: item.rented_until,
               images: item.photos?.length ? item.photos.map(p => p.photo) : ['/default-house.jpg'],
+              customPath: index === 0 ? '/localisation' : `/house-details/${item.id || index + 1}` // Assign paths based on ID
             }))
           );
         })
@@ -94,20 +96,12 @@ export default function HousePage() {
     }
   }, [param, isDetail]);
 
-  if (loading) {
-    return (
-      <>
-        <NavBar />
-        <div className="loading">Chargement des maisons…</div>
-        <Footer />
-      </>
-    );
-  }
+
 
   if (error) {
     return (
       <>
-        <NavBar />
+        <NavBar1 />
         <div className="error">Erreur : {error}</div>
         <Footer />
       </>
@@ -118,7 +112,7 @@ export default function HousePage() {
     if (!house) {
       return (
         <>
-          <NavBar />
+          <NavBar1 />
           <div className="error-page">
             <h1>Maison introuvable</h1>
             <button onClick={() => navigate(-1)} className="back-button">
@@ -132,8 +126,30 @@ export default function HousePage() {
 
     return (
       <>
-        <NavBar />
+        <NavBar1 />
         <div className="house-detail">
+        <div>
+   
+        <div style={buttonStyles.backContainer}>
+        <button 
+         onClick={() => navigate(-1)} 
+          style={buttonStyles.backButton}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+        >
+          <ArrowLeft className="back-icon" /> Retour aux maisons
+        </button>
+      </div>
+    </div>
+     <h2> &nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  comming soon....</h2>
+    <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/>
+
+
+          {/* 
           <h2>{house.rooms} pièces — {house.location}</h2>
           <div className="image-gallery">
             {house.images.map((src, i) => (
@@ -147,9 +163,8 @@ export default function HousePage() {
             <span> — Louée jusqu'au {new Date(house.rented_until).toLocaleDateString('fr-FR')}</span>
           )}</p>
           {house.description && <p>Description : {house.description}</p>}
-          <button onClick={() => navigate(-1)} className="back-button">
-            <ArrowLeft className="back-icon" /> Retour
-          </button>
+        
+           */}
         </div>
         <Footer />
       </>
@@ -158,7 +173,7 @@ export default function HousePage() {
 
   return (
     <>
-      <NavBar />
+      <NavBar1 />
       <div style={buttonStyles.backContainer}>
         <button 
           onClick={() => navigate('/')} 
@@ -174,7 +189,7 @@ export default function HousePage() {
         </button>
       </div>
       <OptionMaison />
-      <MaisonList houses={houses} />
+      <MaisonList houses={houses} /> {/* Pass houses with customPath */}
       <Footer />
     </>
   );

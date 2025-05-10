@@ -1,12 +1,13 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/homepage';
 import Connect from './pages/connect';
 import SignUp from './pages/signup';
 import Add from './pages/add';
-import AddInfos from './pages/AddInfos';
+import AddInfos from './pages/add-logement';
+import AddCar from './pages/add-voiture';
 import CarPage from './pages/CarPage';
 import HousePage from './pages/HousePage';
+
 import PasswordReset from './pages/recoverpassword';
 import VerificationForm from './pages/verification-form';
 import ResetPassword from './pages/resetpassword';
@@ -15,13 +16,13 @@ import Moi from './pages/Moi';
 import Voiture from './pages/voiture';
 import Location from './pages/localisation';
 import WhyAlgeria from './pages/whyAlgeria';
-
 import './App.css';
 
 function App() {
   return (
     <Routes>
-      <Route path="/addinfos" element={<AddInfos />} />
+      <Route path="/add-voiture" element={<AddCar />} />
+      <Route path="/add-logement" element={<AddInfos />} />
       <Route path="/" element={<HomePage />} />
       <Route path="/moi" element={<Moi />} />
       <Route path="/voiture" element={<Voiture />} />
@@ -38,6 +39,7 @@ function App() {
       <Route path="/cars/:wilaya" element={<CarPage />} />
       <Route path="/houses/:wilaya/:id" element={<HousePage />} />
       <Route path="/location/:wilaya/:id" element={<CarPage />} />
+      <Route path="/house-details/:id" element={<HousePage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

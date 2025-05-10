@@ -1,20 +1,16 @@
-* {
+
+.container {
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-}
 
-body {
     background-color: #ffffff;
     color: #333;
     min-height: 100vh;
-}
-
-.container {
    padding: 10px;
     margin: 0 auto;
-   
 }
 
 
@@ -49,6 +45,8 @@ body {
     cursor: pointer;
     font-weight: 500;
     transition: all 0.3s ease;
+    margin-right: 2vw;
+
 }
 
 .register-btn button:hover {
@@ -175,9 +173,18 @@ main {
     opacity: 0.8;
 }
 
+
+.transp{
+    font-weight: 300;
+    margin-left: auto;
+}
+
+
+
 .forgot-password {
     text-align: right;
     margin-bottom: 25px;
+
 }
 
 .forgot-password a {
