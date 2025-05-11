@@ -1,20 +1,18 @@
+
 .localisation-container {
   display: flex;
   flex-direction: row; /* Arrange left and right columns in a row */
   align-items: flex-start; /* Align items to the top */
   padding: 15px; /* Add some padding around the main content */
   gap: 15px;
-  min-height: auto; /* Adjust to content, no longer forcing full viewport */
-  width: 100%; /* Make it take full available width by default */
-  max-width: none; /* Remove any previous max-width */
-  margin: 0; /* Remove any previous margins */
+  min-height: 100vh; /* Ensure the container takes up at least the viewport height */
 }
 
 .left-column {
   display: flex;
   flex-direction: column; /* Stack the three components vertically */
-
-  width: 300px; /* Set a fixed width for the fixed column */
+ 
+  width : 300px; /* Set a fixed width for the fixed column */
   gap: 15px; /* Spacing between the three components */
   position: sticky; /* Make it sticky */
   top: 20px; /* Adjust top offset as needed (e.g., to account for a fixed header) */
@@ -32,14 +30,11 @@
 @media (max-width: 767px) {
   .localisation-container {
     flex-direction: column; /* Stack left and right columns vertically */
-    padding: 15px; /* Keep consistent padding */
-    gap: 15px; /* Keep consistent gap */
   }
 
   .left-column {
     width: 100%; /* Take full width on smaller screens */
     position: static; /* No sticky behavior on small screens */
-    gap: 15px; /* Keep consistent gap */
   }
 
   .right-column {
@@ -52,8 +47,6 @@
 @media (min-width: 768px) {
   .localisation-container {
     flex-direction: row; /* Keep left and right columns in a row */
-    padding: 20px; /* Adjust padding for larger screens */
-    gap: 20px; /* Adjust gap for larger screens */
   }
 
   .left-column {
@@ -61,26 +54,25 @@
     width: 300px; /* Maintain fixed width */
     position: sticky; /* Keep sticky on larger screens */
     top: 20px;
-    gap: 10px; /* Adjust gap for larger screens */
   }
 
   .right-column {
     flex: 1;
-    margin-left: 30px; /* Adjust left margin on larger screens if needed */
+    margin-left: 20px; /* Adjust left margin on larger screens if needed */
   }
 }
 
 /* Media Query for even larger screens (desktops - 1024px and up) */
 @media (min-width: 1024px) {
   .localisation-container {
-    padding: 30px; /* Adjust padding for desktops */
-    gap: 20px;
-    max-width: 1600px; /* Match the max-width of the property gallery */
+    padding: 0px; /* Adjust padding */
+    gap: 30px;
+    max-width: 1200px; /* Example: Set a maximum width */
     margin: 20px auto; /* Center the container */
   }
 
   .left-column {
-    gap: 10px; /* Adjust gap for desktops */
+    gap: 0px;
     width: 350px; /* Slightly wider on desktop */
     top: 0px; /* Adjust top offset on desktop */
   }
@@ -89,49 +81,4 @@
     flex: 1;
     margin-left: 30px; /* Adjust right column margin */
   }
-}
-
-.photo-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  position: relative;
-  max-width: 90%;
-  max-height: 90%;
-}
-
-.modal-content img {
-  max-width: 100%;
-  max-height: 90vh;
-  object-fit: contain;
-}
-
-.close-button {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 30px;
-  cursor: pointer;
-}
-
-.gallery-image {
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.gallery-image:hover {
-  transform: scale(1.05);
 }

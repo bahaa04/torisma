@@ -6,22 +6,22 @@ import '../App.css'; // Import the CSS file
 function Sidebar() {
   return (
     <div className="sidebar">
-      <NavLink to="/moi" className={({ isActive }) => 
+      <NavLink to="/moi" className={({ isActive }) =>
         isActive ? "sidebar-item active" : "sidebar-item"
       }>
         Information personal
       </NavLink>
-      <NavLink to="/voiture-liste" className={({ isActive }) => 
+      <NavLink to="/voiture-liste" className={({ isActive }) =>
         isActive ? "sidebar-item active" : "sidebar-item"
       }>
         Voitures
       </NavLink>
-      <NavLink to="/maison-liste" className={({ isActive }) => 
+      <NavLink to="/maison-liste" className={({ isActive }) =>
         isActive ? "sidebar-item active" : "sidebar-item"
       }>
         Maisons
       </NavLink>
-      <NavLink to="/" className={({ isActive }) => 
+      <NavLink to="/" className={({ isActive }) =>
         isActive ? "sidebar-item active disconnect" : "sidebar-item disconnect"
       }>
         Déconnecter

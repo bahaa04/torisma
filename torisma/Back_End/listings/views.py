@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from coupons.models import Coupon
 from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto
 from .serializers import (
@@ -414,5 +416,64 @@ class HouseListByWilayaView(APIView):
                 {'error': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def validate_coupon_for_listing(request, listing_type, listing_id):
+    """Validate and calculate discounted price for a car or house listing"""
+    try:
+        coupon_code = request.data.get('coupon_code')
+        if not coupon_code:
+            return Response({"error": "Coupon code is required"}, status=400)
+
+        # Get the listing
+        if listing_type == 'car':
+            listing = Car.objects.get(id=listing_id)
+        elif listing_type == 'house':
+            listing = House.objects.get(id=listing_id)
+        else:
+            return Response({"error": "Invalid listing type"}, status=400)
+
+        # Validate coupon
+        try:
+            coupon = Coupon.objects.get(code=coupon_code, active=True)
+            now = timezone.now()
+            if coupon.valid_from <= now <= coupon.valid_to:
+                # Calculate discount
+                original_price = listing.price
+                discount = original_price * (coupon.discount_percentage / 100)
+                discounted_price = original_price - discount
+
+                return Response({
+                    "valid": True,
+                    "original_price": original_price,
+                    "discount_percentage": coupon.discount_percentage,
+                    "discount_amount": discount,
+                    "final_price": discounted_price,
+                    "coupon_code": coupon_code
+                })
+            else:
+                return Response({"valid": False, "error": "Coupon has expired"}, status=400)
+        except Coupon.DoesNotExist:
+            return Response({"valid": False, "error": "Invalid coupon code"}, status=400)
+
+    except (Car.DoesNotExist, House.DoesNotExist):
+        return Response({"error": "Listing not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+class UserCarListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        cars = Car.objects.filter(owner=request.user)
+        serializer = CarSerializer(cars, many=True, context={'request': request})
+        return Response(serializer.data)
+
+class UserHouseListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        houses = House.objects.filter(owner=request.user)
+        serializer = HouseSerializer(houses, many=True, context={'request': request})
+        return Response(serializer.data)
 
 

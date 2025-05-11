@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar from '../components/navbar1';
+import NavBar11 from '../components/navbar11';
 import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
 
 const buttonStyles = {
   backContainer: {
-    padding: '20px',
+    padding: '10px',
     marginTop: '0',
     borderBottom: '1px solid #eee'
   },
@@ -16,7 +16,7 @@ const buttonStyles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '10px 20px',
+    padding: '5px 10px',
     backgroundColor: 'transparent',
     color: '#666',
     border: 'none',
@@ -26,6 +26,7 @@ const buttonStyles = {
     transition: 'all 0.3s ease'
   }
 };
+
 
 export default function CarPage() {
   const { wilaya, id: carId } = useParams();
@@ -69,22 +70,16 @@ export default function CarPage() {
             rented_until: data.rented_until,
           });
         } else {
-          // Format wilaya name for the API
           const formattedWilaya = wilaya.charAt(0).toUpperCase() + wilaya.slice(1).toLowerCase();
-          
-          // Use the correct endpoint format
           const response = await fetch(
             `${baseUrl}/api/listings/cars/by_wilaya/${formattedWilaya}/`
           );
-          
+
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          
-          // Parse the response - it's directly an array in your example
+
           const data = await response.json();
-          
-          // Map the data to your component's format
           setCars(
             data.map((item) => ({
               id: item.id,
@@ -111,22 +106,14 @@ export default function CarPage() {
     fetchCars();
   }, [param, isDetail, wilaya]);
 
-  if (loading) {
-    return (
-      <>
-        <NavBar />
-        <div className="loading">Chargement des voitures…</div>
-        <Footer />
-      </>
-    );
-  }
-
   if (error) {
     return (
       <>
-        <NavBar />
+        <div className="container"></div>
+        <NavBar11 />
         <div className="error">Erreur : {error}</div>
         <Footer />
+        <div />
       </>
     );
   }
@@ -134,59 +121,63 @@ export default function CarPage() {
   if (isDetail) {
     if (!car) {
       return (
-        <div className="error-page">
-          <h1>Voiture introuvable</h1>
-          <button onClick={() => navigate(-1)} className="back-button">
-            <ArrowLeft className="back-icon" /> Retour
-          </button>
+        <div className="container">
+          <div className="error-page">
+            <h1>Voiture introuvable</h1>
+            <button onClick={() => navigate(-1)} className="back-button">
+              <ArrowLeft className="back-icon" /> Retour
+            </button>
+          </div>
         </div>
       );
     }
 
     return (
       <>
-        <NavBar />
-        <div className="car-detail">
-          <h2>
-            {car.brand} {car.model} ({car.year})
-          </h2>
-          <div className="image-gallery">
-            {car.images.map((src, idx) => (
-              <img key={idx} src={src} alt={`${car.brand} ${idx}`} />
-            ))}
+        <div className="container">
+          <NavBar11 />
+          <div className="car-detail">
+            <h2>
+              {car.brand} {car.model} ({car.year})
+            </h2>
+            <div className="image-gallery">
+              {car.images.map((src, idx) => (
+                <img key={idx} src={src} alt={`${car.brand} ${idx}`} />
+              ))}
+            </div>
+            <p>Localisation : {car.location}</p>
+            <p>Places : {car.seats}</p>
+            <p>Carburant : {car.fuelType}</p>
+            <p>
+              Prix : {car.price.toLocaleString()} {car.currency}
+            </p>
+            <p>
+              Statut : {car.status}
+              {car.status === 'rented' && car.rented_until && (
+                <span>
+                  {' '}
+                  — Louée jusqu'au{' '}
+                  {new Date(car.rented_until).toLocaleDateString('fr-FR')}
+                </span>
+              )}
+            </p>
+            {car.description && <p>Description : {car.description}</p>}
+            <button onClick={() => navigate(-1)} className="back-button">
+              <ArrowLeft className="back-icon" /> Retour
+            </button>
           </div>
-          <p>Localisation : {car.location}</p>
-          <p>Places : {car.seats}</p>
-          <p>Carburant : {car.fuelType}</p>
-          <p>
-            Prix : {car.price.toLocaleString()} {car.currency}
-          </p>
-          <p>
-            Statut : {car.status}
-            {car.status === 'rented' && car.rented_until && (
-              <span>
-                {' '}
-                — Louée jusqu'au{' '}
-                {new Date(car.rented_until).toLocaleDateString('fr-FR')}
-              </span>
-            )}
-          </p>
-          {car.description && <p>Description : {car.description}</p>}
-          <button onClick={() => navigate(-1)} className="back-button">
-            <ArrowLeft className="back-icon" /> Retour
-          </button>
+          <Footer />
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <NavBar />
+      <NavBar11 />
       <div style={buttonStyles.backContainer}>
-        <button 
-          onClick={() => navigate('/')} 
+        <button
+          onClick={() => navigate('/')}
           style={buttonStyles.backButton}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)';
@@ -198,9 +189,25 @@ export default function CarPage() {
           <ArrowLeft className="back-icon" /> Retour aux wilayas
         </button>
       </div>
-      <OptionVoiture />
-      <CarList cars={cars} />
-      <Footer />
+   <OptionVoiture />
+{loading ? (
+  <p>Chargement des voitures...</p>
+) : cars.length === 0 ? (
+  <p
+    style={{
+      textAlign: 'center',
+      marginTop: '20px',
+      marginBottom: '100px', // Added margin-bottom to create space
+      fontSize: '18px',
+      color: '#666',
+    }}
+  >
+    Aucune voiture disponible pour cette wilaya.
+  </p>
+) : (
+  <CarList cars={cars} />
+)}
+<Footer />
     </>
   );
 }

@@ -1,9 +1,8 @@
-// src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 
-import NavBar from '../components/navbar1';
-import AuthNavBar from '../components/AuthNavBar';
+import NavBar1 from '../components/navbar1';
+// import AuthNavBar from '../components/AuthNavBar'; 
 import Footer from '../components/footer';
 import Logo from '../components/logo';
 import DestinationList from '../components/destination-list';
@@ -30,7 +29,6 @@ export default function HomePage() {
   // 1) Try to load user profile if there's an auth token in localStorage
   useEffect(() => {
     const token = localStorage.getItem('auth');
-    console.log('Token:', token); // Debugging line
     if (!token) {
       // No auth token → skip profile fetch
       setIsProfileLoading(false);
@@ -88,13 +86,12 @@ export default function HomePage() {
 
   // Show loading until both profile (if any) and wilayas have loaded
   if (isProfileLoading || !isDestsLoaded) {
-    // Show NavBar or AuthNavBar based on userProfile
     return (
       <div className="homepage">
         {userProfile ? (
           <AuthNavBar userProfile={userProfile} />
         ) : (
-          <NavBar />
+          <NavBar1 />
         )}
         <div className="loading">Chargement en cours…</div>
         <Footer />
@@ -109,7 +106,7 @@ export default function HomePage() {
         {userProfile ? (
           <AuthNavBar userProfile={userProfile} />
         ) : (
-          <NavBar />
+          <NavBar1 />
         )}
         <div className="error">Erreur : {error}</div>
         <Footer />
@@ -119,12 +116,14 @@ export default function HomePage() {
 
   // Success render
   return (
-    <div className="homepage">
+    <>
+    <div className="container">
       {userProfile ? (
         <AuthNavBar userProfile={userProfile} />
       ) : (
-        <NavBar />
+        <NavBar1 />
       )}
+         <hr style={{ border: "none", height: "0.5px", backgroundColor: "#e0e0e0" }} />
 
       <div className="main-content">
         <div className="content-header">
@@ -142,6 +141,8 @@ export default function HomePage() {
         </div>
 
         <div className="help-section">
+          <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
+          <Link to="/help" className="help-button">Aidez-moi</Link>
         </div>
       </div>
 
@@ -165,5 +166,6 @@ export default function HomePage() {
 
       <Footer />
     </div>
+    </>
   );
 }

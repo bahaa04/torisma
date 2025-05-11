@@ -48,14 +48,15 @@ class HouseAdminForm(forms.ModelForm):
     city = forms.CharField(required=True)
     gps_location = forms.URLField(required=True, help_text="Google Maps link to the property location")
     price = forms.DecimalField(required=True)
-    description = forms.CharField(widget=forms.Textarea, required=True)
+    description = forms.CharField(widget=forms.Textarea, required=False)
     has_parking = forms.BooleanField(required=False)
     has_wifi = forms.BooleanField(required=False)
+    rooms = forms.IntegerField(min_value=1, required=True)
 
     class Meta:
         model = House
         fields = ['description', 'price', 'status', 'has_parking', 
-                 'has_wifi', 'wilaya', 'city', 'gps_location']
+                 'has_wifi', 'wilaya', 'city', 'gps_location', 'rooms']
 
 
 class HousePhotosInline(admin.TabularInline):
@@ -69,7 +70,7 @@ class HousePhotosInline(admin.TabularInline):
 @admin.register(House)
 class HouseAdmin(admin.ModelAdmin):
     form = HouseAdminForm
-    list_display = ['wilaya', 'city', 'price', 'status', 'has_wifi', 'has_parking']
+    list_display = ['wilaya', 'city', 'price', 'status', 'rooms', 'has_wifi', 'has_parking']
     list_filter = ['status', 'wilaya', 'has_wifi', 'has_parking']
     search_fields = ['city', 'description']
     fieldsets = (
@@ -77,13 +78,18 @@ class HouseAdmin(admin.ModelAdmin):
             'fields': ('wilaya', 'city', 'gps_location')
         }),
         ('Details', {
-            'fields': ('description', 'price', 'status')
+            'fields': ('description', 'price', 'status', 'rooms')
         }),
         ('Amenities', {
             'fields': ('has_parking', 'has_wifi')
         }),
     )
     inlines = [HousePhotosInline]
+
+    def save_model(self, request, obj, form, change):
+        if not change:  # Only set owner when creating new house
+            obj.owner = request.user
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Favorite)

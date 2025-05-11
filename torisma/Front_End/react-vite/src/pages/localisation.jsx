@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Localisation.css';
+
 import PropertyGallery from '../components/PropertyGallery';
 import PropertyRating from '../components/PropertyRating';
 import BookingForm from '../components/BookingForm';
@@ -8,10 +9,15 @@ import LocationMap from '../components/LocationMap';
 import PropertyDescription from '../components/PropertyDescription';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar1';
-import BookingConfirmationForm from '../components/BookingConfirmationForm';
 import PaymentConfirmation from '../components/PaymentConfirmation';
 import SuccessMessage from '../components/SuccessMessage';
 import Erreur from '../components/Erreur';
+
+import Redirecting from '../components/Redirecting';
+import NavBarC from '../components/navbar1-connected';
+
+// Assume isAuthenticated is a boolean indicating user's connection status
+const isAuthenticated = false; // Replace with actual authentication logic
 
 function Localisation() {
   const navigate = useNavigate();
@@ -19,49 +25,36 @@ function Localisation() {
   const [showPayment, setShowPayment] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-
-  const handlePhotoClick = (photoUrl) => {
-    setSelectedPhoto(photoUrl);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedPhoto(null);
-  };
+  // <-- new state for external redirect
+  const [redirectUrl, setRedirectUrl] = useState(null);
 
   return (
     <div>
-      <Navbar />
-      <PropertyGallery onPhotoClick={handlePhotoClick} />
+      {isAuthenticated ? <NavBarC /> : <Navbar />}
       
-      {/* Photo Modal */}
-      {selectedPhoto && (
-        <div className="photo-modal" onClick={handleCloseModal}>
-          <div className="modal-content">
-            <img src={selectedPhoto} alt="Selected property" />
-            <button className="close-button" onClick={handleCloseModal}>×</button>
-          </div>
-        </div>
-      )}
-      
+      <PropertyGallery altText="Gallery of the property" />
+
       <div className="localisation-container">
         <div className="right-column">
           <PropertyRating />
-          <LocationMap />    
+          <LocationMap />
           <PropertyDescription />
         </div>
 
         <div className="left-column">
-          <BookingForm onReserve={() => setShowConfirmation(true)} />
-          {showConfirmation && (
-            <BookingConfirmationForm
-              onClose={() => setShowConfirmation(false)}
-              onNext={() => {
-                setShowConfirmation(false);
-                setShowPayment(true);
-              }}
-            />
-          )}
+          <BookingForm
+            onReserve={(paymentMethod) => {
+              if (paymentMethod === 'Hand to hand') {
+                // immediate success flow
+                setShowSuccess(true);
+              } else {
+                // redirect flow
+                setRedirectUrl('https://www.facebook.com/?locale=fr_FR');
+              }
+            }}
+          />
+
+         
         </div>
       </div>
 
@@ -78,20 +71,24 @@ function Localisation() {
           }}
         />
       )}
+
       {showSuccess && (
         <SuccessMessage onClose={() => setShowSuccess(false)} />
       )}
+
       {showError && (
         <Erreur
           onRetry={() => {
             setShowError(false);
             setShowPayment(true);
           }}
-          onCancel={() => {
-            setShowError(false);
-          }}
+          onCancel={() => setShowError(false)}
         />
       )}
+
+      {/* <-- render Redirecting if redirectUrl is set */}
+      {redirectUrl && <Redirecting url={redirectUrl} />}
+
       <Footer />
     </div>
   );

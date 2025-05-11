@@ -12,19 +12,20 @@ import {
   DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import "./addhouse.css";
+import "../styles/addinfos.css";
 import Footer from "../components/footer";
 import Logo from "../components/logo";
-import { Link } from "react-router-dom";
-import Navbar from "../components/navbar1";
+import {Link } from "react-router-dom";
 
-export default function addhouse() {
+export default function AddInfos() {
  
   const [formData, setFormData] = useState({
     bedrooms: "",
     location: "",
     security: "",
     proximity: "",
+    price:"",
+    dispobible:"",
     priceNegotiation: "",
   });
 
@@ -44,6 +45,7 @@ export default function addhouse() {
   const [isExiting, setIsExiting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showDispoDropdown, setShowDispoDropdown] = useState(false);
 
 
   const handleInputChange = (e) => {
@@ -136,6 +138,14 @@ export default function addhouse() {
     },
   };
 
+
+
+  const dispo = [
+    "disponible",
+    "non disponible",
+   
+  ];
+
   
   const negotiationOptions = [
     "Non négociable",
@@ -143,253 +153,360 @@ export default function addhouse() {
     "Négociable",
     "Très négociable",
   ];
+  
+  
+  
+
+  
 
   return (
-    <>
-      <Navbar />
-      <div className="property-form-page">
-        <motion.div
-          className="property-form-container"
-          variants={containerVariants}
-          initial="hidden"
-          animate={isExiting ? "exit" : "visible"}
-        >
-          <motion.h1 className="property-form-title" variants={itemVariants}>
-            Complétez vos informations
-          </motion.h1>
 
-          <form onSubmit={handleSubmit}>
-            <motion.div className="form-fields" variants={itemVariants}>
-              {/* Bedrooms */}
-              <div className="input-group">
-                <Home className="input-icon" />
-                <input
-                  type="number"
-                  name="bedrooms"
-                  placeholder="Nombre de chambres"
-                  className="form-input"
-                  value={formData.bedrooms}
-                  onChange={handleInputChange}
-                  min="1"
-                />
+     <>
+
+
+<header>
+            <div className="logo-container">
+                <Logo/>
+                <h1 className="logoText"><span className="highlight">T</span>ourism<span className="highlight">A</span></h1>
+            </div>
+
+            <Link to="/signup">
+            <div className="register-btn">
+                <button>Register</button>
+            </div>
+            </Link>
+</header>
+
+
+
+
+
+    <div className="property-form-page">
+      <motion.div
+        className="property-form-container"
+        variants={containerVariants}
+        initial="hidden"
+        animate={isExiting ? "exit" : "visible"}
+      >
+        <motion.h1 className="property-form-title" variants={itemVariants}>
+          Complétez vos informations
+        </motion.h1>
+
+        <form onSubmit={handleSubmit}>
+          <motion.div className="form-fields" variants={itemVariants}>
+            {/* Bedrooms */}
+            <div className="input-group">
+              <Home className="input-icon" />
+              <input
+                type="number"
+                name="bedrooms"
+                placeholder="Nombre de chambres"
+                className="form-input"
+                value={formData.bedrooms}
+                onChange={handleInputChange}
+                min="1"
+              />
+              <motion.div
+                className="input-highlight"
+                initial={{ width: "0%" }}
+                animate={{ width: formData.bedrooms ? "100%" : "0%" }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+
+            {/* Location */}
+            <div className="input-group">
+              <MapPin className="input-icon" />
+              <input
+                type="text"
+                name="location"
+                placeholder="Lieu de localisation"
+                className="form-input"
+                value={formData.location}
+                onChange={handleInputChange}
+              />
+              <motion.div
+                className="input-highlight"
+                initial={{ width: "0%" }}
+                animate={{ width: formData.location ? "100%" : "0%" }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+
+            {/* Security */}
+            <div className="input-group">
+              <Shield className="input-icon" />
+              <input
+                type="text"
+                name="security"
+                placeholder="Dispositifs de sécurité"
+                className="form-input"
+                value={formData.security}
+                onChange={handleInputChange}
+              />
+              <motion.div
+                className="input-highlight"
+                initial={{ width: "0%" }}
+                animate={{ width: formData.security ? "100%" : "0%" }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+
+            {/* Proximity */}
+            <div className="input-group">
+              <Info className="input-icon" />
+              <input
+                type="text"
+                name="proximity"
+                placeholder="Proximité"
+                className="form-input"
+                value={formData.proximity}
+                onChange={handleInputChange}
+              />
+              <motion.div
+                className="input-highlight"
+                initial={{ width: "0%" }}
+                animate={{ width: formData.proximity ? "100%" : "0%" }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+
+
+
+
+{/* Price negotiation */}
+<div className="dropdown-group">
+              <div
+                className="dropdown-selector"
+                onClick={() => setShowDispoDropdown(!showDispoDropdown)}
+              >
+                <span className="dropdown-text">
+                  {formData.dispo || "disponibilité"}
+                </span>
                 <motion.div
-                  className="input-highlight"
-                  initial={{ width: "0%" }}
-                  animate={{ width: formData.bedrooms ? "100%" : "0%" }}
+                  animate={{ rotate: showDispoDropdown ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
-                />
-              </div>
-
-              {/* Location */}
-              <div className="input-group">
-                <MapPin className="input-icon" />
-                <input
-                  type="text"
-                  name="location"
-                  placeholder="Lieu de localisation"
-                  className="form-input"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                />
-                <motion.div
-                  className="input-highlight"
-                  initial={{ width: "0%" }}
-                  animate={{ width: formData.location ? "100%" : "0%" }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-
-              {/* Security */}
-              <div className="input-group">
-                <Shield className="input-icon" />
-                <input
-                  type="text"
-                  name="security"
-                  placeholder="Dispositifs de sécurité"
-                  className="form-input"
-                  value={formData.security}
-                  onChange={handleInputChange}
-                />
-                <motion.div
-                  className="input-highlight"
-                  initial={{ width: "0%" }}
-                  animate={{ width: formData.security ? "100%" : "0%" }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-
-              {/* Proximity */}
-              <div className="input-group">
-                <Info className="input-icon" />
-                <input
-                  type="text"
-                  name="proximity"
-                  placeholder="Proximité"
-                  className="form-input"
-                  value={formData.proximity}
-                  onChange={handleInputChange}
-                />
-                <motion.div
-                  className="input-highlight"
-                  initial={{ width: "0%" }}
-                  animate={{ width: formData.proximity ? "100%" : "0%" }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-
-              {/* Price negotiation */}
-              <div className="dropdown-group">
-                <DollarSign className="input-icon" />
-                <div
-                  className="dropdown-selector"
-                  onClick={() => setShowDropdown(!showDropdown)}
                 >
-                  <span className="dropdown-text">
-                    {formData.priceNegotiation || "Négociation sur le prix"}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: showDropdown ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChevronDown className="dropdown-icon" />
-                  </motion.div>
-                </div>
-
-                <AnimatePresence>
-                  {showDropdown && (
-                    <motion.div
-                      className="dropdown-menu"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {negotiationOptions.map((option, i) => (
-                        <motion.div
-                          key={i}
-                          className="dropdown-item"
-                          whileHover={{ backgroundColor: "#f3f4f6" }}
-                          onClick={() => {
-                            setFormData((p) => ({
-                              ...p,
-                              priceNegotiation: option,
-                            }));
-                            setShowDropdown(false);
-                          }}
-                        >
-                          {option}
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  <ChevronDown className="dropdown-icon" />
+                </motion.div>
               </div>
-            </motion.div>
-
-            {/* Photo upload */}
-            <motion.div className="photo-section" variants={itemVariants}>
-              <h2 className="photo-title">
-                Veuillez insérer six photos de votre logement
-              </h2>
-              <motion.div className="photo-grid" variants={photoGridVariants}>
-                {Array(6)
-                  .fill(0)
-                  .map((_, idx) => (
-                    <motion.div
-                      key={idx}
-                      className="photo-upload-container"
-                      variants={photoItemVariants}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handlePhotoClick(idx)}
-                    >
-                      <input
-                        type="file"
-                        accept="image/*"
-                        ref={(el) => (fileInputRefs.current[idx] = el)}
-                        onChange={(e) => handlePhotoUpload(idx, e)}
-                        className="hidden-input"
-                      />
-                      {photos[idx] ? (
-                        <motion.div
-                          className="photo-preview"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <img
-                            src={photos[idx]}
-                            alt={`Property photo ${idx + 1}`}
-                          />
-                          <div className="photo-overlay">
-                            <Check className="check-icon" />
-                          </div>
-                        </motion.div>
-                      ) : (
-                        <div className="upload-placeholder">
-                          <Upload className="upload-icon" />
-                        </div>
-                      )}
-                    </motion.div>
-                  ))}
-              </motion.div>
-            </motion.div>
-
-          
-            <motion.div
-              className="warning-section"
-              variants={itemVariants}
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-            >
-              <div className="warning-dot" />
-              <p className="warning-text">
-                Merci de noter qu'il est strictement interdit d'ajouter un
-                logement fictif ou de fournir des informations fausses. Tout
-                manquement à cette règle entraînera des sanctions conformément à
-                nos conditions d'utilisation.
-              </p>
 
               <AnimatePresence>
-                {showTooltip && (
+                {showDispoDropdown && (
                   <motion.div
-                    className="tooltip"
-                    initial={{ opacity: 0, y: 10 }}
+                    className="dropdown-menu"
+                    initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    <p>
-                      Nous vérifions toutes les annonces pour garantir la qualité
-                      de notre plateforme.
-                    </p>
+                    {dispo.map((option, i) => (
+                      <motion.div
+                        key={i}
+                        className="dropdown-item"
+                        whileHover={{ backgroundColor: "#f3f4f6" }}
+                        onClick={() => {
+                          setFormData((p) => ({
+                            ...p,
+                            dispo: option,
+                          }));
+                          setShowDispoDropdown(false);
+                        }}
+                      >
+                        {option}
+                      </motion.div>
+                    ))}
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
 
-            {/* Actions */}
-            <motion.div className="form-actions" variants={itemVariants}>
-              <motion.button
-                type="submit"
-                className="submit-button"
-                whileHover={{ scale: 1.03, backgroundColor: "#28b67d" }}
-                whileTap={{ scale: 0.97 }}
+
+
+
+
+
+            <div className="input-group">
+            <DollarSign className="input-icon" />
+              <input
+                type="number"
+                name="price"
+                placeholder="prix en DA"
+                className="form-input"
+                value={formData.price}
+                onChange={handleInputChange}
+              />
+              <motion.div
+                className="input-highlight"
+                initial={{ width: "0%" }}
+                animate={{ width: formData.price ? "100%" : "0%" }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+
+
+
+
+
+
+
+
+
+            {/* Price negotiation */}
+            <div className="dropdown-group">
+              <DollarSign className="input-icon" />
+              <div
+                className="dropdown-selector"
+                onClick={() => setShowDropdown(!showDropdown)}
               >
-                Continuer
-              </motion.button>
-              <motion.button
-                type="button"
-                className="cancel-button"
-                onClick={handleCancel}
-                whileHover={{ textDecoration: "underline" }}
-              >
-                Annuler
-              </motion.button>
+                <span className="dropdown-text">
+                  {formData.priceNegotiation || "Négociation sur le prix"}
+                </span>
+                <motion.div
+                  animate={{ rotate: showDropdown ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronDown className="dropdown-icon" />
+                </motion.div>
+              </div>
+
+              <AnimatePresence>
+                {showDropdown && (
+                  <motion.div
+                    className="dropdown-menu"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {negotiationOptions.map((option, i) => (
+                      <motion.div
+                        key={i}
+                        className="dropdown-item"
+                        whileHover={{ backgroundColor: "#f3f4f6" }}
+                        onClick={() => {
+                          setFormData((p) => ({
+                            ...p,
+                            priceNegotiation: option,
+                          }));
+                          setShowDropdown(false);
+                        }}
+                      >
+                        {option}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          {/* Photo upload */}
+          <motion.div className="photo-section" variants={itemVariants}>
+            <h2 className="photo-title">
+              Veuillez insérer six photos de votre logement
+            </h2>
+            <motion.div className="photo-grid" variants={photoGridVariants}>
+              {Array(6)
+                .fill(0)
+                .map((_, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="photo-upload-container"
+                    variants={photoItemVariants}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handlePhotoClick(idx)}
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={(el) => (fileInputRefs.current[idx] = el)}
+                      onChange={(e) => handlePhotoUpload(idx, e)}
+                      className="hidden-input"
+                    />
+                    {photos[idx] ? (
+                      <motion.div
+                        className="photo-preview"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <img
+                          src={photos[idx]}
+                          alt={`Property photo ${idx + 1}`}
+                        />
+                        <div className="photo-overlay">
+                          <Check className="check-icon" />
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <div className="upload-placeholder">
+                        <Upload className="upload-icon" />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
             </motion.div>
-          </form>
-        </motion.div>
-      </div>
-      <Footer/>
+          </motion.div>
+
+        
+          <motion.div
+            className="warning-section"
+            variants={itemVariants}
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            <div className="warning-dot" />
+            <p className="warning-text">
+              Merci de noter qu'il est strictement interdit d'ajouter un
+              logement fictif ou de fournir des informations fausses. Tout
+              manquement à cette règle entraînera des sanctions conformément à
+              nos conditions d'utilisation.
+            </p>
+
+            <AnimatePresence>
+              {showTooltip && (
+                <motion.div
+                  className="tooltip"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                >
+                  <p>
+                    Nous vérifions toutes les annonces pour garantir la qualité
+                    de notre plateforme.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+          {/* Actions */}
+          <motion.div className="form-actions" variants={itemVariants}>
+            <motion.button
+              type="submit"
+              className="submit-button"
+              whileHover={{ scale: 1.03, backgroundColor: "#28b67d" }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Continuer
+            </motion.button>
+            <motion.button
+              type="button"
+              className="cancel-button"
+              onClick={handleCancel}
+              whileHover={{ textDecoration: "underline" }}
+            >
+              Annuler
+            </motion.button>
+          </motion.div>
+        </form>
+      </motion.div>
+    </div>
+    <Footer/>
+
+
     </>
   );
 }

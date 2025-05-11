@@ -34,7 +34,11 @@ export default function MaisonCard({ house, index }) {
 
   // Navigate to the localisation page
   const navigateToDetail = () => {
-    navigate('/localisation')
+    if (house.customPath) {
+      navigate(house.customPath); // Navigate to the specific customPath
+    } else {
+      console.error('No customPath provided for this house.');
+    }
   }
 
   return (

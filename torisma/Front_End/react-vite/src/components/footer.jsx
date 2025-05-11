@@ -7,7 +7,15 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-container pretty-footer center-footer">
-        
+        <div className="footer-column about">
+          <h3>À propos de TourismA</h3>
+          <a href="#">À propos de TourismA</a>
+          <div className="footer-divider" />
+          <h3>Nos Services</h3>
+          <a href="#">Location de voiture</a>
+          <a href="#">Location de maisons</a>
+        </div>
+
         <div className="footer-column contacts">
           <h3>Contacts</h3>
           <div className="footer-contact-item">

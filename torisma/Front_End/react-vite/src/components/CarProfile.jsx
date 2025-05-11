@@ -1,129 +1,119 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/CarProfile.css';
 
-const CarProfile = ({ houseId }) => {
+const CarProfile = () => {
   const navigate = useNavigate();
-  const [images, setImages] = useState([null, null, null, null, null]);
-  const [wilaya, setWilaya] = useState('');
-  const [ville, setVille] = useState('');
-  const [availability, setAvailability] = useState('disponible');
-  const [price, setPrice] = useState('');
-  const [location, setLocation] = useState('');
-  const [details, setDetails] = useState('');
+  const { id } = useParams();
+  const [car, setCar] = useState(null);
+  const [form, setForm] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const wilayas = [
-    "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Béjaïa", "Biskra",
-    "Béchar", "Blida", "Bouira", "Tamanrasset", "Tébessa", "Tlemcen", "Tiaret",
-    "Tizi Ouzou", "Alger", "Djelfa", "Jijel", "Sétif", "Saïda", "Skikda",
-    "Sidi Bel Abbès", "Annaba", "Guelma", "Constantine", "Médéa", "Mostaganem",
-    "M'Sila", "Mascara", "Ouargla", "Oran", "El Bayadh", "Illizi", "Bordj Bou Arréridj",
-    "Boumerdès", "El Tarf", "Tindouf", "Tissemsilt", "El Oued", "Khenchela",
-    "Souk Ahras", "Tipaza", "Mila", "Aïn Defla", "Naâma", "Aïn Témouchent",
-    "Ghardaïa", "Relizane", "Timimoun", "Bordj Badji Mokhtar", "Ouled Djellal",
-    "Béni Abbès", "In Salah", "In Guezzam", "Touggourt", "Djanet", "El M'Ghair", "El Meniaa"
-  ];
+  useEffect(() => {
+    const fetchCar = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:8000/api/listings/cars/${id}/`, { withCredentials: true });
+        setCar(response.data);
+        setForm(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch car');
+        setLoading(false);
+      }
+    };
+    fetchCar();
+  }, [id]);
 
-  const onImageChange = (index, e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImages(prev => {
-        const copy = [...prev];
-        copy[index] = url;
-        return copy;
-      });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      await axios.put(`http://localhost:8000/api/listings/cars/${id}/`, form, { withCredentials: true });
+      setSaving(false);
+      navigate('/voiture-liste');
+    } catch (err) {
+      setError('Failed to save car');
+      setSaving(false);
     }
   };
 
-  const handleNavigation = () => {
-    navigate('/voiture-liste');
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this car?')) return;
+    try {
+      setDeleting(true);
+      await axios.delete(`http://localhost:8000/api/listings/cars/${id}/`, { withCredentials: true });
+      setDeleting(false);
+      navigate('/voiture-liste');
+    } catch (err) {
+      setError('Failed to delete car');
+      setDeleting(false);
+    }
   };
 
+  if (loading) return <div className="car-profile-loading">Loading...</div>;
+  if (error) return <div className="car-profile-error">{error}</div>;
+  if (!form) return null;
+
   return (
-    <div className="house-profile">
+    <div className="car-profile">
       <div className="images-section">
-        {images.map((img, idx) => (
-          <label key={idx} className="image-slot">
-            {img ? <img src={img} alt={`House ${idx + 1}`} className="slot-img" /> : <span>＋</span>}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={e => onImageChange(idx, e)}
-              className="image-input"
-            />
-          </label>
+        {(car.photos && car.photos.length > 0 ? car.photos : [{ photo: '/placeholder-car.jpg' }]).map((img, idx) => (
+          <div key={idx} className="image-slot">
+            <img src={img.photo.startsWith('http') ? img.photo : `http://localhost:8000${img.photo}`} alt={`Car ${idx + 1}`} className="slot-img" />
+          </div>
         ))}
       </div>
-
       <div className="inputs-container">
         <div className="input-field">
-          <label htmlFor="wilaya">Wilaya</label>
-          <select 
-            id="wilaya"
-            value={wilaya} 
-            onChange={e => setWilaya(e.target.value)}
-          >
-            <option value="">Sélectionner une wilaya</option>
-            {wilayas.map((w, index) => (
-              <option key={index} value={w}>{w}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="input-field">
-          <label htmlFor="ville">Ville</label>
-          <input 
-            id="ville"
-            type="text" 
-            value={ville} 
-            onChange={e => setVille(e.target.value)} 
-            placeholder="Entrez la ville" 
-          />
-        </div>
-
-        <div className="input-field">
-          <label htmlFor="availability">Disponibilité</label>
-          <select 
-            id="availability"
-            value={availability} 
-            onChange={e => setAvailability(e.target.value)}
-          >
-            <option value="disponible">Disponible</option>
-            <option value="indisponible">Indisponible</option>
-          </select>
-        </div>
-
-        <div className="input-field">
-          <label htmlFor="price">Prix</label>
-          <input 
-            id="price"
-            type="text" 
-            value={price} 
-            onChange={e => setPrice(e.target.value)} 
-            placeholder="Entrez le prix" 
-          />
+          <label>Manufacture</label>
+          <input name="manufacture" value={form.manufacture || ''} onChange={handleChange} />
         </div>
         <div className="input-field">
-          <label htmlFor="location">Location GPS</label>
-          <input 
-            id="location"
-            type="text" 
-            value={location} 
-            onChange={e => setLocation(e.target.value)} 
-            placeholder="Latitude, Longitude" 
-          />
+          <label>Model</label>
+          <input name="model" value={form.model || ''} onChange={handleChange} />
         </div>
         <div className="input-field">
-          <label>Détails supplémentaires</label>
-          <textarea value={details} onChange={e => setDetails(e.target.value)} placeholder="Entrez des détails supplémentaires" />
+          <label>Year</label>
+          <input name="manufacturing_year" value={form.manufacturing_year || ''} onChange={handleChange} />
+        </div>
+        <div className="input-field">
+          <label>Location</label>
+          <input name="location" value={form.location || ''} onChange={handleChange} />
+        </div>
+        <div className="input-field">
+          <label>Wilaya</label>
+          <input name="wilaya" value={form.wilaya || ''} onChange={handleChange} />
+        </div>
+        <div className="input-field">
+          <label>Seats</label>
+          <input name="seats" value={form.seats || ''} onChange={handleChange} />
+        </div>
+        <div className="input-field">
+          <label>Fuel Type</label>
+          <input name="fuel_type" value={form.fuel_type || ''} onChange={handleChange} />
+        </div>
+        <div className="input-field">
+          <label>Price</label>
+          <input name="price" value={form.price || ''} onChange={handleChange} />
+        </div>
+        <div className="input-field">
+          <label>Description</label>
+          <textarea name="description" value={form.description || ''} onChange={handleChange} />
         </div>
       </div>
-
       <div className="buttons-section">
-        <button className="save-btn" onClick={handleNavigation}>Sauvegarder</button>
-        <button type="button" className="cancel-btn" onClick={handleNavigation}>Annuler</button>
-        <button type="button" className="delete-btn" onClick={handleNavigation}>Supprimer</button>
+        <button className="save-btn" onClick={handleSave} disabled={saving}>{saving ? 'Saving...' : 'Save'}</button>
+        <button type="button" className="delete-btn" onClick={handleDelete} disabled={deleting}>{deleting ? 'Deleting...' : 'Delete'}</button>
+        <button type="button" className="cancel-btn" onClick={() => navigate('/voiture-liste')}>Cancel</button>
       </div>
     </div>
   );

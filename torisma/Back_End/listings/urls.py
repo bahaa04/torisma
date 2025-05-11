@@ -17,6 +17,9 @@ from .views import (
     HousesByWilayaView,  # <-- add this import
     HouseListByWilayaView,  # <-- add this import
     CarsByWilayaView,  # <-- add this import
+    validate_coupon_for_listing,  # <-- add this import
+    UserCarListView,
+    UserHouseListView,
 )
 
 wilaya_router = DefaultRouter()
@@ -44,5 +47,10 @@ urlpatterns = [
     path('wilayas/', WilayaListView.as_view(), name='wilaya-list'),
     path('wilayas/photos/', WilayaPhotosViewSet.as_view({'get': 'list', 'post': 'create'}), name='wilaya-photos-list'),
     path('wilayas/photos/<int:pk>/', WilayaPhotosViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='wilaya-photos-detail'),
+
+    # Coupon validation endpoint
+    path('<str:listing_type>/<uuid:listing_id>/validate-coupon/', validate_coupon_for_listing, name='validate-listing-coupon'),
     
+    path('cars/user/', UserCarListView.as_view(), name='user-car-list'),
+    path('houses/user/', UserHouseListView.as_view(), name='user-house-list'),
 ]

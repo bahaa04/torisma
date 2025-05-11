@@ -1,20 +1,16 @@
-* {
+
+.container {
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-}
 
-body {
     background-color: #ffffff;
     color: #333;
     min-height: 100vh;
-}
-
-.container {
    padding: 10px;
     margin: 0 auto;
-   
 }
 
 
@@ -39,6 +35,27 @@ body {
 .highlight {
     color: #2ee59d;
 }
+
+.register-btn button {
+    background-color: transparent;
+    border: 1px solid #e1e1e1;
+    color: #333;
+    padding: 8px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-right: 2vw;
+
+}
+
+
+
+.transp{
+    font-weight: 300;
+    margin-left: auto;
+}
+
 
 .register-btn button {
     background-color: transparent;
@@ -327,4 +344,33 @@ main {
 
 .logo-container:hover {
     opacity: 0.8;
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.terms-checkbox label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.terms-link {
+    color: #03d186;
+    text-decoration: none;
+    margin: 0 4px;
+}
+
+.terms-link:hover {
+    text-decoration: underline;
 }

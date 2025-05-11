@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import NavBar from '../components/navbar1-connected';
+import { useNavigate } from "react-router-dom";
+import NavBarC from '../components/navbar1-connected';
 import Sidebar from '../components/Sidebar';
 import ProfileInformations from "../components/ProfileInformations";
 import Footer from '../components/footer';
@@ -10,7 +11,7 @@ const buttonStyles = {
     padding: '20px',
     marginTop: '0',
     borderBottom: '1px solid #eee'
-  },
+  },  
   backButton: {
     display: 'flex',
     alignItems: 'center',
@@ -27,9 +28,11 @@ const buttonStyles = {
 };
 
 function Moi() {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBar />
+      <NavBarC />
       <div style={buttonStyles.backContainer}>
         <button 
           onClick={() => navigate('/')} 

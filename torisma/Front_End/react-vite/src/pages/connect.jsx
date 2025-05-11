@@ -88,13 +88,14 @@ const Connect = () => {
         <>
             <div className="container">
                 <NavBar2/>
+                 <hr style={{ border: "none", height: "0.5px", backgroundColor: "#e0e0e0" }} />
                 <main>
                     <div className="left-section" style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%" }}>
                         <div className="content fade-in" style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
                             <p className="tagline">Discover the beauty of Algeria and beyond.</p>
                             <p className="description">Find stunning destinations, rent cars and homes with ease, and start your adventure today, all in one place</p>
                             <div className="cta">
-                                <button className="join-btn">Join Now!</button>
+                                <button className="join-btn" onClick={() => window.location.href='/signup'}>Joindre maintenant!</button>
                             </div>
                             <div className="illustration">
                                 <img src="/boy.png" alt="Tourism illustration" className="illustration-img"/>
@@ -111,6 +112,12 @@ const Connect = () => {
                                 </div>
                                 <div className="form-group">
                                     <input type="password" placeholder="Password" className="form-control"/>
+                                </div>
+                                <div className="terms-checkbox">
+                                    <input type="checkbox" id="terms" required />
+                                    <label htmlFor="terms">
+                                        J'accepte les <Link to="/terms-&-conditions" className="terms-link">conditions générales</Link> du site
+                                    </label>
                                 </div>
                                 {error && <p className="error-message">{error}</p>}
                                 <div className="forgot-password">
