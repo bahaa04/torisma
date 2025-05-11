@@ -213,6 +213,59 @@ class CustomLoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
+class CustomTokenRefreshView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            refresh_token = request.data.get('refresh')
+            if not refresh_token:
+                return Response(
+                    {"error": "Refresh token is required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Create a refresh token instance
+            refresh = RefreshToken(refresh_token)
+            
+            # Get the user from the token
+            user_id = refresh.get('user_id')
+            try:
+                user = User.objects.get(id=user_id)
+                
+                # Check if user is banned
+                if user.is_banned:
+                    logger.warning(f"Banned user attempted to refresh token: {user.email}")
+                    return Response(
+                        {"error": "User is banned"},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+                
+                # Generate new tokens
+                new_refresh = RefreshToken.for_user(user)
+                
+                logger.info(f"Token refreshed successfully for user: {user.email}")
+                
+                return Response({
+                    'refresh': str(new_refresh),
+                    'access': str(new_refresh.access_token),
+                    'role': user.role
+                })
+                
+            except User.DoesNotExist:
+                logger.error(f"Token refresh attempted for non-existent user ID: {user_id}")
+                return Response(
+                    {"error": "Invalid refresh token"},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+                
+        except Exception as e:
+            logger.error(f"Token refresh error: {str(e)}")
+            return Response(
+                {"error": "Invalid refresh token"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
 class AdminUserManagementView(APIView):
     permission_classes = [IsAdminUser]
 

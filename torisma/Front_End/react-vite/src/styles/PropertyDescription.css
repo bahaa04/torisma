@@ -23,13 +23,12 @@
 
 .description-item {
   display: flex;
-  align-items: flex-start; /* Align icon and text at the top */
+  align-items: center;
   margin-bottom: 10px;
 }
 
 .description-item .icon {
   margin-right: 10px;
-  font-size: 1.2em;
 }
 
 .description-box ul {

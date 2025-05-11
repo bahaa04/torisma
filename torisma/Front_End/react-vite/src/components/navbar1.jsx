@@ -22,7 +22,7 @@ const NavBar1 = () => {
             </Link>
              
             <div className="nav-links">
-                <a href="/whyToursimA">Pourquoi TourismA</a>
+                <a href="/whyTourisma">Pourquoi TourismA</a>
                 <a href="/whyAlgeria">Pourquoi l'Algérie</a>
             </div>
         

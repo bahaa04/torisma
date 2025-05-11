@@ -3,7 +3,7 @@ import '../styles/BookingForm.css';
 import SuccessMessage from './SuccessMessage'; // Import SuccessMessage component
 import Redirecting from './Redirecting'; // Import Redirecting component
 
-function BookingForm({ originalPrice, discountedPrice, discount, onReserve }) {
+function BookingFormV({ originalPrice, discountedPrice, discount, onReserve }) {
   const [startDate, setStartDate] = useState('27/02/2025');
   const [endDate, setEndDate] = useState('25/04/2025');
   const [paymentMethod, setPaymentMethod] = useState('Hand to hand');
@@ -25,14 +25,14 @@ function BookingForm({ originalPrice, discountedPrice, discount, onReserve }) {
 
   const handleReserve = () => {
     if (paymentMethod === 'Hand to hand') {
-      setShowRedirecting(true); // Show redirecting page
+      setShowRedirecting(true);
       setTimeout(() => {
-        setShowRedirecting(false); // Hide redirecting page
-        setShowEmailMessage(true); // Show email message
-      }, 3000); // Simulate a 3-second delay for redirection
+        setShowRedirecting(false);
+        setShowEmailMessage(true);
+      }, 3000);
     } else if (paymentMethod === 'Card') {
       setRedirectUrl('/payement');
-      setShowRedirecting(true); // Show redirecting page
+      setShowRedirecting(true);
     }
   };
 
@@ -136,4 +136,4 @@ function BookingForm({ originalPrice, discountedPrice, discount, onReserve }) {
   );
 }
 
-export default BookingForm;
+export default BookingFormV;

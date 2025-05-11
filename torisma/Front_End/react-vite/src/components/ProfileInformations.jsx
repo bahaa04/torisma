@@ -62,20 +62,17 @@ const ProfileInformations = () => {
     <form onSubmit={handleSubmit} className="profile-form">
       <div className="profile-header">
         <div className="profile-image-container">
-          <img src={previewImage} alt="Profile" className="profile-image" />
-          <div className="image-upload">
-            <label htmlFor="profile_image" className="upload-label">
-              Changer la photo
-            </label>
-            <input
-              type="file"
-              id="profile_image"
-              name="profile_image"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </div>
+          <label htmlFor="profile_image" className="upload-label">
+            <img src={previewImage} alt="Profile" className="profile-image" />
+          </label>
+          <input
+            type="file"
+            id="profile_image"
+            name="profile_image"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
         </div>
       </div>
 

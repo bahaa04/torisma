@@ -1,121 +1,115 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/HouseProfile.css';
 
-const HouseProfile = ({ houseId }) => {
+const HouseProfile = () => {
   const navigate = useNavigate();
-  // Five slots: one large + four small
-  const [images, setImages] = useState([null, null, null, null, null]);
-  const [rooms, setRooms] = useState(1);
-  const [availability, setAvailability] = useState('disponible');
-  const [price, setPrice] = useState('');
-  const [location, setLocation] = useState('');
-  const [wifi, setWifi] = useState(false);
-  const [parking, setParking] = useState(false);
-  const [details, setDetails] = useState('');
+  const { id } = useParams();
+  const [house, setHouse] = useState(null);
+  const [form, setForm] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const onImageChange = (index, e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImages(prev => {
-        const copy = [...prev];
-        copy[index] = url;
-        return copy;
-      });
+  useEffect(() => {
+    const fetchHouse = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:8000/api/listings/houses/${id}/`, { withCredentials: true });
+        setHouse(response.data);
+        setForm(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch house');
+        setLoading(false);
+      }
+    };
+    fetchHouse();
+  }, [id]);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      await axios.put(`http://localhost:8000/api/listings/houses/${id}/`, form, { withCredentials: true });
+      setSaving(false);
+      navigate('/maison-liste');
+    } catch (err) {
+      setError('Failed to save house');
+      setSaving(false);
     }
   };
 
-  const handleNavigation = () => {
-    navigate('/maison-liste');
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this house?')) return;
+    try {
+      setDeleting(true);
+      await axios.delete(`http://localhost:8000/api/listings/houses/${id}/`, { withCredentials: true });
+      setDeleting(false);
+      navigate('/maison-liste');
+    } catch (err) {
+      setError('Failed to delete house');
+      setDeleting(false);
+    }
   };
+
+  if (loading) return <div className="house-profile-loading">Loading...</div>;
+  if (error) return <div className="house-profile-error">{error}</div>;
+  if (!form) return null;
 
   return (
     <div className="house-profile">
       <div className="images-section">
-        {images.map((img, idx) => (
-          <label key={idx} className="image-slot">
-            {img ? <img src={img} alt={`House ${idx + 1}`} className="slot-img" /> : <span>＋</span>}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={e => onImageChange(idx, e)}
-              className="image-input"
-            />
-          </label>
+        {(house.photos && house.photos.length > 0 ? house.photos : [{ photo: '/placeholder-house.jpg' }]).map((img, idx) => (
+          <div key={idx} className="image-slot">
+            <img src={img.photo.startsWith('http') ? img.photo : `http://localhost:8000${img.photo}`} alt={`House ${idx + 1}`} className="slot-img" />
+          </div>
         ))}
       </div>
-
       <div className="inputs-container">
         <div className="input-field">
-          <label htmlFor="rooms">Nombre des chambres</label>
-          <input 
-            id="rooms"
-            type="number" 
-            value={rooms} 
-            onChange={e => setRooms(e.target.value)} 
-            min="1" 
-          />
+          <label>City</label>
+          <input name="city" value={form.city || ''} onChange={handleChange} />
         </div>
         <div className="input-field">
-          <label htmlFor="availability">Disponibilité</label>
-          <select 
-            id="availability"
-            value={availability} 
-            onChange={e => setAvailability(e.target.value)}
-          >
-            <option value="disponible">Disponible</option>
-            <option value="indisponible">Indisponible</option>
-          </select>
+          <label>Wilaya</label>
+          <input name="wilaya" value={form.wilaya || ''} onChange={handleChange} />
         </div>
         <div className="input-field">
-          <label htmlFor="price">Prix</label>
-          <input 
-            id="price"
-            type="text" 
-            value={price} 
-            onChange={e => setPrice(e.target.value)} 
-            placeholder="Entrez le prix" 
-          />
+          <label>Location</label>
+          <input name="location" value={form.location || ''} onChange={handleChange} />
         </div>
         <div className="input-field">
-          <label htmlFor="location">Location GPS</label>
-          <input 
-            id="location"
-            type="text" 
-            value={location} 
-            onChange={e => setLocation(e.target.value)} 
-            placeholder="Latitude, Longitude" 
-          />
+          <label>Price</label>
+          <input name="price" value={form.price || ''} onChange={handleChange} />
+        </div>
+        <div className="input-field">
+          <label>Description</label>
+          <textarea name="description" value={form.description || ''} onChange={handleChange} />
         </div>
         <div className="checkbox-field">
-          <input 
-            id="wifi" 
-            type="checkbox" 
-            checked={wifi} 
-            onChange={e => setWifi(e.target.checked)} 
-          />
-          <label htmlFor="wifi">WiFi</label>
+          <input name="furnished" type="checkbox" checked={form.furnished || false} onChange={handleChange} />
+          <label>Furnished</label>
         </div>
         <div className="checkbox-field">
-          <input 
-            id="parking" 
-            type="checkbox" 
-            checked={parking} 
-            onChange={e => setParking(e.target.checked)} 
-          />
-          <label htmlFor="parking">Parking</label>
+          <input name="has_parking" type="checkbox" checked={form.has_parking || false} onChange={handleChange} />
+          <label>Parking</label>
         </div>
-        <div className="input-field">
-          <label>Détails supplémentaires</label>
-          <textarea value={details} onChange={e => setDetails(e.target.value)} placeholder="Entrez des détails supplémentaires" />
+        <div className="checkbox-field">
+          <input name="has_wifi" type="checkbox" checked={form.has_wifi || false} onChange={handleChange} />
+          <label>WiFi</label>
         </div>
       </div>
-
       <div className="buttons-section">
-        <button className="save-btn" onClick={handleNavigation}>Sauvegarder</button>
-        <button type="button" className="cancel-btn" onClick={handleNavigation}>Annuler</button>
-        <button type="button" className="delete-btn" onClick={handleNavigation}>Supprimer</button>
+        <button className="save-btn" onClick={handleSave} disabled={saving}>{saving ? 'Saving...' : 'Save'}</button>
+        <button type="button" className="delete-btn" onClick={handleDelete} disabled={deleting}>{deleting ? 'Deleting...' : 'Delete'}</button>
+        <button type="button" className="cancel-btn" onClick={() => navigate('/maison-liste')}>Cancel</button>
       </div>
     </div>
   );
