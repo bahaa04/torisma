@@ -9,7 +9,7 @@ import Footer from '../components/footer';
 
 const buttonStyles = {
   backContainer: {
-    padding: '40px',
+    padding: '10px',
     marginTop: '0',
     borderBottom: '1px solid #eee'
   },
@@ -17,7 +17,7 @@ const buttonStyles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '10px 20px',
+    padding: '5px 10px',
     backgroundColor: 'transparent',
     color: '#666',
     border: 'none',
@@ -149,22 +149,11 @@ export default function HousePage() {
     <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/>
 
 
-          {/* 
-          <h2>{house.rooms} pièces — {house.location}</h2>
           <div className="image-gallery">
             {house.images.map((src, i) => (
-              <img key={i} src={src} alt={`Maison ${i + 1}`} />
+              <img key={i} src={src} alt={`Maison ${i + 1}`} className="gallery-image" />
             ))}
           </div>
-          <p>Prix : {house.price.toLocaleString()} {house.currency}</p>
-          <p>Parking : {house.parking ? 'Oui' : 'Non'}</p>
-          <p>Wi‑Fi : {house.wifi ? 'Oui' : 'Non'}</p>
-          <p>Statut : {house.status}{house.status === 'rented' && house.rented_until && (
-            <span> — Louée jusqu'au {new Date(house.rented_until).toLocaleDateString('fr-FR')}</span>
-          )}</p>
-          {house.description && <p>Description : {house.description}</p>}
-        
-           */}
         </div>
         <Footer />
       </>

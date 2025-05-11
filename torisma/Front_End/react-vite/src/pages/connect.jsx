@@ -94,7 +94,7 @@ const Connect = () => {
                             <p className="tagline">Discover the beauty of Algeria and beyond.</p>
                             <p className="description">Find stunning destinations, rent cars and homes with ease, and start your adventure today, all in one place</p>
                             <div className="cta">
-                                <button className="join-btn">Join Now!</button>
+                                <button className="join-btn" onClick={() => window.location.href='/signup'}>Joindre maintenant!</button>
                             </div>
                             <div className="illustration">
                                 <img src="/boy.png" alt="Tourism illustration" className="illustration-img"/>

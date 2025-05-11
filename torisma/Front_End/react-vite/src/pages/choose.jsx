@@ -4,7 +4,8 @@ import React from 'react';
 import { Home, Car } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import NavBar from '../components/NavBar';
+import NavBar from '../components/navbar1';
+import NavBarC from '../components/navbar1-connected';
 import Footer from '../components/footer';
 import '../styles/choose.css';
 
@@ -51,10 +52,13 @@ export default function Choose() {
     }
   };
 
+  // Assume isAuthenticated is a boolean indicating user's connection status
+  const isAuthenticated = false; // Replace with actual authentication logic
+
   return (
     <>
      <div className="container">
-      <NavBar/>
+      {isAuthenticated ? <NavBarC /> : <NavBar />}
      
         <motion.div
           className="choose-cards-container"

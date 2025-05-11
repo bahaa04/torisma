@@ -14,6 +14,10 @@ import SuccessMessage from '../components/SuccessMessage';
 import Erreur from '../components/Erreur';
 
 import Redirecting from '../components/Redirecting';
+import NavBarC from '../components/navbar1-connected';
+
+// Assume isAuthenticated is a boolean indicating user's connection status
+const isAuthenticated = false; // Replace with actual authentication logic
 
 function Localisation() {
   const navigate = useNavigate();
@@ -26,9 +30,9 @@ function Localisation() {
 
   return (
     <div>
-      <Navbar />
+      {isAuthenticated ? <NavBarC /> : <Navbar />}
       
-      <PropertyGallery />
+      <PropertyGallery altText="Gallery of the property" />
 
       <div className="localisation-container">
         <div className="right-column">

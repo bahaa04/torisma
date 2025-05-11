@@ -462,4 +462,18 @@ def validate_coupon_for_listing(request, listing_type, listing_id):
     except Exception as e:
         return Response({"error": str(e)}, status=500)
 
+class UserCarListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        cars = Car.objects.filter(owner=request.user)
+        serializer = CarSerializer(cars, many=True, context={'request': request})
+        return Response(serializer.data)
+
+class UserHouseListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        houses = House.objects.filter(owner=request.user)
+        serializer = HouseSerializer(houses, many=True, context={'request': request})
+        return Response(serializer.data)
+
 

@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import '../styles/Voiture.css';
 import PropertyGallery2 from '../components/PropertyGallery2';
 import PropertyRating from '../components/PropertyRating';
-import BookingForm from '../components/BookingForm';
+import BookingFormV from '../components/BookingFormV';
 import LocationMap2 from '../components/LocationMap2';
 import PropertyDescription2 from '../components/PropertyDescription2';
 import Footer from '../components/footer';
 import NavBar from '../components/navbar1';
+import NavBarC from '../components/navbar1-connected';
 import PaymentConfirmation from '../components/PaymentConfirmation';
 import SuccessMessage2 from '../components/SuccessMessage2';
 import Erreur from '../components/Erreur';
+import Redirecting from '../components/Redirecting';
+
 function Voiture() {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showPayment, setShowPayment] = useState(false);
@@ -17,21 +20,26 @@ function Voiture() {
     const [showError, setShowError] = useState(false);
     const [redirectUrl, setRedirectUrl] = useState(null);
 
+    // Assume isAuthenticated is a boolean indicating user's connection status
+    const isAuthenticated = false; // Replace with actual authentication logic
+
   return (
     <div>
-      <NavBar />
-      <PropertyGallery2 />
+      {isAuthenticated ? <NavBarC /> : <NavBar />}
+      <PropertyGallery2 altText="Gallery of the car" />
       
       <div className="localisation-container"> 
       <div className="right-column"> 
       <PropertyRating />
-      <LocationMap2  />    
       <PropertyDescription2 /> 
     </div>
 
       
     <div className="left-column">
-          <BookingForm
+          <BookingFormV
+            originalPrice="16 666DA"
+            discountedPrice="10 090DA"
+            discount="40%"
             onReserve={(paymentMethod) => {
               if (paymentMethod === 'Hand to hand') {
                 // immediate success flow

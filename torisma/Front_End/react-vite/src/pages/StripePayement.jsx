@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import '../styles/StripePayment.css';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHER_KEY);
 
@@ -90,9 +91,12 @@ const PaymentForm = ({ transactionId, amount, onSuccess }) => {
 
 const StripePayment = ({ transactionId, amount, onSuccess }) => {
   return (
-    <Elements stripe={stripePromise}>
-      <PaymentForm transactionId={transactionId} amount={amount} onSuccess={onSuccess} />
-    </Elements>
+    <div className="stripe-payment-container">
+      <h2>Complete Your Payment</h2>
+      <Elements stripe={stripePromise}>
+        <PaymentForm transactionId={transactionId} amount={amount} onSuccess={onSuccess} />
+      </Elements>
+    </div>
   );
 };
 

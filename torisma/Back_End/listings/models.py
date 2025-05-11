@@ -181,6 +181,11 @@ class House(models.Model):
         null=True,  # Allow null values
         blank=True  # Allow blank in forms
     )
+    rooms = models.PositiveIntegerField(
+        default=1,
+        validators=[MinValueValidator(1)],
+        help_text="Number of rooms, must be at least 1"
+    )
 
     class Meta:
         verbose_name = "House"

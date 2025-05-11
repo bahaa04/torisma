@@ -1,6 +1,7 @@
 import React from 'react';
 import "../styles/terms.css";
 import NavBar from "../components/navbar1";
+import NavbarC from '../components/navbar1-connected';
 import Footer from "../components/footer";
 
 const Terms = () => {

@@ -47,12 +47,13 @@ class HouseSerializer(serializers.ModelSerializer):
     has_parking = serializers.BooleanField(required=True)
     has_wifi = serializers.BooleanField(required=True)
     furnished = serializers.BooleanField(required=True)
+    rooms = serializers.IntegerField(min_value=1, required=True)
 
     class Meta:
         model = House
         fields = ['id', 'owner', 'description', 'price', 'wilaya',
                  'city', 'gps_location', 'status', 'furnished', 
-                 'has_parking', 'has_wifi', 'created_at', 'photos']
+                 'has_parking', 'has_wifi', 'created_at', 'photos', 'rooms']
         read_only_fields = ['id', 'owner', 'created_at']
 
     def validate(self, data):

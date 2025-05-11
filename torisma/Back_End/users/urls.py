@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     UserRegisterView,
     CustomTokenObtainPairView,
@@ -11,13 +10,14 @@ from .views import (
     PasswordResetConfirmView,
     PasswordResetFormView,
     CustomLoginView,
+    CustomTokenRefreshView,
 )
 
 # Authentication URLs
 auth_patterns = [
     path('auth/register/', UserRegisterView.as_view(), name='register'),
     path('auth/login/', CustomLoginView.as_view(), name='login'),
-    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('auth/verify-email/<str:uidb64>/<str:token>/', VerifyEmailView.as_view(), name='verify_email'),
 ]

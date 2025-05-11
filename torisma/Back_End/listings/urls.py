@@ -18,6 +18,8 @@ from .views import (
     HouseListByWilayaView,  # <-- add this import
     CarsByWilayaView,  # <-- add this import
     validate_coupon_for_listing,  # <-- add this import
+    UserCarListView,
+    UserHouseListView,
 )
 
 wilaya_router = DefaultRouter()
@@ -49,4 +51,6 @@ urlpatterns = [
     # Coupon validation endpoint
     path('<str:listing_type>/<uuid:listing_id>/validate-coupon/', validate_coupon_for_listing, name='validate-listing-coupon'),
     
+    path('cars/user/', UserCarListView.as_view(), name='user-car-list'),
+    path('houses/user/', UserHouseListView.as_view(), name='user-house-list'),
 ]

@@ -1,26 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/profileCards.css';
 
-export default function TwoCards() {
+export default function TwoCards({ items, onAdd, onDelete }) {
   const navigate = useNavigate();
-  const [items, setItems] = useState([]);
 
-  // Load cars from localStorage whenever it changes
-  useEffect(() => {
-    const loadCars = () => {
-      const stored = JSON.parse(localStorage.getItem('cars') || '[]');
-      setItems(stored);
-    };
-
-    loadCars();
-    // Add event listener for storage changes
-    window.addEventListener('storage', loadCars);
-    return () => window.removeEventListener('storage', loadCars);
-  }, []);
-
-  const handleAdd = () => {
-    navigate('/addcar');
+  const handleDelete = async (e, id) => {
+    e.stopPropagation(); // Prevent card click when clicking delete
+    try {
+      await axios.delete(`http://localhost:8000/api/listings/cars/${id}/`, {
+        withCredentials: true
+      });
+      if (onDelete) onDelete(id);
+    } catch (error) {
+      console.error('Error deleting car:', error);
+    }
   };
 
   return (
@@ -29,15 +24,29 @@ export default function TwoCards() {
         <div 
           key={item.id} 
           className="photo-card"
-          onClick={() => navigate('/car', { state: { item } })}
+          onClick={() => navigate(`/car/${item.id}`)}
         >
           <div className="photo-card-image-wrapper">
-            <img src={item.src} alt={item.name} className="photo-card-image" />
+            <img 
+              src={item.photos && item.photos.length > 0 ? 
+                (item.photos[0].photo.startsWith('http') ? 
+                  item.photos[0].photo : 
+                  `http://localhost:8000${item.photos[0].photo}`) 
+                : '/placeholder-car.jpg'} 
+              alt={item.manufacture + ' ' + item.model} 
+              className="photo-card-image" 
+            />
           </div>
-          <div className="photo-card-name">{item.name}</div>
+          <div className="photo-card-name">{item.manufacture} {item.model}</div>
+          <button 
+            className="delete-button"
+            onClick={(e) => handleDelete(e, item.id)}
+          >
+            Supprimer
+          </button>
         </div>
       ))}
-      <div className="add-card" onClick={handleAdd}>
+      <div className="add-card" onClick={onAdd}>
         <span className="add-icon">＋</span>
       </div>
     </div>

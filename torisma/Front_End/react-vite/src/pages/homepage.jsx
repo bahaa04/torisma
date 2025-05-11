@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/navbar1';
-import AuthNavBar from '../components/AuthNavBar';
+import NavBarC from '../components/navbar1-connected';
 import Footer from '../components/footer';
 import Logo from '../components/logo';
 import DestinationList from '../components/destination-list';
@@ -88,11 +88,10 @@ export default function HomePage() {
 
   // Show loading until both profile (if any) and wilayas have loaded
   if (isProfileLoading || !isDestsLoaded) {
-    // Show NavBar or AuthNavBar based on userProfile
     return (
       <div className="homepage">
         {userProfile ? (
-          <AuthNavBar userProfile={userProfile} />
+          <NavBarC userProfile={userProfile} />
         ) : (
           <NavBar />
         )}
@@ -107,7 +106,7 @@ export default function HomePage() {
     return (
       <div className="homepage">
         {userProfile ? (
-          <AuthNavBar userProfile={userProfile} />
+          <NavBarC userProfile={userProfile} />
         ) : (
           <NavBar />
         )}
@@ -121,7 +120,7 @@ export default function HomePage() {
   return (
     <div className="homepage">
       {userProfile ? (
-        <AuthNavBar userProfile={userProfile} />
+        <NavBarC userProfile={userProfile} />
       ) : (
         <NavBar />
       )}

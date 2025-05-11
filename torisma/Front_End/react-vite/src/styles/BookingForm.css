@@ -1,10 +1,10 @@
-
 /* ./styles/BookingForm.css */
 
 .booking-form {
   background-color: #E3E3E3;
   border-radius: 15px;
   padding: 20px;
+  box-sizing: border-box;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   opacity: 100%;
   
@@ -45,9 +45,6 @@
   box-shadow: #000000;
 }
 
-
-
-
 .promo-code-section {
   margin-top: 10px;
   display: flex;
@@ -75,13 +72,6 @@
   font-size: 0.9rem;
   color: #28a745;
 }
-
-
-
-
-
-
-
 
 .discount {
   margin-left: 10px;
@@ -149,6 +139,8 @@
   border: 1px solid #D9D9D9;
   border-radius: 5px;
   font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .payment-method {

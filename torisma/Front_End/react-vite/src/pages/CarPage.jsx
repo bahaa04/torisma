@@ -8,7 +8,7 @@ import Footer from '../components/footer';
 
 const buttonStyles = {
   backContainer: {
-    padding: '20px',
+    padding: '10px',
     marginTop: '0',
     borderBottom: '1px solid #eee',
   },
@@ -16,7 +16,7 @@ const buttonStyles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '10px 20px',
+    padding: '5px 10px',
     backgroundColor: 'transparent',
     color: '#666',
     border: 'none',
@@ -141,7 +141,7 @@ export default function CarPage() {
             </h2>
             <div className="image-gallery">
               {car.images.map((src, idx) => (
-                <img key={idx} src={src} alt={`${car.brand} ${idx}`} />
+                <img key={idx} src={src} alt={`${car.brand} ${idx}`} className="gallery-image" />
               ))}
             </div>
             <p>Localisation : {car.location}</p>
