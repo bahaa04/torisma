@@ -8,7 +8,7 @@ import BookingForm from '../components/BookingForm';
 import LocationMap from '../components/LocationMap';
 import PropertyDescription from '../components/PropertyDescription';
 import Footer from '../components/footer';
-import Navbar from '../components/navbar1';
+import Navbar11 from '../components/navbar11';
 import PaymentConfirmation from '../components/PaymentConfirmation';
 import SuccessMessage from '../components/SuccessMessage';
 import Erreur from '../components/Erreur';
@@ -30,7 +30,7 @@ function Localisation() {
 
   return (
     <div>
-      {isAuthenticated ? <NavBarC /> : <Navbar />}
+      {isAuthenticated ? <NavBarC /> : <Navbar11 />}
       
       <PropertyGallery altText="Gallery of the property" />
 

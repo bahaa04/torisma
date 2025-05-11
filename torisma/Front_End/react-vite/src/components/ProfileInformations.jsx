@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/ProfileInformations.css';
 
-const ProfileInformations = () => {
+const ProfileInformations = ({ onProfileImageUpdate }) => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     email: '',
@@ -43,11 +43,13 @@ const ProfileInformations = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const previewUrl = URL.createObjectURL(file);
       setUserData(prev => ({
         ...prev,
         profile_image: file
       }));
-      setPreviewImage(URL.createObjectURL(file));
+      setPreviewImage(previewUrl);
+      onProfileImageUpdate(previewUrl); // Notify parent component about the new profile image
     }
   };
 

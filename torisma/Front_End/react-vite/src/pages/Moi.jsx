@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBarC from '../components/navbar1-connected';
 import Sidebar from '../components/Sidebar';
@@ -29,10 +29,15 @@ const buttonStyles = {
 
 function Moi() {
   const navigate = useNavigate();
-  
+  const [profileImage, setProfileImage] = useState(null); // State to manage profile image
+
+  const handleProfileImageUpdate = (newImage) => {
+    setProfileImage(newImage); // Update the profile image state
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBarC />
+      <NavBarC profileImage={profileImage} /> {/* Pass profileImage to NavBarC */}
       <div style={buttonStyles.backContainer}>
         <button 
           onClick={() => navigate('/')} 
@@ -55,7 +60,7 @@ function Moi() {
 
         <section className="profile-content">
           <Suspense fallback={<div>Loading...</div>}>
-            <ProfileInformations />
+            <ProfileInformations onProfileImageUpdate={handleProfileImageUpdate} /> {/* Pass handler to ProfileInformations */}
           </Suspense>
         </section>
       </main>

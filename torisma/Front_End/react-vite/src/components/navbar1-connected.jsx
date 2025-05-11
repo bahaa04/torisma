@@ -1,39 +1,45 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import Logo from "./logo";
 
-const NavbarC = () => {
-    return(
-        <header>
-            <Link to="/" className="logo-link">
-                <div className="logo-container">
-                    <Logo/>
-                    <div className="logo-text">
-                        <span className="highlighted">T</span>
-                        <span>o</span>
-                        <span>u</span>
-                        <span>r</span>
-                        <span>i</span>
-                        <span>s</span>
-                        <span>m</span>
-                        <span className="highlighted">A</span>
-                    </div>
-                </div>
-            </Link>
+const NavbarC = ({ profileImage }) => {
+  return (
+    <>
+      <header>
+        <Link to="/" className="logo-link">
+          <div className="logo-container">
+            <Logo />
+            <h1 className="logoText">
+              <span className="highlight">T</span>ourism
+              <span className="highlight">A</span>
+            </h1>
+          </div>
+        </Link>
 
-
-            <div className="nav-links">
-                <a href="/whyTourisma">Pourquoi TourismA</a>
-                <a href="/whyAlgeria">Pourquoi l'Algérie</a>
-            </div>
-
-            <div className="header-actions">
-                <Link to="/moi" className="profile-button">
-                    <img src="/profile.jpg" alt="Profile" style={{ width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover' }} />
-                </Link>
-            </div>
-        </header>
-    );
+        <div className="header-actions">
+          <Link to="/moi" className="profile-pic">
+            <img
+              src={profileImage || "/default-profile.jpg"} // Use profileImage or fallback to default
+              alt="Profile"
+              style={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          </Link>
+        </div>
+      </header>
+      <hr
+        style={{
+          border: "none",
+          height: "0.5px",
+          backgroundColor: "#e0e0e0",
+        }}
+      />
+    </>
+  );
 };
 
 export default NavbarC;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 
 import NavBar1 from '../components/navbar1';
-import AuthNavBar from '../components/AuthNavBar';
+// import AuthNavBar from '../components/AuthNavBar'; 
+import NavBarc from '../components/navbar1-connected';
 import Footer from '../components/footer';
 import Logo from '../components/logo';
 import DestinationList from '../components/destination-list';
@@ -89,7 +90,7 @@ export default function HomePage() {
     return (
       <div className="homepage">
         {userProfile ? (
-          <AuthNavBar userProfile={userProfile} />
+          <NavBarC userProfile={userProfile} />
         ) : (
           <NavBar1 />
         )}
@@ -104,7 +105,7 @@ export default function HomePage() {
     return (
       <div className="homepage">
         {userProfile ? (
-          <AuthNavBar userProfile={userProfile} />
+          <NavBarC userProfile={userProfile} />
         ) : (
           <NavBar1 />
         )}
@@ -119,7 +120,7 @@ export default function HomePage() {
     <>
     <div className="container">
       {userProfile ? (
-        <AuthNavBar userProfile={userProfile} />
+        <NavBarc userProfile={userProfile} />
       ) : (
         <NavBar1 />
       )}
@@ -142,7 +143,7 @@ export default function HomePage() {
 
         <div className="help-section">
           <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
-          <a href="/help" className="help-button">Aidez-moi</a>
+          <Link to="/help" className="help-button">Aidez-moi</Link>
         </div>
       </div>
 
