@@ -8,7 +8,7 @@ import Footer from '../components/footer';
 
 const buttonStyles = {
   backContainer: {
-    padding: '10px',
+    padding: '40px',
     marginTop: '0',
     borderBottom: '1px solid #eee'
   },
@@ -16,7 +16,7 @@ const buttonStyles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '5px 10px',
+    padding: '10px 20px',
     backgroundColor: 'transparent',
     color: '#666',
     border: 'none',
@@ -26,7 +26,6 @@ const buttonStyles = {
     transition: 'all 0.3s ease'
   }
 };
-
 
 export default function CarPage() {
   const { wilaya, id: carId } = useParams();

@@ -319,7 +319,6 @@
 .submit-button:focus {
   animation: pulse 1.5s infinite;
 }
-<<<<<<< Updated upstream
 
 .select-input {
   background: #fff;
@@ -383,5 +382,3 @@
   font-size: 0.95rem;
   color: #4a5568;
 }
-=======
->>>>>>> Stashed changes

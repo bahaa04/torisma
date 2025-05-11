@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import NavBar1 from '../components/navbar1';
-// import AuthNavBar from '../components/AuthNavBar'; 
+import AuthNavBar from '../components/AuthNavBar';
 import Footer from '../components/footer';
 import Logo from '../components/logo';
 import DestinationList from '../components/destination-list';
@@ -142,7 +142,7 @@ export default function HomePage() {
 
         <div className="help-section">
           <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
-          <Link to="/help" className="help-button">Aidez-moi</Link>
+          <a href="/help" className="help-button">Aidez-moi</a>
         </div>
       </div>
 

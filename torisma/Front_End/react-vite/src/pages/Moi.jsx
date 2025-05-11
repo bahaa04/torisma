@@ -8,7 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 
 const buttonStyles = {
   backContainer: {
-    padding: '20px',
+    padding: '10px',
     marginTop: '0',
     borderBottom: '1px solid #eee'
   },  
@@ -16,7 +16,7 @@ const buttonStyles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '10px 20px',
+    padding: '5px 10px',
     backgroundColor: 'transparent',
     color: '#666',
     border: 'none',
