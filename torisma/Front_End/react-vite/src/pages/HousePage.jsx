@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar1 from '../components/navbar1';
+import NavBar11 from '../components/navbar11';
 import OptionMaison from '../components/optionmaison';
 import MaisonList from '../components/maison-list';
 import Footer from '../components/footer';
@@ -101,7 +101,7 @@ export default function HousePage() {
   if (error) {
     return (
       <>
-        <NavBar1 />
+        <NavBar11 />
         <div className="error">Erreur : {error}</div>
         <Footer />
       </>
@@ -112,7 +112,7 @@ export default function HousePage() {
     if (!house) {
       return (
         <>
-          <NavBar1 />
+          <NavBar11 />
           <div className="error-page">
             <h1>Maison introuvable</h1>
             <button onClick={() => navigate(-1)} className="back-button">
@@ -126,7 +126,7 @@ export default function HousePage() {
 
     return (
       <>
-        <NavBar1 />
+        <NavBar11 />
         <div className="house-detail">
         <div>
    
@@ -162,7 +162,7 @@ export default function HousePage() {
 
   return (
     <>
-      <NavBar1 />
+      <NavBar11 />
       <div style={buttonStyles.backContainer}>
         <button 
           onClick={() => navigate('/')} 

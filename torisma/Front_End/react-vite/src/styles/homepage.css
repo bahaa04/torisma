@@ -1,4 +1,4 @@
-*{
+.container{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -9,10 +9,10 @@
   
   header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid #e5e5e5;
+    align-items: center;
+    padding: 0;
+    background-color: #fefdfd;
   
   }
   
@@ -40,13 +40,16 @@
   
 
 .logo-text {
-font-weight: bold;      
-font-size: 2rem;  
-color: #03d186;    
+ font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #333;
+
+    padding-left: 6px;  
 }
 
 .logo-text .highlighted {
-color: rgb(81, 163, 81);         
+color:#03d186;          
 }
 
 .logo-text span { 

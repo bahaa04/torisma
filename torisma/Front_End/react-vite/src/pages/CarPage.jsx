@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar from '../components/navbar1';
+import NavBar11 from '../components/navbar11';
 import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
 
 const buttonStyles = {
   backContainer: {
-    padding: '10px',
+    padding: '40px',
     marginTop: '0',
-    borderBottom: '1px solid #eee',
+    borderBottom: '1px solid #eee'
   },
   backButton: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '5px 10px',
+    padding: '10px 20px',
     backgroundColor: 'transparent',
     color: '#666',
     border: 'none',
     borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '16px',
-    transition: 'all 0.3s ease',
-  },
+    transition: 'all 0.3s ease'
+  }
 };
 
 export default function CarPage() {
@@ -109,7 +109,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container"></div>
-        <NavBar />
+        <NavBar11 />
         <div className="error">Erreur : {error}</div>
         <Footer />
         <div />
@@ -134,14 +134,14 @@ export default function CarPage() {
     return (
       <>
         <div className="container">
-          <NavBar />
+          <NavBar11 />
           <div className="car-detail">
             <h2>
               {car.brand} {car.model} ({car.year})
             </h2>
             <div className="image-gallery">
               {car.images.map((src, idx) => (
-                <img key={idx} src={src} alt={`${car.brand} ${idx}`} className="gallery-image" />
+                <img key={idx} src={src} alt={`${car.brand} ${idx}`} />
               ))}
             </div>
             <p>Localisation : {car.location}</p>
@@ -173,7 +173,7 @@ export default function CarPage() {
 
   return (
     <>
-      <NavBar />
+      <NavBar11 />
       <div style={buttonStyles.backContainer}>
         <button
           onClick={() => navigate('/')}
