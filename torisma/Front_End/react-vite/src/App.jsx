@@ -21,11 +21,13 @@ import CProfile from './pages/carProfile';
 import WhyTourisma from './pages/whyTourisma';
 import StripePayment from './pages/StripePayement'
 import PaymentPage from './pages/PayementPage'
+import ChatPage from './pages/ChatPage'
 import './App.css';
 
 function App() {
   return (
     <Routes>
+      <Route path="/help" element={<ChatPage />} />
       <Route path="/payement2" element={<PaymentPage />} />
       <Route path="/payement" element={<StripePayment />} />
       <Route path="*" element={<Navigate to="/" replace />} />

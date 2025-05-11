@@ -465,9 +465,18 @@ def validate_coupon_for_listing(request, listing_type, listing_id):
 class UserCarListView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        cars = Car.objects.filter(owner=request.user)
-        serializer = CarSerializer(cars, many=True, context={'request': request})
-        return Response(serializer.data)
+        try:
+            print(f"User requesting cars: {request.user.id}")
+            cars = Car.objects.filter(owner=request.user)
+            print(f"Found {cars.count()} cars for user")
+            serializer = CarSerializer(cars, many=True, context={'request': request})
+            return Response(serializer.data)
+        except Exception as e:
+            print(f"Error in UserCarListView: {str(e)}")
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class UserHouseListView(APIView):
     permission_classes = [IsAuthenticated]

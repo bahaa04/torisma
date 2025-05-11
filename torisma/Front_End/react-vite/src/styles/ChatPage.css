@@ -10,6 +10,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    padding-top: 0px; /* Adjusted to reduce empty space */
   }
   
   .chat-main-container {
@@ -141,4 +142,18 @@
     background-color: #0056b3;
     text-decoration: none;
     color: white;
+  }
+  
+  .message-bubble strong {
+    font-weight: bold;
+  }
+  
+  .message-bubble em {
+    font-style: italic;
+  }
+  
+  .message-bubble br {
+    content: "";
+    margin: 0;
+    padding: 0;
   }

@@ -1,144 +1,145 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../styles/connect.css";
 import Footer from "../components/footer";
 import NavBar2 from "../components/navbar2";
 
 const Connect = () => {
-    const [isValid, setIsValid] = useState(true);
-    const [signingIn, setSigningIn] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const validateEmail = (email) => {
-        return String(email)
-            .toLowerCase()
-            .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            );
-    };
+  const [email, setEmail]             = useState('');
+  const [password, setPassword]       = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [loading, setLoading]         = useState(false);
+  const [error, setError]             = useState('');
 
-    useEffect(() => {
-        // Add animation styles
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-            
-            @keyframes success {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.05); }
-            }
-        `;
-        document.head.appendChild(style);
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
-        return () => {
-            document.head.removeChild(style);
-        };
-    }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const emailInput = form.querySelector('input[type="text"]');
-        const passwordInput = form.querySelector('input[type="password"]');
-        let formIsValid = true;
+    if (!email.trim() || !validateEmail(email.trim())) {
+      setError("Format d'email invalide");
+      return;
+    }
+    if (!password.trim()) {
+      setError("Veuillez entrer votre mot de passe");
+      return;
+    }
+    if (!termsAccepted) {
+      setError("Veuillez accepter les conditions générales");
+      return;
+    }
 
-        if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
-            formIsValid = false;
-            emailInput.style.borderColor = '#ff6b6b';
-            emailInput.style.animation = 'shake 0.5s';
-            setError("Format d'email invalide");
-            
-            setTimeout(() => {
-                emailInput.style.animation = '';
-                setTimeout(() => {
-                    emailInput.style.borderColor = '#e1e1e1';
-                }, 2000);
-            }, 500);
-        }
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:8000/api/users/auth/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), password: password.trim() })
+      });
 
-        if (!passwordInput.value.trim()) {
-            formIsValid = false;
-            passwordInput.style.borderColor = '#ff6b6b';
-            passwordInput.style.animation = 'shake 0.5s';
-            
-            setTimeout(() => {
-                passwordInput.style.animation = '';
-                setTimeout(() => {
-                    passwordInput.style.borderColor = '#e1e1e1';
-                }, 2000);
-            }, 500);
-        }
+      const data = await res.json();
+      if (!res.ok) {
+        // if your backend returns { detail: "..." } or similar
+        setError(data.detail || 'Échec de la connexion');
+        setLoading(false);
+        return;
+      }
+      console.log(data.access);
+      console.log(data.refresh);
+      // store tokens
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
 
-        setIsValid(formIsValid);
-        
-        if (formIsValid) {
-            setSigningIn(true);
-            setTimeout(() => {
-                setSuccess(true);
-            }, 1500);
-        }
-    };
+      // redirect to home
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      setError('Erreur réseau, veuillez réessayer');
+      setLoading(false);
+    }
+  };
 
-    return ( 
-        <>
-            <div className="container">
-                <NavBar2/>
-                <main>
-                    <div className="left-section" style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%" }}>
-                        <div className="content fade-in" style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
-                            <p className="tagline">Discover the beauty of Algeria and beyond.</p>
-                            <p className="description">Find stunning destinations, rent cars and homes with ease, and start your adventure today, all in one place</p>
-                            <div className="cta">
-                                <button className="join-btn" onClick={() => window.location.href='/signup'}>Joindre maintenant!</button>
-                            </div>
-                            <div className="illustration">
-                                <img src="/boy.png" alt="Tourism illustration" className="illustration-img"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="right-section slide-in">
-                        <div className="login-container">
-                            <h2>Sign in</h2>
-                            <form className="login-form" onSubmit={handleSubmit}>
-                                <div className="form-group">
-                                    <input type="text" placeholder="Enter Email or Phone" className="form-control"/>
-                                </div>
-                                <div className="form-group">
-                                    <input type="password" placeholder="Password" className="form-control"/>
-                                </div>
-                                <div className="terms-checkbox">
-                                    <input type="checkbox" id="terms" required />
-                                    <label htmlFor="terms">
-                                        J'accepte les <Link to="/terms-&-conditions" className="terms-link">conditions générales</Link> du site
-                                    </label>
-                                </div>
-                                {error && <p className="error-message">{error}</p>}
-                                <div className="forgot-password">
-                                    <Link to="/recoverpass">Recover Password</Link>
-                                </div>
-                                <button 
-                                    type="submit" 
-                                    className="signin-btn"
-                                    style={{ 
-                                        backgroundColor: success ? '#2ee59d' : signingIn ? '#25c285' : ''
-                                    }}
-                                >
-                                    {success ? 'Success!' : signingIn ? 'Signing in...' : 'Sign in'}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </main>
-                <Footer/>
+  return (
+    <div className="container">
+      <NavBar2 />
+      <main>
+        <div className="left-section" style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%" }}>
+          <div className="content fade-in" style={{ width: "100%", maxWidth: 400, textAlign: "center" }}>
+            <p className="tagline">Découvrez la beauté de l'Algérie et au-delà.</p>
+            <p className="description">
+              Trouvez des destinations époustouflantes, louez des voitures et des maisons facilement, et commencez votre aventure dès aujourd'hui, tout en un seul endroit.
+            </p>
+            <div className="cta">
+              <button className="join-btn" onClick={() => navigate('/signup')}>Rejoindre maintenant !</button>
             </div>
-        </>
-    );
+            <div className="illustration">
+              <img src="/boy.png" alt="Illustration de tourisme" className="illustration-img" />
+            </div>
+          </div>
+        </div>
+
+        <div className="right-section slide-in">
+          <div className="login-container">
+            <h2>Se connecter</h2>
+            <form className="login-form" onSubmit={handleSubmit} noValidate>
+              <div className="form-group">
+                <input
+                  id="email-input"
+                  type="email"
+                  placeholder="Entrez votre email ou téléphone"
+                  className="form-control"
+                  value={email}
+                  onChange={e => { setEmail(e.target.value); setError(''); }}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  id="password-input"
+                  type="password"
+                  placeholder="Mot de passe"
+                  className="form-control"
+                  value={password}
+                  onChange={e => { setPassword(e.target.value); setError(''); }}
+                />
+              </div>
+              <div className="terms-checkbox">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={termsAccepted}
+                  onChange={e => setTermsAccepted(e.target.checked)}
+                />
+                <label htmlFor="terms">
+                  J'accepte les <span className="terms-link" onClick={() => navigate('/terms-&-conditions')}>conditions générales</span> du site
+                </label>
+              </div>
+              {error && <p className="error-message">{error}</p>}
+              <div className="forgot-password">
+                <span className="recover-link" onClick={() => navigate('/recoverpass')}>Récupérer le mot de passe</span>
+              </div>
+              <button
+                type="submit"
+                className="signin-btn"
+                disabled={loading}
+              >
+                {loading ? 'Connexion en cours...' : 'Se connecter'}
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 };
 
 export default Connect;

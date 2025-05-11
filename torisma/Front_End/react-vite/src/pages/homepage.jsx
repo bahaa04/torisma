@@ -1,4 +1,3 @@
-// src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,8 +28,7 @@ export default function HomePage() {
 
   // 1) Try to load user profile if there's an auth token in localStorage
   useEffect(() => {
-    const token = localStorage.getItem('auth');
-    console.log('Token:', token); // Debugging line
+    const token = localStorage.getItem('access_token');
     if (!token) {
       // No auth token → skip profile fetch
       setIsProfileLoading(false);
@@ -39,18 +37,20 @@ export default function HomePage() {
 
     (async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/users/profile/', {
+        const res = await fetch('http://localhost:8000/api/users/profile/', {
           headers: {
             'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
           },
         });
         if (!res.ok) throw new Error(`Unauthorized (${res.status})`);
         const data = await res.json();
+        console.log("user === ",data)
         setUserProfile(data);
       } catch (err) {
         console.error('Profile fetch failed:', err);
         // broken token? erase from storage and force login
-        localStorage.removeItem('auth');
+        localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         navigate('/connect');
       } finally {
@@ -63,14 +63,14 @@ export default function HomePage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/listings/wilayas/');
+        const res = await fetch('http://localhost:8000/api/listings/wilayas/');
         if (!res.ok) {
           throw new Error(`Server error: ${res.status}`);
         }
         const data = await res.json();
         const formatted = data.map(item => ({
           id: item.id,
-          location: item.name, // Use name directly without conversion
+          location: item.name,
           images:
             item.photos && item.photos.length > 0
               ? item.photos.map(p => p.image)
@@ -110,7 +110,7 @@ export default function HomePage() {
         ) : (
           <NavBar />
         )}
-        <div className="error">Erreur : {error}</div>
+        <div className="error">Erreur : {error}</div>
         <Footer />
       </div>
     );
@@ -141,10 +141,8 @@ export default function HomePage() {
         </div>
 
         <div className="help-section">
-        </div>
-        <div className="help-section">
-        <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
-        <a href="/help" className="help-button">Aidez-moi</a>
+          <p className="help-text">Vous hésitez entre mer, désert ou montagnes ? Si oui, essayez ceci</p>
+          <button className="help-button" onClick={() => navigate('/help')}>Aidez-moi</button>
         </div>
 
       </div>
@@ -171,4 +169,3 @@ export default function HomePage() {
     </div>
   );
 }
-

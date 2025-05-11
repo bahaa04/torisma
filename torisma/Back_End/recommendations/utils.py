@@ -24,7 +24,7 @@ def detect_language(query):
         'le', 'la', 'les', 'un', 'une', 'des',
         'et', 'ou', 'mais', 'donc', 'car', 'ni',
         'voulez', 'pouvez', 'devez', 'allez', 'venez',
-        'bonjour', 'merci', 's\'il', 'vous', 'plait',
+        'bonjour', 'merci', "s'il", 'vous', 'plait',
         'comment', 'pourquoi', 'quand', 'où', 'qui',
         'que', 'quel', 'quelle', 'quels', 'quelles'
     ]
@@ -37,7 +37,20 @@ def detect_language(query):
     if french_word_count > 2:
         return 'fr'
     
-    # Default to English
+    # Check for English words
+    english_words = [
+        'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I',
+        'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
+        'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she',
+        'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their'
+    ]
+    english_word_count = sum(1 for word in english_words if word in query_lower)
+    
+    # If more than 2 English words are found, consider it English
+    if english_word_count > 2:
+        return 'en'
+    
+    # Default to English if no other language is detected
     return 'en'
 
 def get_tourism_recommendation(query):
@@ -74,7 +87,7 @@ def get_tourism_recommendation(query):
 
             السؤال: {query}
 
-            الرجاء تقديم إجابة شاملة ومفيدة."""
+            الرجاء تقديم إجابة شاملة ومفيدة في جملتين إلى ثلاث جمل فقط."""
         elif language == 'fr':
             prompt = f"""Vous êtes un assistant touristique spécialisé sur l'Algérie. Vos réponses doivent être:
             1. En français
@@ -85,7 +98,7 @@ def get_tourism_recommendation(query):
 
             Question: {query}
 
-            Veuillez fournir une réponse complète et utile."""
+            Veuillez fournir une réponse complète et utile en seulement deux à trois phrases."""
         else:
             prompt = f"""You are a tourism assistant specialized in Algeria. Your responses must be:
             1. In English
@@ -96,7 +109,7 @@ def get_tourism_recommendation(query):
 
             Question: {query}
 
-            Please provide a comprehensive and helpful response."""
+            Please provide a comprehensive and helpful response in just two to three sentences."""
 
         # Generate response
         response = model.generate_content(prompt)
