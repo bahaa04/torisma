@@ -119,7 +119,7 @@ const Connect = () => {
                   onChange={e => setTermsAccepted(e.target.checked)}
                 />
                 <label htmlFor="terms">
-                  J'accepte les <span className="terms-link" onClick={() => navigate('/terms-&-conditions')}>conditions générales</span> du site
+                  J'accepte les <span className="terms-link" onClick={() => navigate('/terms')}>conditions générales</span> du site
                 </label>
               </div>
               {error && <p className="error-message">{error}</p>}

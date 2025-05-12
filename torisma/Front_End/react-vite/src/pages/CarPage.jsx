@@ -27,6 +27,7 @@ const buttonStyles = {
   }
 };
 
+
 export default function CarPage() {
   const { wilaya, id: carId } = useParams();
   const navigate = useNavigate();
