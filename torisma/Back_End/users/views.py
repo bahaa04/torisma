@@ -117,7 +117,7 @@ class VerifyEmailView(APIView):
             # Check if user is already verified
             if user.is_email_verified:
                 return Response(
-                    {'message': 'Email déjà vérifié. Vous pouvez vous connecter.'}, 
+                    {'message': 'Email déjà vérifié. Vous pouvez vous se connecter.'}, 
                     status=status.HTTP_200_OK
                 )
 
@@ -128,7 +128,7 @@ class VerifyEmailView(APIView):
 
             logger.info(f"User {user.email} verified successfully.")
             return Response(
-                {'message': 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.'}, 
+                {'message': 'Email vérifié avec succès. Vous pouvez maintenant vous se connecter.'}, 
                 status=status.HTTP_200_OK
             )
         except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:

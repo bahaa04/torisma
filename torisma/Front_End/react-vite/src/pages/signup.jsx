@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/signup.css';
-import NavBar3 from '../components/navbar3';
+import NavBar1 from '../components/navbar1';
 import Footer from '../components/footer';
 
 export default function SignUp() {
@@ -167,7 +167,7 @@ export default function SignUp() {
   return (
     <>
       <div className="container">
-        <NavBar3 />
+        <NavBar1 />
         <hr style={{ border: "none", height: "0.5px", backgroundColor: "#e0e0e0" }} />
 
         <div className="form-container">

@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "../styles/resetpassword.css";
 import Footer from "../components/footer";
-import NavBar3 from "../components/navbar3";
+import NavBar1 from "../components/navbar1";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("")
@@ -54,7 +54,7 @@ export default function ResetPassword() {
 
   return (
     <>
-    <NavBar3/>
+    <NavBar1/>
     <hr style={{border:"none" , height:"0.5px",backgroundColor:"#e0e0e0"}}  />
     <div className="password-reset-container">
       <div className="password-reset-card">

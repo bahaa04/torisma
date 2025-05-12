@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import "../styles/verification-form.css"
-import NavBar3 from "../components/navbar3"
+import NavBar1 from "../components/navbar1"
 import Footer from "../components/footer"
 
 export default function Verified() {
@@ -42,7 +42,7 @@ export default function Verified() {
         return res.json()
       })
       .then(data => {
-        setMessage(data.message || "Email vérifié avec succès. Vous pouvez maintenant vous connecter.")
+        setMessage(data.message || "Email vérifié avec succès. Vous pouvez maintenant vous se connecter.")
         // Redirect to login after successful verification
         setTimeout(() => navigate('/connect'), 3000)
       })
@@ -54,7 +54,7 @@ export default function Verified() {
 
   return (
     <>
-      <NavBar3 />
+      <NavBar1 />
       <div className="verification-container visible">
         <h1 className="verification-title">Vérification de l'adresse e-mail</h1>
         {error ? (

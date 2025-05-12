@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar11 from '../components/navbar11';
+import NavBar1 from '../components/navbar1';
 import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
@@ -110,7 +110,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container"></div>
-        <NavBar11 />
+        <NavBar1 />
         <div className="error">Erreur : {error}</div>
         <Footer />
         <div />
@@ -135,7 +135,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container">
-          <NavBar11 />
+          <NavBar1 />
           <div className="car-detail">
             <h2>
               {car.brand} {car.model} ({car.year})
@@ -174,7 +174,7 @@ export default function CarPage() {
 
   return (
     <>
-      <NavBar11 />
+      <NavBar1 />
       <div style={buttonStyles.backContainer}>
         <button
           onClick={() => navigate('/')}

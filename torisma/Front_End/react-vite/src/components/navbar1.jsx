@@ -28,7 +28,7 @@ const NavBar1 = () => {
         
             <div className="header-actions">
                 <Link to="/connect" className="login-button">
-                    Se connecter
+                    connecter
                 </Link>
             </div>
         </header>

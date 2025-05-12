@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import "../styles/terms.css";
-import NavBar from "../components/navbar1";
-import NavbarC from '../components/navbar1-connected';
+import NavBar1 from "../components/navbar1";
+import NavBarC from '../components/navbar1-connected';
 import Footer from "../components/footer";
 
 const Terms = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('access_token');
+        setIsAuthenticated(!!accessToken);
+    }, []);
+
     return (
         <div className="terms-page">
-            <NavBar />
+            {isAuthenticated ? <NavBarC /> : <NavBar1 />}
             <div className="terms-container">
                 <h1>Termes et Conditions</h1>
                 

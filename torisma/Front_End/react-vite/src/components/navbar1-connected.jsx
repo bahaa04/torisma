@@ -1,44 +1,55 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Logo from "./logo";
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Logo from './logo';
+import { User2, LogOut } from 'lucide-react';
+import '../styles/navbar-connected.css';
 
-const NavbarC = ({ profileImage }) => {
+const NavbarC = ({ userProfile }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear stored tokens
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    // Redirect to login
+    navigate('/connect');
+  };
+
   return (
-    <>
-      <header>
-        <Link to="/" className="logo-link">
-          <div className="logo-container">
-            <Logo />
-            <h1 className="logoText">
-              <span className="highlight">T</span>ourism
-              <span className="highlight">A</span>
-            </h1>
-          </div>
-        </Link>
 
-        <div className="header-actions">
-          <Link to="/moi" className="profile-pic">
-            <img
-              src={profileImage || "/default-profile.jpg"} // Use profileImage or fallback to default
-              alt="Profile"
-              style={{
-                width: "30px",
-                height: "30px",
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-          </Link>
+    <header className="navbar-connected">
+   
+        <Link to="/" className="logo-link">
+        <div className="logo-container">
+          <Logo />
+          <div className="logo-text">
+            <span className="highlighted">T</span>
+            <span>o</span>
+            <span>u</span>
+            <span>r</span>
+            <span>i</span>
+            <span>s</span>
+            <span>m</span>
+            <span className="highlighted">A</span>
+          </div>
         </div>
-      </header>
-      <hr
-        style={{
-          border: "none",
-          height: "0.5px",
-          backgroundColor: "#e0e0e0",
-        }}
-      />
-    </>
+      </Link>
+    
+
+      <nav className="nav-links">
+        <Link to="/whyTourisma" className="nav-item">Pourquoi TourismA</Link>
+        <Link to="/whyAlgeria" className="nav-item">Pourquoi l'Algérie</Link>
+      </nav>
+
+      <div className="profile-actions">
+        <Link to="/moi" className="icon-button" title="Mon profil">
+          <User2 className="icon" />
+        </Link>
+        <button onClick={handleLogout} className="icon-button" title="Se dése connecter">
+          <LogOut className="icon logout-icon" />
+        </button>
+      </div>
+    </header>
   );
 };
 

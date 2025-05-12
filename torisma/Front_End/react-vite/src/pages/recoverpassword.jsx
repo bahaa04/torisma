@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom";  // Add this import
 import "../styles/recoverpassword.css";
-import NavBar3 from "../components/navbar3";
+import NavBar1 from "../components/navbar1";
 import Footer from "../components/footer";
 
 export default function PasswordReset() {
@@ -48,7 +48,7 @@ export default function PasswordReset() {
   return (
 
     <>
-    <NavBar3/>
+    <NavBar1/>
     <hr style={{border:"none" , height:"0.5px",backgroundColor:"#e0e0e0"}}  />
     
     <div className="container2">

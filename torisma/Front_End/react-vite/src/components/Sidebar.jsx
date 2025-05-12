@@ -24,7 +24,7 @@ function Sidebar() {
       <NavLink to="/" className={({ isActive }) =>
         isActive ? "sidebar-item active disconnect" : "sidebar-item disconnect"
       }>
-        Déconnecter
+        Dése connecter
       </NavLink>
     </div>
   );

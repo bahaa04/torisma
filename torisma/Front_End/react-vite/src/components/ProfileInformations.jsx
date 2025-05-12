@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/ProfileInformations.css';
 
-const ProfileInformations = ({ onProfileImageUpdate }) => {
+const ProfileInformations = ({ userProfile }) => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     email: '',
@@ -13,24 +13,22 @@ const ProfileInformations = ({ onProfileImageUpdate }) => {
     profile_image: null
   });
   const [previewImage, setPreviewImage] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    // TODO: Fetch user data from your API
-    const fetchUserData = async () => {
-      // Simulate API call
-      const mockData = {
-        email: 'user@example.com',
-        username: 'username123',
-        first_name: 'John',
-        last_name: 'Doe',
-        phone_number: '+1234567890',
-        profile_image: '/profile.jpg'
-      };
-      setUserData(mockData);
-      setPreviewImage(mockData.profile_image);
-    };
-    fetchUserData();
-  }, []);
+    if (userProfile) {
+      setUserData({
+        email: userProfile.email || '',
+        username: userProfile.username || '',
+        first_name: userProfile.first_name || '',
+        last_name: userProfile.last_name || '',
+        phone_number: userProfile.phone_number || '',
+        profile_image: null // file upload handled separately
+      });
+      setPreviewImage(userProfile.profile_image || '/default-profile.jpg');
+    }
+  }, [userProfile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -43,21 +41,48 @@ const ProfileInformations = ({ onProfileImageUpdate }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const previewUrl = URL.createObjectURL(file);
       setUserData(prev => ({
         ...prev,
         profile_image: file
       }));
-      setPreviewImage(previewUrl);
-      onProfileImageUpdate(previewUrl); // Notify parent component about the new profile image
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement your API call to update user data
-    console.log('Saving user data:', userData);
-    // Add your API call here
+    setSaving(true);
+    setMessage('');
+    try {
+      const access = localStorage.getItem('access_token');
+      const formData = new FormData();
+      formData.append('email', userData.email);
+      formData.append('username', userData.username);
+      formData.append('first_name', userData.first_name);
+      formData.append('last_name', userData.last_name);
+      formData.append('phone_number', userData.phone_number);
+      if (userData.profile_image) {
+        formData.append('profile_image', userData.profile_image);
+      }
+
+      const res = await fetch('http://localhost:8000/api/users/profile/', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${access}`
+        },
+        body: formData
+      });
+
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const data = await res.json();
+      setMessage('Profil mis à jour avec succès.');
+      // Optionally refresh profile data
+    } catch (err) {
+      console.error('Update failed:', err);
+      setMessage('Échec de la mise à jour.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -135,8 +160,8 @@ const ProfileInformations = ({ onProfileImageUpdate }) => {
         </div>
 
         <div className="form-group">
-          <label style={{visibility: 'hidden'}}>Mot de passe</label>
-          <button 
+          <label style={{ visibility: 'hidden' }}>Mot de passe</label>
+          <button
             type="button"
             className="password-change-button"
             onClick={() => navigate('/recmsg')}
@@ -146,8 +171,10 @@ const ProfileInformations = ({ onProfileImageUpdate }) => {
         </div>
       </div>
 
-      <button type="submit" className="save-button">
-        Sauvegarder
+      {message && <p className="update-message">{message}</p>}
+
+      <button type="submit" className="save-button" disabled={saving}>
+        {saving ? 'Sauvegarde…' : 'Sauvegarder'}
       </button>
     </form>
   );
