@@ -1,10 +1,11 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Home, Car } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import NavBar11 from '../components/navbar11';
+import NavBar1 from '../components/navbar1';
+import NavBarC from '../components/navbar1-connected';
 import Footer from '../components/footer';
 import '../styles/choose.css';
 
@@ -12,6 +13,12 @@ export default function Choose() {
   const navigate = useNavigate();
   const location = useLocation();
   const { wilaya } = location.state || {};
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access_token');
+    setIsAuthenticated(!!accessToken);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0, scale: 0.9 },
@@ -53,7 +60,7 @@ export default function Choose() {
 
   return (
     <>
-      <NavBar11 />
+      {isAuthenticated ? <NavBarC /> : <NavBar1 />}
       <div className="choose-page">
         <motion.div
           className="choose-cards-container"

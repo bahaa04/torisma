@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar11 from '../components/navbar11';
+import NavBar1 from '../components/navbar1';
+import NavBarC from '../components/navbar1-connected';
 import OptionMaison from '../components/optionmaison';
 import MaisonList from '../components/maison-list';
 import Footer from '../components/footer';
-
 
 const buttonStyles = {
   backContainer: {
@@ -31,6 +31,12 @@ const buttonStyles = {
 export default function HousePage() {
   const { id, wilaya } = useParams();
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access_token');
+    setIsAuthenticated(!!accessToken);
+  }, []);
 
   const isDetail = Boolean(id);
   const param = isDetail ? id : wilaya;
@@ -96,12 +102,10 @@ export default function HousePage() {
     }
   }, [param, isDetail]);
 
-
-
   if (error) {
     return (
       <>
-        <NavBar11 />
+        {isAuthenticated ? <NavBarC /> : <NavBar1 />}
         <div className="error">Erreur : {error}</div>
         <Footer />
       </>
@@ -112,7 +116,7 @@ export default function HousePage() {
     if (!house) {
       return (
         <>
-          <NavBar11 />
+          {isAuthenticated ? <NavBarC /> : <NavBar1 />}
           <div className="error-page">
             <h1>Maison introuvable</h1>
             <button onClick={() => navigate(-1)} className="back-button">
@@ -126,7 +130,7 @@ export default function HousePage() {
 
     return (
       <>
-        <NavBar11 />
+        {isAuthenticated ? <NavBarC /> : <NavBar1 />}
         <div className="house-detail">
         <div>
    
@@ -162,7 +166,7 @@ export default function HousePage() {
 
   return (
     <>
-      <NavBar11 />
+      {isAuthenticated ? <NavBarC /> : <NavBar1 />}
       <div style={buttonStyles.backContainer}>
         <button 
           onClick={() => navigate('/')} 

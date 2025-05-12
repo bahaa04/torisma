@@ -11,13 +11,25 @@
     margin: 0 auto;
 }
 
+.choose-page {
+  min-height: calc(100vh - 60px); /* Adjust the value based on your navbar height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  position: relative;
+  margin-bottom: 60px; /* Add margin to prevent footer overlap */
+}
+
 .choose-cards-container {
   width: 100%;
-  max-width: auto;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  padding: 2rem 0;
 }
 
 .choose-title {
@@ -113,11 +125,17 @@
 }
 
 @media (max-width: 900px) {
+  .choose-page {
+    padding: 1rem;
+    margin-bottom: 40px;
+  }
+  
   .choose-cards {
     flex-direction: column;
     gap: 1.5rem;
     align-items: center;
   }
+  
   .choose-card {
     max-width: 95vw;
     height: 260px;

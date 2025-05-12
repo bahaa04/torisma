@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Localisation.css';
 
@@ -8,16 +8,12 @@ import BookingForm from '../components/BookingForm';
 import LocationMap from '../components/LocationMap';
 import PropertyDescription from '../components/PropertyDescription';
 import Footer from '../components/footer';
-import Navbar from '../components/navbar1';
+import NavBar1 from '../components/navbar1';
+import NavBarC from '../components/navbar1-connected';
 import PaymentConfirmation from '../components/PaymentConfirmation';
 import SuccessMessage from '../components/SuccessMessage';
 import Erreur from '../components/Erreur';
-
 import Redirecting from '../components/Redirecting';
-import NavBarC from '../components/navbar1-connected';
-
-// Assume isAuthenticated is a boolean indicating user's connection status
-const isAuthenticated = false; // Replace with actual authentication logic
 
 function Localisation() {
   const navigate = useNavigate();
@@ -25,12 +21,17 @@ function Localisation() {
   const [showPayment, setShowPayment] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
-  // <-- new state for external redirect
   const [redirectUrl, setRedirectUrl] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access_token');
+    setIsAuthenticated(!!accessToken);
+  }, []);
 
   return (
     <div>
-      {isAuthenticated ? <NavBarC /> : <Navbar />}
+      {isAuthenticated ? <NavBarC /> : <NavBar1 />}
       
       <PropertyGallery altText="Gallery of the property" />
 

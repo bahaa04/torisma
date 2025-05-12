@@ -45,7 +45,7 @@ const NavbarC = ({ userProfile }) => {
         <Link to="/moi" className="icon-button" title="Mon profil">
           <User2 className="icon" />
         </Link>
-        <button onClick={handleLogout} className="icon-button" title="Se déconnecter">
+        <button onClick={handleLogout} className="icon-button" title="Se dése connecter">
           <LogOut className="icon logout-icon" />
         </button>
       </div>

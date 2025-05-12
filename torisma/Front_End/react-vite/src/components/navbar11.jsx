@@ -20,7 +20,7 @@ const NavBar11 = () => {
         
             <div className="header-actions">
                 <Link to="/connect" className="login-button">
-                    Se connecter
+                    se connecter
                 </Link>
             </div>
         </header>

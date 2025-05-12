@@ -50,7 +50,7 @@ export default function TwoCards({ items, onAdd, onDelete, onCardClick }) {
           
           // Handle specific error codes
           if (error.response.status === 401 || error.response.status === 403) {
-            alert('Erreur d\'authentification. Veuillez vous reconnecter.');
+            alert('Erreur d\'authentification. Veuillez vous rese connecter.');
           } else if (error.response.status === 404) {
             alert('Ce logement n\'existe plus ou a déjà été supprimé.');
             if (onDelete) onDelete(id); // Remove from UI if already gone from server

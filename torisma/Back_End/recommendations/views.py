@@ -26,7 +26,7 @@ def generate_concise_recommendation(user_query, is_authenticated=True):
 
     if not is_authenticated:
         login_url = "http://localhost:5173/connect"
-        login_text = "Login" if language == 'en' else "Se connecter" if language == 'fr' else "تسجيل الدخول"
+        login_text = "Login" if language == 'en' else "se connecter" if language == 'fr' else "تسجيل الدخول"
         recommendation += f"<br/><a href='{login_url}' class='login-link'>{login_text}</a>"
 
     return recommendation
@@ -140,7 +140,7 @@ def handle_authentication_error(request, exc):
             login_text = "تسجيل الدخول"
         elif language == 'fr':
             message = "Vous devez être connecté pour accéder à ce service"
-            login_text = "Se connecter"
+            login_text = "se connecter"
         else:
             message = "You need to be logged in to access this service"
             login_text = "Login"
@@ -148,7 +148,7 @@ def handle_authentication_error(request, exc):
     except (json.JSONDecodeError, AttributeError):
         # If we can't get the query or detect language, default to French
         message = "Vous devez être connecté pour accéder à ce service"
-        login_text = "Se connecter"
+        login_text = "se connecter"
 
     return JsonResponse({
         'error': message,

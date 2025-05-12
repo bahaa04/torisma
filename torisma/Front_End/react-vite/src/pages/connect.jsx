@@ -89,7 +89,7 @@ const Connect = () => {
 
         <div className="right-section slide-in">
           <div className="login-container">
-            <h2>Se connecter</h2>
+            <h2>se connecter</h2>
             <form className="login-form" onSubmit={handleSubmit} noValidate>
               <div className="form-group">
                 <input
@@ -131,7 +131,7 @@ const Connect = () => {
                 className="signin-btn"
                 disabled={loading}
               >
-                {loading ? 'Connexion en cours...' : 'Se connecter'}
+                {loading ? 'Connexion en cours...' : 'se connecter'}
               </button>
             </form>
           </div>

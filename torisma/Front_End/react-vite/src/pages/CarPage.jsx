@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import NavBar11 from '../components/navbar11';
+import NavBar1 from '../components/navbar1';
 import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
 
 const buttonStyles = {
   backContainer: {
-    padding: '40px',
+    padding: '10px',
     marginTop: '0',
     borderBottom: '1px solid #eee'
   },
@@ -16,7 +16,7 @@ const buttonStyles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    padding: '10px 20px',
+    padding: '5px 10px',
     backgroundColor: 'transparent',
     color: '#666',
     border: 'none',
@@ -109,7 +109,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container"></div>
-        <NavBar11 />
+        <NavBar1 />
         <div className="error">Erreur : {error}</div>
         <Footer />
         <div />
@@ -134,7 +134,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container">
-          <NavBar11 />
+          <NavBar1 />
           <div className="car-detail">
             <h2>
               {car.brand} {car.model} ({car.year})
@@ -173,7 +173,7 @@ export default function CarPage() {
 
   return (
     <>
-      <NavBar11 />
+      <NavBar1 />
       <div style={buttonStyles.backContainer}>
         <button
           onClick={() => navigate('/')}

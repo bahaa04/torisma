@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import "../styles/whyTourisma.css";
-import NavBar11 from "../components/navbar11";
+import NavBar1 from "../components/navbar1";
+import NavBarC from '../components/navbar1-connected';
 import Footer from "../components/footer";
 
 const WhyTourisma = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('access_token');
+        setIsAuthenticated(!!accessToken);
+    }, []);
+
     const features = [
         {
             title: "1. Offre Double Unique",
@@ -50,7 +58,7 @@ const WhyTourisma = () => {
     return (
        <>
        <div className="container">
-            <NavBar11 />
+            {isAuthenticated ? <NavBarC /> : <NavBar1 />}
              <div className="why-tourisma-page">
             <div className="why-tourisma-container">
                 <h1>Pourquoi Choisir TourismA ?</h1>

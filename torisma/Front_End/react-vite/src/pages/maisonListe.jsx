@@ -185,7 +185,7 @@ function MaisonListe() {
                   <li>Vérifiez que le serveur API est en cours d'exécution sur http://127.0.0.1:8000</li>
                   <li>Assurez-vous que les cookies d'authentification sont correctement configurés</li>
                   <li>Vérifiez les paramètres CORS sur le serveur backend</li>
-                  <li>Essayez de vous reconnecter à votre compte</li>
+                  <li>Essayez de vous rese connecter à votre compte</li>
                 </ul>
               </div>
               <button 
