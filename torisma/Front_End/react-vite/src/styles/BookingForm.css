@@ -52,25 +52,43 @@
   align-items: flex-start;
 }
 
+.promo-input-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+
 .promo-code-input {
-  padding: 8px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 5px;
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 .apply-promo-button {
-  padding: 8px 12px;
-  background-color: #4CAF50;
-  color: white;
+  padding: 8px 16px;
+  background-color: #34E0A1;
+  color: #000000;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+.apply-promo-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #34E0A1;
 }
 
 .promo-message {
   margin-top: 5px;
   font-size: 0.9rem;
-  color: #28a745;
+  color: #34E0A1;
 }
 
 .discount {
@@ -78,9 +96,20 @@
   font-size: 20px;
 }
 
+.new-price-label {
+  color: #34E0A1;
+  font-weight: 600;
+  font-size: 14px;
+  margin-right: 8px;
+  display: inline-block;
+}
+
 .price-container {
   margin-bottom: 20px;
   text-align: left; 
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .original-price {
@@ -101,7 +130,7 @@
   justify-content: space-between;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #9c9292;
+  border-bottom: 3px solid #9c9292;
 }
 
 .availability-label {
@@ -112,6 +141,26 @@
 .availability-status {
   color: #34E0A1;
   font-weight: 500;
+}
+
+.availability-status.available {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.availability-status.disabled {
+  color: #FFA000;
+  font-weight: bold;
+}
+
+.availability-status.disponible {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.availability-status.indisponible {
+  color: #FFA000;
+  font-weight: bold;
 }
 
 .date-picker {
@@ -153,26 +202,28 @@
 }
 
 .payment-option {
-  width: 100%; /* Make buttons full width on smaller screens */
+  width: 100%;
   padding: 12px 15px;
-  background-color: #fff;
-  border: 1px solid #ffffff;
+  background-color: #ffffff;
+  border: 1px solid #D9D9D9;
   border-radius: 5px;
   text-align: center;
   font-size: 14px;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  color: #000000;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
   cursor: pointer;
 }
 
 .payment-option:hover {
-  background-color: #eee;
   transform: scale(1.03);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
 }
 
 .payment-option.selected {
   border-color: #000;
   font-weight: 500;
+  background-color: #ffffff;
 }
 
 .reserve-button {
@@ -185,13 +236,13 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
 }
 
 .reserve-button:hover {
-  background-color: #e0e2e0;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #34E0A1;
 }
 
 /* Media Query for larger screens (e.g., tablets) */
@@ -221,11 +272,9 @@
 /* Media Query for even larger screens (desktops) */
 @media (min-width: 1024px) {
   .booking-form {
-    width: 400px; /* Fixed width on desktop if desired */
-    margin-left: auto;
-    margin-right: 65px;
-    top: auto;
-    bottom: auto;
-    left: auto;
+    width: 500px; /* Fixed width on desktop if desired */
+    margin-right: 26px;
+    
+    
   }
 }

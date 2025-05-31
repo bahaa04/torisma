@@ -81,7 +81,11 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Add the templates directory
+        'DIRS': [
+            BASE_DIR / 'users' / 'templates',
+            BASE_DIR / 'templates',
+            BASE_DIR / 'reservations' / 'templates',  # Add this line
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -274,14 +278,14 @@ COUPON_NOTIFICATION_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 # Stripe Configuration
 
+# Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Your email address
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Your email app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 STRIPE_PUBLISHER_KEY = os.getenv('STRIPE_PUBLISHER_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
@@ -328,13 +332,23 @@ LOGGING = {
 }
 
 # Celery Configuration
-CELERY_BROKER_URL = 'redis://<your-redis-host>:<your-redis-port>/0'  # Example: 'redis://192.168.1.100:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']  # Accept JSON-encoded tasks
-CELERY_TASK_SERIALIZER = 'json'  # Serialize tasks in JSON format
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Store task results in Redis
-CELERY_TIMEZONE = TIME_ZONE  # Use the same timezone as Django
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = TIME_ZONE
 
-
+# Add Celery Beat Schedule for reservation tasks
+CELERY_BEAT_SCHEDULE = {
+    'check-expired-reservations': {
+        'task': 'reservations.tasks.check_expired_pending_reservations',
+        'schedule': timedelta(hours=1),  # Run every hour
+    },
+    'complete-finished-reservations': {
+        'task': 'reservations.tasks.complete_finished_reservations',
+        'schedule': timedelta(hours=1),  # Run every hour
+    },
+}
 
 # Gemini API Configuration
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')

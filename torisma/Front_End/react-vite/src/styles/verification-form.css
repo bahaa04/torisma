@@ -29,13 +29,10 @@
   }
   
   .verification-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 20px;
-    animation: fadeInDown 0.8s ease forwards;
-    opacity: 0;
-    animation-delay: 0.2s;
+    color: #34E0A1;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
   }
   
   .verification-description {
@@ -199,4 +196,3 @@
       font-size: 14px;
     }
   }
-  

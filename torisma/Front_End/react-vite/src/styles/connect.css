@@ -86,21 +86,21 @@ main {
 }
 
 .join-btn {
+    padding: 10px 20px;
+    font-size: 16px;
     background-color: transparent;
     color: #2ee59d;
-    border: none;
-    font-weight: 600;
-    font-size: 1rem;
+    border: 2px solid #2ee59d;
+    border-radius: 5px;
     cursor: pointer;
-    padding: 5px 0;
-    position: relative;
     transition: all 0.3s ease;
-    text-align: left;
-    margin-bottom: 20px;
 }
 
 .join-btn:hover {
-    color: #25c285;
+    background-color: #f0f0f0;  /* Light grey background */
+    color: #2ee59d;  /* Keep text green */
+    transform: translateY(-2px);
+    border-color: #2ee59d;  /* Keep border green */
 }
 
 .illustration {
@@ -176,6 +176,7 @@ main {
 }
 
 .forgot-password {
+    cursor: pointer;
     text-align: right;
     margin-bottom: 25px;
 }

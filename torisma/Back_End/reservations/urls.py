@@ -1,41 +1,60 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from .views import (
     CarReservationViewSet,
     HouseReservationViewSet,
-    verify_payment,
-    stripe_webhook_handler,
-    initiate_cash_payment,
+    check_availability,
+    process_payment_result,
     confirm_cash_payment,
-    create_stripe_payment,
-    check_payment_status,
-    send_cash_verification_email
+    cancel_reservation,
+    get_reservation_details,
+    stripe_webhook_handler
 )
 
-router = DefaultRouter()
-router.register(r'car-reservations', CarReservationViewSet, basename='carreservation')
-router.register(r'house-reservations', HouseReservationViewSet, basename='housereservation')
-
 urlpatterns = [
-    path('', include(router.urls)),
-    path('car-reservations/<uuid:pk>/process_payment/', CarReservationViewSet.as_view({'post': 'process_payment'}), name='carreservation-process-payment'),
-
-    # Cash payment endpoints
-    path('car-reservations/<uuid:reservation_id>/cash/initiate/', initiate_cash_payment, name='car-cash-payment-initiate'),
-    path('car-reservations/<uuid:reservation_id>/cash/verify/', send_cash_verification_email, name='car-cash-verification'),
-    path('car-reservations/<uuid:reservation_id>/cash/confirm/', confirm_cash_payment, name='car-cash-payment-confirm'),
-    path('house-reservations/<uuid:reservation_id>/cash/initiate/', initiate_cash_payment, name='house-cash-payment-initiate'),
-    path('house-reservations/<uuid:reservation_id>/cash/verify/', send_cash_verification_email, name='house-cash-verification'),
-    path('house-reservations/<uuid:reservation_id>/cash/confirm/', confirm_cash_payment, name='house-cash-payment-confirm'),
-
-    # Stripe payment endpoints
-    path('car-reservations/<uuid:reservation_id>/stripe/create/', create_stripe_payment, name='car-stripe-payment-create'),
-    path('house-reservations/<uuid:reservation_id>/stripe/create/', create_stripe_payment, name='house-stripe-payment-create'),
-    path('payments/stripe/verify/', verify_payment, name='stripe-payment-verify'),
-    path('payments/stripe/webhook/', stripe_webhook_handler, name='stripe-webhook'),
-
-    # Payment status endpoints
-    path('car-reservations/<uuid:reservation_id>/status/', check_payment_status, name='car-payment-status'),
-    path('house-reservations/<uuid:reservation_id>/status/', check_payment_status, name='house-payment-status'),
+    # Reservation endpoints
+    path('car-reservations/', CarReservationViewSet.as_view({
+        'get': 'list', 
+        'post': 'create'
+    }), name='car-reservation-list'),
+    
+    path('house-reservations/', HouseReservationViewSet.as_view({
+        'get': 'list', 
+        'post': 'create'
+    }), name='house-reservation-list'),
+    
+    path('car-reservations/<uuid:pk>/', CarReservationViewSet.as_view({
+        'get': 'retrieve', 
+        'put': 'update', 
+        'delete': 'destroy'
+    }), name='car-reservation-detail'),
+    
+    path('house-reservations/<uuid:pk>/', HouseReservationViewSet.as_view({
+        'get': 'retrieve', 
+        'put': 'update', 
+        'delete': 'destroy'
+    }), name='house-reservation-detail'),
+    
+    # Payment processing
+    path('process-payment-result/', process_payment_result, name='process-payment-result'),
+    
+    # Cash payment confirmation
+    path('confirm-cash-payment/<uuid:reservation_id>/', 
+         confirm_cash_payment, 
+         name='confirm-cash-payment'),
+    
+    # Reservation management
+    path('cancel-reservation/<uuid:reservation_id>/', 
+         cancel_reservation, 
+         name='cancel-reservation'),
+    
+    # Payment page data
+    path('get-reservation-details/<uuid:reservation_id>/', 
+         get_reservation_details, 
+         name='get-reservation-details'),
+    
+    # Availability check
+    path('check-availability/', check_availability, name='check-availability'),
+    
+    # Stripe webhook
+    path('stripe/webhook/', stripe_webhook_handler, name='stripe-webhook'),
 ]
-

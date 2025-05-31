@@ -61,10 +61,34 @@ def stripe_webhook_handler(request):
 def handle_payment_success(payment_intent):
     stripe_payment_id = payment_intent['id']
     amount_received = payment_intent['amount_received'] / 100  # Convert cents to dollars
-    StripePayment = apps.get_model('reservations', 'StripePayment')  # Dynamically load model
-    StripePayment.objects.filter(stripe_payment_intent_id=stripe_payment_id).update(
-        status='completed', amount=amount_received
-    )
+    
+    # Get reservation from metadata
+    reservation_id = payment_intent.metadata.get('reservation_id')
+    reservation_type = payment_intent.metadata.get('reservation_type')
+
+    if reservation_type == 'car':
+        reservation = CarReservation.objects.get(id=reservation_id)
+        # Update car status
+        car = reservation.car
+        car.status = 'rented'
+        car.save()
+    else:
+        reservation = HouseReservation.objects.get(id=reservation_id)
+        # Update house status
+        house = reservation.house
+        house.status = 'rented'
+        house.save()
+
+    # Update reservation status
+    reservation.status = 'confirmed'
+    reservation.payment_status = 'completed'
+    reservation.payment_reference = stripe_payment_id
+    reservation.save()
+
+    # Send confirmation email
+    send_confirmation_email(reservation)
+
+    return reservation
 
 def handle_checkout_completed(session):
     stripe_payment_id = session['payment_intent']

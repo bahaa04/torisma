@@ -1,0 +1,12 @@
+
+.main-content {
+  padding-top: 0px;
+    min-height: 0vh;
+      width: 100%;
+        box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+    padding: 0;
+}

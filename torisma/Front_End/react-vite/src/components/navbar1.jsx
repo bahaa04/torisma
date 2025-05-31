@@ -1,37 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import Logo from "./logo";
+import '../styles/layout.css';
 
 const NavBar1 = () => {
     return(
-        <header>
-            <Link to="/" className="logo-link">
-                <div className="logo-container">
-                    <Logo/>
-                    <div className="logo-text">
-                        <span className="highlighted">T</span>
-                        <span>o</span>
-                        <span>u</span>
-                        <span>r</span>
-                        <span>i</span>
-                        <span>s</span>
-                        <span>m</span>
-                        <span className="highlighted">A</span>
+        <>
+            <header>
+                <Link to="/" className="logo-link">
+                    <div className="logo-container">
+                        <Logo/>
+                        <div className="logo-text">
+                            <span className="highlighted">T</span>
+                            <span>o</span>
+                            <span>u</span>
+                            <span>r</span>
+                            <span>i</span>
+                            <span>s</span>
+                            <span>m</span>
+                            <span className="highlighted">A</span>
+                        </div>
                     </div>
-                </div>
-            </Link>
-             
-            <div className="nav-links">
-                <a href="/whyTourisma">Pourquoi TourismA</a>
-                <a href="/whyAlgeria">Pourquoi l'Algérie</a>
-            </div>
-        
-            <div className="header-actions">
-                <Link to="/connect" className="login-button">
-                    connecter
                 </Link>
-            </div>
-        </header>
+                 
+                <div className="nav-links">
+                    <a href="/whyTourisma">Pourquoi TourismA</a>
+                    <a href="/whyAlgeria">Pourquoi l'Algérie</a>
+                </div>
+            
+                <div className="header-actions">
+                    <Link to="/connect" className="login-button">
+                        connecter
+                    </Link>
+                </div>
+            </header>
+            
+        </>
     );
 };
   

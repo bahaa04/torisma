@@ -257,3 +257,30 @@ class WilayaPhotos(models.Model):
 
     def __str__(self):
         return f"Photo for {self.wilaya_name}"
+
+class Rating(models.Model):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, 
+        related_name='listing_house_ratings', null=True, blank=True)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, 
+        related_name='listing_car_ratings', null=True, blank=True)
+    rating = models.DecimalField(max_digits=3, decimal_places=1, 
+        validators=[MinValueValidator(1), MaxValueValidator(5)])
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [('user', 'house'), ('user', 'car')]
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(house__isnull=False, car__isnull=True) |
+                    models.Q(house__isnull=True, car__isnull=False)
+                ),
+                name='rating_house_xor_car'
+            )
+        ]
+
+    def __str__(self):
+        rated_object = self.house or self.car
+        return f"{self.user.username} rated {rated_object.id} with {self.rating} stars"

@@ -67,7 +67,7 @@ export default function HousePage() {
             parking: data.has_parking,
             wifi: data.has_wifi,
             description: data.description,
-            status: data.status,
+            status: data.status === 'disabled' ? 'Indisponible' : 'Disponible',
             rented_until: data.rented_until,
             favorised: data.is_favorised,
             images: data.photos?.length ? data.photos.map(p => p.photo) : ['/default-house.jpg'],
@@ -84,16 +84,16 @@ export default function HousePage() {
         })
         .then(data => {
           setHouses(
-            (data.results || []).map((item, index) => ({
-              id: index === 0 ? 1 : index === 1 ? 2 : index === 2 ? 3 : item.id || index + 1, // Assign ID=1 to the first house, ID=2 to the second, and ID=3 to the third
+            (data.results || []).map((item) => ({
+              id: item.id,
               rooms: item.number_of_rooms,
               price: parseFloat(item.price),
               currency: 'DA',
               location: item.exact_location,
-              status: item.status,
+              status: item.status === 'disabled' ? 'Indisponible' : 'Disponible',
               rented_until: item.rented_until,
               images: item.photos?.length ? item.photos.map(p => p.photo) : ['/default-house.jpg'],
-              customPath: index === 0 ? '/localisation' : `/house-details/${item.id || index + 1}` // Assign paths based on ID
+              customPath: `/localisation/${item.id}` // Updated to use localisation route for all items
             }))
           );
         })

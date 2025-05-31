@@ -3,7 +3,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import '../styles/StripePayment.css';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHER_KEY);
+// Make sure to use your publishable key
+const stripePromise = loadStripe('pk_test_51RFZ1NRom7GyCAfJofQoeWphZ0wzdfOJV6zSzrJOXim7Zd8AHX5yh1Q0MdD8qYOPjr5uUlvwcmm5XE4ghOoqjPyO00nam3KQHi');
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -20,11 +21,11 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
-const PaymentForm = ({ transactionId, amount, onSuccess }) => {
-  const stripe = useStripe();
-  const elements = useElements();
+const PaymentForm = ({ amount, onSuccess, onInsufficient, onFailed }) => {
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const stripe = useStripe();
+  const elements = useElements();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,42 +33,61 @@ const PaymentForm = ({ transactionId, amount, onSuccess }) => {
     setProcessing(true);
 
     if (!stripe || !elements) {
-      setError('Stripe has not been properly initialized');
       setProcessing(false);
       return;
     }
 
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/reservations/stripe/create-payment/${transactionId}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ amount }),
-      });
+    const cardElement = elements.getElement(CardElement);
+    
+    // Get card details to check the number
+    const { error: cardError, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+    });
 
-      if (!response.ok) {
-        throw new Error('Payment initialization failed');
-      }
-
-      const { clientSecret } = await response.json();
-
-      const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-        },
-      });
-
-      if (result.error) {
-        setError(result.error.message);
-      } else {
-        onSuccess(result.paymentIntent);
-      }
-    } catch (error) {
-      setError('Payment failed. Please try again.');
-    } finally {
+    if (cardError) {
+      setError(cardError.message);
       setProcessing(false);
+      return;
     }
+
+    // Static payment logic based on card numbers
+    const cardNumber = paymentMethod.card.last4;
+    
+    setTimeout(() => {
+      setProcessing(false);
+      
+      // Check the last 4 digits to determine the outcome
+      if (cardNumber === '4242') {
+        // Success for 4242 4242 4242 4242
+        onSuccess({
+          id: 'demo_payment_' + Date.now(),
+          status: 'succeeded',
+          amount: amount
+        });
+      } else if (cardNumber === '0002') {
+        // Insufficient for 4000 0000 0000 0002 (Stripe's official insufficient funds test card)
+        onInsufficient({
+          id: 'demo_payment_' + Date.now(),
+          status: 'insufficient',
+          amount: amount
+        });
+      } else if (cardNumber === '0341') {
+        // Failed for 4000 0000 0000 0341 (Stripe's official declined test card)
+        onFailed({
+          id: 'demo_payment_' + Date.now(),
+          status: 'failed',
+          amount: amount
+        });
+      } else {
+        // Default to failed for any other card
+        onFailed({
+          id: 'demo_payment_' + Date.now(),
+          status: 'failed',
+          amount: amount
+        });
+      }
+    }, 2000);
   };
 
   return (
@@ -82,19 +102,36 @@ const PaymentForm = ({ transactionId, amount, onSuccess }) => {
 
       {error && <div className="error-message">{error}</div>}
 
-      <button type="submit" disabled={!stripe || processing}>
-        {processing ? 'Processing...' : `Pay ${amount} EUR`}
+      <div className="demo-notice">
+        <h3>Numéros de Carte de Démonstration :</h3>
+        <p>• 4242 4242 4242 4242 - Succès</p>
+        <p>• 4000 0000 0000 0002 - Fonds insuffisants</p>
+        <p>• 4000 0000 0000 0341 - Paiement échoué</p>
+        <p>Utilisez n'importe quelle date future pour l'expiration et n'importe quel CVC à 3 chiffres</p>
+      </div>
+
+      <button 
+        type="submit" 
+        disabled={processing || !stripe}
+        className={processing ? 'processing' : ''}
+      >
+        {processing ? 'Processing...' : `Pay ${amount} DZD`}
       </button>
     </form>
   );
 };
 
-const StripePayment = ({ transactionId, amount, onSuccess }) => {
+const StripePayment = ({ amount, onSuccess = () => {}, onInsufficient = () => {}, onFailed = () => {} }) => {
   return (
     <div className="stripe-payment-container">
-      <h2>Complete Your Payment</h2>
+      <h2>Card Payment Page</h2>
       <Elements stripe={stripePromise}>
-        <PaymentForm transactionId={transactionId} amount={amount} onSuccess={onSuccess} />
+        <PaymentForm 
+          amount={amount} 
+          onSuccess={onSuccess}
+          onInsufficient={onInsufficient}
+          onFailed={onFailed}
+        />
       </Elements>
     </div>
   );

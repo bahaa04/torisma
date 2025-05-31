@@ -164,7 +164,7 @@ const ProfileInformations = ({ userProfile }) => {
           <button
             type="button"
             className="password-change-button"
-            onClick={() => navigate('/recmsg')}
+            onClick={() => navigate('/change')}
           >
             Changer le mot de passe
           </button>

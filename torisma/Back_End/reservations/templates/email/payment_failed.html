@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Failed</title>
+</head>
+<body>
+    <h2>Payment Failed</h2>
+    <p>Dear {{ user.first_name }},</p>
+    <p>Your payment of {{ total_amount }} DZD could not be processed.</p>
+    <p>Reservation Details:</p>
+    <ul>
+        <li>Reservation ID: {{ reservation_id }}</li>
+        <li>Duration: {{ number_of_days }} day(s)</li>
+    </ul>
+    <p>Please try again or contact our support team for assistance.</p>
+</body>
+</html>

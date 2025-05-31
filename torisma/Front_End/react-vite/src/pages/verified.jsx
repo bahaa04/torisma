@@ -4,53 +4,51 @@ import "../styles/verification-form.css"
 import NavBar1 from "../components/navbar1"
 import Footer from "../components/footer"
 
-export default function Verified() {
+function Verified() {
   const { uidb64, token } = useParams()
   const navigate = useNavigate()
   const [message, setMessage] = useState("Vérification en cours...")
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    console.log('uidb64:', uidb64); // Debug
+    console.log('token:', token);   // Debug
+
     if (!uidb64 || !token) {
-      setError("Lien de vérification invalide")
-      return
+      setError("Lien de vérification invalide");
+      return;
     }
 
-    // Add padding if needed
-    let paddedUidb64 = uidb64
-    const padding = uidb64.length % 4
-    if (padding) {
-      paddedUidb64 += '='.repeat(4 - padding)
-    }
-
-    // Make sure to encode the parameters properly
-    const encodedUidb64 = encodeURIComponent(paddedUidb64)
-    const encodedToken = encodeURIComponent(token)
-
-    // Call the backend API endpoint
-    fetch(`http://127.0.0.1:8000/api/users/auth/verify-email/${encodedUidb64}/${encodedToken}/`, {
+    fetch(`http://127.0.0.1:8000/api/users/auth/verify-email/${uidb64}/${token}/`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
       },
     })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error('Verification failed')
+      .then(async response => {
+        const text = await response.text();
+        console.log('Raw response:', text); // Debug
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          console.error('Failed to parse JSON:', e);
+          throw new Error('Invalid server response');
         }
-        return res.json()
-      })
-      .then(data => {
-        setMessage(data.message || "Email vérifié avec succès. Vous pouvez maintenant vous se connecter.")
-        // Redirect to login after successful verification
-        setTimeout(() => navigate('/connect'), 3000)
+
+        if (!response.ok) {
+          throw new Error(data.detail || 'Verification failed');
+        }
+
+        setMessage("Email vérifié avec succès! Redirection vers la page de connexion...");
+        setTimeout(() => navigate('/connect'), 3000);
       })
       .catch((err) => {
-        console.error('Verification error:', err)
-        setError("Lien de vérification invalide ou expiré.")
-      })
-  }, [uidb64, token, navigate])
+        console.error('Verification error:', err);
+        setError(err.message || "Lien de vérification invalide ou expiré.");
+      });
+  }, [uidb64, token, navigate]);
 
   return (
     <>
@@ -65,5 +63,7 @@ export default function Verified() {
       </div>
       <Footer />
     </>
-  )
+  );
 }
+
+export default Verified;

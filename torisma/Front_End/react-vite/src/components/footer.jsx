@@ -9,11 +9,11 @@ const Footer = () => {
       <div className="footer-container pretty-footer center-footer">
         <div className="footer-column about">
           <h3>À propos de TourismA</h3>
-          <a href="#">À propos de TourismA</a>
+          <a href="/whyTourisma">À propos de TourismA</a>
+          <a href="/whyAlgeria">À propos de l'Algérie</a>
           <div className="footer-divider" />
           <h3>Nos Services</h3>
-          <a href="#">Location de voiture</a>
-          <a href="#">Location de maisons</a>
+          <a href="/terms">Conditions générales</a>
         </div>
 
         <div className="footer-column contacts">
@@ -60,9 +60,6 @@ const Footer = () => {
       </div>
       <div className="footer-bottom center-footer-bottom">
         <div className="footer-links">
-          <a href="#">Mentions légales</a>
-          <a href="#">Politique de confidentialité</a>
-          <a href="#">Conditions générales d'utilisation</a>
         </div>
         <div className="copyright">
           © 2025 Tourisma. Tous droits réservés

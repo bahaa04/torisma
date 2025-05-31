@@ -15,6 +15,7 @@ from rest_framework import serializers
 import logging
 from django.http import request
 from .tasks import send_coupon_email_task  # Import the Celery task
+from listings.models import Car, House  # Add this import
 
 logger = logging.getLogger(__name__)
 
@@ -238,4 +239,56 @@ class CouponViewSet(viewsets.ModelViewSet):
             return Response({'status': 'valid'})
         return Response({'status': 'expired'})
 
-# Create your views here.
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def validate_coupon(request):
+    """Validate and apply coupon"""
+    try:
+        code = request.data.get('code')
+        listing_type = request.data.get('listing_type')
+        listing_id = request.data.get('listing_id')
+
+        print(f"Validating: code={code}, type={listing_type}, id={listing_id}")
+
+        try:
+            coupon = Coupon.objects.get(code=code, active=True)
+            now = timezone.now()
+            
+            # Get the correct model
+            Model = Car if listing_type == 'car' else House
+            listing = Model.objects.get(id=listing_id)
+            
+            if coupon.valid_from <= now <= coupon.valid_until:
+                original_price = float(listing.price)
+                discount = original_price * (coupon.discount_percentage / 100)
+                final_price = original_price - discount
+
+                return Response({
+                    "valid": True,
+                    "original_price": original_price,
+                    "final_price": final_price,
+                    "discount_percentage": coupon.discount_percentage
+                })
+            else:
+                return Response({
+                    "valid": False,
+                    "error": "Coupon has expired"
+                })
+
+        except Coupon.DoesNotExist:
+            return Response({
+                "valid": False,
+                "error": "Invalid coupon code"
+            })
+        except (Car.DoesNotExist, House.DoesNotExist):
+            return Response({
+                "valid": False,
+                "error": "Listing not found"
+            })
+
+    except Exception as e:
+        print(f"Error in validate_coupon: {str(e)}")
+        return Response({
+            "valid": False,
+            "error": str(e)
+        })

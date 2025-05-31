@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import NavBar1 from '../components/navbar1';
+import NavBarC from '../components/navbar1-connected';
 import OptionVoiture from '../components/optionvoiture';
 import CarList from '../components/car-list';
 import Footer from '../components/footer';
@@ -30,6 +31,12 @@ const buttonStyles = {
 export default function CarPage() {
   const { wilaya, id: carId } = useParams();
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access_token');
+    setIsAuthenticated(!!accessToken);
+  }, []);
 
   const isDetail = Boolean(carId);
   const param = isDetail ? carId : wilaya;
@@ -47,9 +54,7 @@ export default function CarPage() {
 
         if (isDetail) {
           const response = await fetch(`${baseUrl}/api/listings/cars/${param}/`);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const data = await response.json();
           setCar({
             id: data.id,
@@ -65,7 +70,7 @@ export default function CarPage() {
               ? data.photos.map((p) => p.photo)
               : ['/default-car.jpg'],
             description: data.description,
-            status: data.status,
+            status: data.status === 'disabled' ? 'Indisponible' : 'Disponible',
             rented_until: data.rented_until,
           });
         } else {
@@ -87,10 +92,11 @@ export default function CarPage() {
               model: item.model,
               price: parseFloat(item.price),
               currency: 'DA',
-              status: item.status,
+              status: item.status === 'disabled' ? 'Indisponible' : 'Disponible',
               images: item.photos?.length
                 ? item.photos.map((p) => p.photo)
                 : ['/default-car.jpg'],
+              customPath: `/voiture/${item.id}` // Add this line to set the navigation path
             }))
           );
         }
@@ -109,7 +115,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container"></div>
-        <NavBar1 />
+        {isAuthenticated ? <NavBarC /> : <NavBar1 />}
         <div className="error">Erreur : {error}</div>
         <Footer />
         <div />
@@ -121,6 +127,7 @@ export default function CarPage() {
     if (!car) {
       return (
         <div className="container">
+          {isAuthenticated ? <NavBarC /> : <NavBar1 />}
           <div className="error-page">
             <h1>Voiture introuvable</h1>
             <button onClick={() => navigate(-1)} className="back-button">
@@ -134,7 +141,7 @@ export default function CarPage() {
     return (
       <>
         <div className="container">
-          <NavBar1 />
+          {isAuthenticated ? <NavBarC /> : <NavBar1 />}
           <div className="car-detail">
             <h2>
               {car.brand} {car.model} ({car.year})
@@ -173,7 +180,7 @@ export default function CarPage() {
 
   return (
     <>
-      <NavBar1 />
+      {isAuthenticated ? <NavBarC /> : <NavBar1 />}
       <div style={buttonStyles.backContainer}>
         <button
           onClick={() => navigate('/')}
@@ -188,25 +195,25 @@ export default function CarPage() {
           <ArrowLeft className="back-icon" /> Retour aux wilayas
         </button>
       </div>
-   <OptionVoiture />
-{loading ? (
-  <p>Chargement des voitures...</p>
-) : cars.length === 0 ? (
-  <p
-    style={{
-      textAlign: 'center',
-      marginTop: '20px',
-      marginBottom: '100px', // Added margin-bottom to create space
-      fontSize: '18px',
-      color: '#666',
-    }}
-  >
-    Aucune voiture disponible pour cette wilaya.
-  </p>
-) : (
-  <CarList cars={cars} />
-)}
-<Footer />
+      <OptionVoiture />
+      {loading ? (
+        <p>Chargement des voitures...</p>
+      ) : cars.length === 0 ? (
+        <p
+          style={{
+            textAlign: 'center',
+            marginTop: '20px',
+            marginBottom: '100px',
+            fontSize: '18px',
+            color: '#666',
+          }}
+        >
+          Aucune voiture disponible pour cette wilaya.
+        </p>
+      ) : (
+        <CarList cars={cars} />
+      )}
+      <Footer />
     </>
   );
 }

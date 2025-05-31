@@ -11,6 +11,7 @@ from .views import (
     PasswordResetFormView,
     CustomLoginView,
     CustomTokenRefreshView,
+    ChangePasswordView,
 )
 
 # Authentication URLs
@@ -24,9 +25,10 @@ auth_patterns = [
 
 # Password management URLs
 password_patterns = [
-    path('password/forgot/', ForgotPasswordView.as_view(), name='forgot_password'),
-    path('password/reset/<str:uidb64>/<str:token>/', PasswordResetFormView.as_view(), name='password_reset_form'),
-    path('password/reset/confirm/<str:uidb64>/<str:token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password/forgot/', ForgotPasswordView.as_view(), name='password_forgot'),
+    path('password/reset/<str:uidb64>/<str:token>/', 
+         PasswordResetConfirmView.as_view(), 
+         name='password_reset_confirm'),
 ]
 
 # User profile URLs
@@ -41,5 +43,10 @@ admin_patterns = [
     path('admin/users/<int:user_id>/', AdminUserManagementView.as_view(), name='admin_user_management'),
 ]
 
+# Change password URL
+change_password_pattern = [
+    path('change-password/', ChangePasswordView.as_view(), name='change-password'),
+]
+
 # Combine all URL patterns
-urlpatterns = auth_patterns + password_patterns + profile_patterns + admin_patterns
+urlpatterns = auth_patterns + password_patterns + profile_patterns + admin_patterns + change_password_pattern

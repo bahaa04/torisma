@@ -59,7 +59,7 @@ class HouseRating(models.Model):
         to_field='id',
         db_column='house_id',
         on_delete=models.CASCADE,
-        related_name='ratings'
+        related_name='rating_module_ratings'  # Changed related_name
     )
     total_score  = models.FloatField(default=0.0)
     rating_count = models.PositiveIntegerField(default=0)

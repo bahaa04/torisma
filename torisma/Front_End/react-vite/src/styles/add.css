@@ -11,7 +11,7 @@
   .selection-container {
     width: 100%;
     max-width: 500px;
-    border: 2px solid #2ecc8a;
+    border: 2px solid #34E0A1;
     border-radius: 1.5rem;
     padding: 2rem;
     background-color: white;
@@ -43,7 +43,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    background-color: #2ecc8a;
+    background-color: #34E0A1;
     color: #222;
     font-size: 1.1rem;
     font-weight: 500;
@@ -55,7 +55,7 @@
   }
   
   .option-button:hover {
-    background-color: #28b67d;
+    background-color: #34E0A1;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(46, 204, 138, 0.2);
   }

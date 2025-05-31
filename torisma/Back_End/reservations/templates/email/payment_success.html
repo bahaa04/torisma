@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Successful</title>
+</head>
+<body>
+    <h2>Payment Confirmation</h2>
+    <p>Dear {{ user.first_name }},</p>
+    <p>Your payment of {{ total_amount }} DZD has been successfully processed.</p>
+    <p>Reservation Details:</p>
+    <ul>
+        <li>Reservation ID: {{ reservation_id }}</li>
+        <li>Duration: {{ number_of_days }} day(s)</li>
+        <li>Price per day: {{ original_price }} DZD</li>
+        {% if is_discounted %}
+        <li>Discounted price applied</li>
+        {% endif %}
+    </ul>
+    <p>Thank you for choosing our service!</p>
+</body>
+</html>

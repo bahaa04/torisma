@@ -82,4 +82,34 @@ def check_expired_pending_reservations():
         # Return house to available
         house = reservation.house
         house.status = 'available'
-        house.save() 
+        house.save()
+
+def complete_finished_reservations():
+    """Complete reservations that have passed their end date"""
+    now = timezone.now()
+
+    # Handle car reservations
+    finished_car_reservations = CarReservation.objects.filter(
+        end_date__lt=now,
+        status='confirmed'
+    )
+    for reservation in finished_car_reservations:
+        reservation.status = 'completed'
+        reservation.save()
+        
+        car = reservation.car
+        car.status = 'available'
+        car.save()
+
+    # Handle house reservations
+    finished_house_reservations = HouseReservation.objects.filter(
+        end_date__lt=now,
+        status='confirmed'
+    )
+    for reservation in finished_house_reservations:
+        reservation.status = 'completed'
+        reservation.save()
+        
+        house = reservation.house
+        house.status = 'available'
+        house.save()

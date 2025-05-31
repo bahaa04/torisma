@@ -1,9 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/Sidebar.css'; // Import the CSS file
 import '../App.css'; // Import the CSS file
 
 function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    navigate('/connect');
+  };
+
   return (
     <div className="sidebar">
       <NavLink to="/moi" className={({ isActive }) =>
@@ -21,13 +29,18 @@ function Sidebar() {
       }>
         Maisons
       </NavLink>
-      <NavLink to="/" className={({ isActive }) =>
-        isActive ? "sidebar-item active disconnect" : "sidebar-item disconnect"
-      }>
-        Dése connecter
+      <NavLink 
+        to="/" 
+        onClick={handleLogout}
+        className={({ isActive }) =>
+          isActive ? "sidebar-item active disconnect" : "sidebar-item disconnect"
+        }
+      >
+        Déconnecter
       </NavLink>
     </div>
   );
 }
 
 export default Sidebar;
+

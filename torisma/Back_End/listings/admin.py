@@ -1,7 +1,9 @@
 from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, wilayas, WilayaPhotos, WilayaPhoto
 from django.contrib import admin
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()  # Get the custom User model
 
 
 class CarAdminForm(forms.ModelForm):
@@ -52,10 +54,11 @@ class HouseAdminForm(forms.ModelForm):
     has_parking = forms.BooleanField(required=False)
     has_wifi = forms.BooleanField(required=False)
     rooms = forms.IntegerField(min_value=1, required=True)
+    owner = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
 
     class Meta:
         model = House
-        fields = ['description', 'price', 'status', 'has_parking', 
+        fields = ['owner', 'description', 'price', 'status', 'has_parking', 
                  'has_wifi', 'wilaya', 'city', 'gps_location', 'rooms']
 
 
@@ -74,6 +77,9 @@ class HouseAdmin(admin.ModelAdmin):
     list_filter = ['status', 'wilaya', 'has_wifi', 'has_parking']
     search_fields = ['city', 'description']
     fieldsets = (
+        ('Owner', {
+            'fields': ('owner',)
+        }),
         ('Location', {
             'fields': ('wilaya', 'city', 'gps_location')
         }),
@@ -87,8 +93,6 @@ class HouseAdmin(admin.ModelAdmin):
     inlines = [HousePhotosInline]
 
     def save_model(self, request, obj, form, change):
-        if not change:  # Only set owner when creating new house
-            obj.owner = request.user
         super().save_model(request, obj, form, change)
 
 

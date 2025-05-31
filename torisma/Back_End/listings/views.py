@@ -3,13 +3,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from coupons.models import Coupon
-from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto
+from .models import Car, House, Favorite, CarPhotos, HousePhotos, Wilaya, WilayaPhotos, WilayaPhoto, Rating
 from .serializers import (
     CarSerializer, HouseSerializer, FavoriteSerializer, CarPhotosSerializer,
     HousePhotosSerializer, WilayaSerializer, WilayaPhotosSerializer, WilayaPhotoSerializer
@@ -196,6 +196,59 @@ class CarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             data["discounted_price"] = f"{float(data['price']) * (1 - discount / 100):.2f}"
         return Response(data)
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance.editable_by(request.user):
+            return Response(
+                {"detail": "You don't have permission to modify this car."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            partial = kwargs.pop('partial', False)
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+
+            # Handle photos if they're included in the update
+            photos = request.FILES.getlist('photos')
+            if photos:
+                # Delete existing photos if requested
+                if request.data.get('delete_existing_photos'):
+                    instance.photos.all().delete()
+                # Add new photos
+                for photo in photos:
+                    CarPhotos.objects.create(car=instance, photo=photo)
+
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance.editable_by(request.user):
+            return Response(
+                {"detail": "You don't have permission to delete this car."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            # Delete all associated photos first
+            instance.photos.all().delete()
+            self.perform_destroy(instance)
+            return Response(
+                {"detail": "Car listing deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
 class HouseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HouseSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -231,6 +284,59 @@ class HouseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if discount > 0:
             data["discounted_price"] = f"{float(data['price']) * (1 - discount / 100):.2f}"
         return Response(data)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance.editable_by(request.user):
+            return Response(
+                {"detail": "You don't have permission to modify this house."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            partial = kwargs.pop('partial', False)
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+
+            # Handle photos if they're included in the update
+            photos = request.FILES.getlist('photos')
+            if photos:
+                # Delete existing photos if requested
+                if request.data.get('delete_existing_photos'):
+                    instance.photos.all().delete()
+                # Add new photos
+                for photo in photos:
+                    HousePhotos.objects.create(house=instance, photo=photo)
+
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance.editable_by(request.user):
+            return Response(
+                {"detail": "You don't have permission to delete this house."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            # Delete all associated photos first
+            instance.photos.all().delete()
+            self.perform_destroy(instance)
+            return Response(
+                {"detail": "House listing deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 # ❤️ Favorite a listing
 class AddFavoriteView(generics.CreateAPIView):
@@ -462,6 +568,63 @@ def validate_coupon_for_listing(request, listing_type, listing_id):
     except Exception as e:
         return Response({"error": str(e)}, status=500)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def apply_coupon(request):
+    """
+    Apply a coupon to a listing and get the discounted price.
+    POST data should include:
+    - coupon_code: str
+    - listing_type: str ('car' or 'house')
+    - listing_id: int
+    """
+    try:
+        coupon_code = request.data.get('coupon_code')
+        listing_type = request.data.get('listing_type')
+        listing_id = request.data.get('listing_id')
+
+        if not all([coupon_code, listing_type, listing_id]):
+            return Response({
+                "error": "Missing required fields"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the listing
+        model = Car if listing_type == 'car' else House
+        listing = get_object_or_404(model, id=listing_id)
+
+        # Validate coupon
+        try:
+            coupon = Coupon.objects.get(code=coupon_code, active=True)
+            now = timezone.now()
+            if coupon.valid_from <= now <= coupon.valid_until:
+                original_price = listing.price
+                discount = original_price * (coupon.discount_percentage / 100)
+                discounted_price = original_price - discount
+
+                return Response({
+                    "success": True,
+                    "original_price": original_price,
+                    "discount_percentage": coupon.discount_percentage,
+                    "discount_amount": discount,
+                    "final_price": discounted_price,
+                    "coupon": {
+                        "code": coupon.code,
+                        "valid_until": coupon.valid_until
+                    }
+                })
+            return Response({
+                "error": "Coupon has expired"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Coupon.DoesNotExist:
+            return Response({
+                "error": "Invalid coupon code"
+            }, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        return Response({
+            "error": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class UserCarListView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
@@ -484,5 +647,109 @@ class UserHouseListView(APIView):
         houses = House.objects.filter(owner=request.user)
         serializer = HouseSerializer(houses, many=True, context={'request': request})
         return Response(serializer.data)
+
+# Rating views
+class RateHouseView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        house_id = request.data.get('house_id')
+        rating_value = request.data.get('rating')
+
+        try:
+            house = House.objects.get(id=house_id)
+            rating, _ = Rating.objects.get_or_create(
+                user=request.user,
+                house=house,
+                defaults={'rating': rating_value}
+            )
+            
+            # Update existing rating
+            if _:  # if rating was created
+                rating.rating = rating_value
+                rating.save()
+
+            # Calculate new average
+            ratings = Rating.objects.filter(house=house)
+            avg_rating = ratings.aggregate(
+                average=Avg('rating'),
+                count=Count('id')
+            )
+
+            return Response({
+                'average': float(avg_rating['average'] or 0),
+                'rating_count': avg_rating['count'],
+            })
+        except House.DoesNotExist:
+            return Response({'error': 'House not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetHouseRatingView(APIView):
+    def get(self, request, house_id):
+        try:
+            ratings = Rating.objects.filter(house_id=house_id)
+            avg_rating = ratings.aggregate(
+                average=Avg('rating'),
+                count=Count('id')
+            )
+            
+            return Response({
+                'average': float(avg_rating['average'] or 0),
+                'rating_count': avg_rating['count']
+            })
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class RateCarView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        car_id = request.data.get('car_id')
+        rating_value = request.data.get('rating')
+
+        try:
+            car = Car.objects.get(id=car_id)
+            rating, _ = Rating.objects.get_or_create(
+                user=request.user,
+                car=car,
+                defaults={'rating': rating_value}
+            )
+            
+            if not _:  # if rating exists
+                rating.rating = rating_value
+                rating.save()
+
+            # Calculate new average
+            ratings = Rating.objects.filter(car=car)
+            avg_rating = ratings.aggregate(
+                average=Avg('rating'),
+                count=Count('id')
+            )
+
+            return Response({
+                'average': float(avg_rating['average'] or 0),
+                'rating_count': avg_rating['count'],
+            })
+        except Car.DoesNotExist:
+            return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetCarRatingView(APIView):
+    def get(self, request, car_id):
+        try:
+            ratings = Rating.objects.filter(car_id=car_id)
+            avg_rating = ratings.aggregate(
+                average=Avg('rating'),
+                count=Count('id')
+            )
+            
+            return Response({
+                'average': float(avg_rating['average'] or 0),
+                'rating_count': avg_rating['count']
+            })
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 

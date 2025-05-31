@@ -117,7 +117,7 @@
   }
   
   .tab.active {
-    color: #2ecc8a;
+    color: #34E0A1;
     font-weight: 500;
   }
   
@@ -150,7 +150,7 @@
   .wilaya-option.selected {
     background-color: #f3f4f6;
     font-weight: 500;
-    color: #2ecc8a;
+    color: #34E0A1;
   }
   
   /* Property grid */

@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/PropertyGallery.css';
-import v1 from '/v1.jpg';
-import v2 from '/v2.jpg';
-import v3 from '/v3.jpg';
-import v4 from '/v4.jpg';
-import v5 from '/v5.jpg';
 
-const PropertyGallery2 = ({ onPhotoClick }) => {
+const PropertyGallery2 = ({ carId }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [carData, setCarData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const images = [v1, v2, v3, v4, v5];
+  useEffect(() => {
+    const fetchCarData = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/listings/cars/${carId}`);
+        if (!response.ok) throw new Error('Failed to fetch car data');
+        const data = await response.json();
+        console.log('Car data:', data); // Debug log
+        setCarData(data);
+      } catch (error) {
+        console.error('Error fetching car data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (carId) {
+      fetchCarData();
+    }
+  }, [carId]);
 
   const openImage = (image) => {
     setSelectedImage(image);
@@ -19,46 +34,38 @@ const PropertyGallery2 = ({ onPhotoClick }) => {
     setSelectedImage(null);
   };
 
+  if (loading) return <div>Loading photos...</div>;
+  if (!carData) return <div>No photos available</div>;
+
   return (
     <div className="property-gallery-container">
       <div className="property-info">
-        <p className="location"><h2>Bab EL ZZOUAR, Alger</h2></p>
-        <p className="type"><h3>Mercedes Classe C</h3></p>
+        <div className="location">
+          <h2>{carData.wilaya}</h2>
+        </div>
+        <div className="type">
+          <h3>{carData.manufacture} {carData.model}</h3>
+        </div>
       </div>
       <div className="property-gallery">
         <div className="gallery-main">
           <img
-            src={v1 || "/placeholder.svg"}
+            src={carData.photos?.[0]?.photo || "/placeholder.svg"}
             alt="Main car view"
             className="main-image"
-            onClick={() => openImage(v1)}
+            onClick={() => openImage(carData.photos?.[0]?.photo)}
           />
         </div>
         <div className="gallery-grid">
-          <img 
-            src={v2 || "/placeholder.svg"} 
-            alt="Car view 2" 
-            className="grid-image"
-            onClick={() => openImage(v2)}
-          />
-          <img 
-            src={v4 || "/placeholder.svg"} 
-            alt="Car view 3" 
-            className="grid-image"
-            onClick={() => openImage(v4)}
-          />
-          <img 
-            src={v3 || "/placeholder.svg"} 
-            alt="Car view 4" 
-            className="grid-image"
-            onClick={() => openImage(v3)}
-          />
-          <img 
-            src={v5 || "/placeholder.svg"} 
-            alt="Car view 5" 
-            className="grid-image"
-            onClick={() => openImage(v5)}
-          />
+          {carData.photos?.slice(1, 5).map((photo, index) => (
+            <img 
+              key={index}
+              src={photo.photo || "/placeholder.svg"}
+              alt={`Car view ${index + 2}`}
+              className="grid-image"
+              onClick={() => openImage(photo.photo)}
+            />
+          ))}
         </div>
       </div>
 

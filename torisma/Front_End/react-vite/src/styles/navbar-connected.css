@@ -1,18 +1,26 @@
-/* src/styles/navbar-connected.css */
+.navbar-connected.static {
+  position: relative;
+  top: auto;
+}
+
+.navbar-connected.sticky {
+  top: 0;
+}
+
 .navbar-connected {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #fff;
   padding: 0 20px;
-  height: 60px;
-  position: fixed;
+  height: 70px;
   width: 100%;
   top: 0;
-  z-index: 100;
+  left: 0;
+  z-index: 1000;
   border-bottom: 1px solid #e2e2e2;
+  box-sizing: border-box;
 }
-
 
 .logo-link {
   display: flex;
@@ -21,11 +29,8 @@
   text-decoration: none;
 }
 
-
-
-
 .highlight {
-  color: #28a745;
+  color: #34E0A1;
 }
 
 .nav-links {
@@ -41,7 +46,7 @@
 }
 
 .nav-item:hover {
-  color: #28a745;
+  color: #34E0A1;
 }
 
 .profile-actions {
@@ -65,9 +70,5 @@
 }
 
 .icon-button:hover .icon {
-  stroke: #28a745;
-}
-
-.logout-icon {
-  /* same styling as icon */
+  stroke: #34E0A1;
 }

@@ -9,21 +9,20 @@
   .chat-page-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    position: relative;
+    min-height: calc(100vh - 70px);
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .chat-main-container {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 20px auto 40px;
     width: 90%;
     padding: 20px;
     background-color: var(--background-color);
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     flex: 1;
-    margin-top: 80px; /* Add space for navbar */
-    margin-bottom: 40px; /* Add space for footer */
   }
   
   .chat-header {
@@ -75,17 +74,21 @@
   }
   
   .input-container {
+    height: 90px;
     display: flex;
     gap: 10px;
+    width: 100%;
+    padding: 20px;
+    justify-content: space-between;
   }
   
   .chat-input {
     flex: 1;
-    padding: 12px;
-    border: 1px solid var(--input-border);
+    padding: 15px 20px;
+    border: 2px solid var(--input-border);
     border-radius: 25px;
     outline: none;
-    font-size: 16px;
+    font-size: 18px;
   }
   
   .chat-input:focus {
@@ -100,6 +103,8 @@
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s;
+    width: auto;
+    min-width: 120px;
   }
   
   .send-button:hover:not(:disabled) {
@@ -113,12 +118,12 @@
   
   /* Scrollbar styling */
   .messages-container::-webkit-scrollbar {
-    width: 8px;
+    width: 600px;
   }
   
   .messages-container::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 4px;
+    border-radius: 600px;
   }
   
   .messages-container::-webkit-scrollbar-thumb {

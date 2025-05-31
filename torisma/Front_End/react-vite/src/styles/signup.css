@@ -91,6 +91,24 @@
     background-color: #f3f4f6;
   }
   
+
+  .toggle-visibility-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  .eye-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .toggle-visibility-button:hover {
+    background-color: #f3f4f6;
+  }
+
   /* Upload area styles */
   .upload-container {
     border: 2px dashed #d1d5db;

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom";  // Add this import
+import { useNavigate } from "react-router-dom";
 import "../styles/recoverpassword.css";
 import NavBar1 from "../components/navbar1";
 import Footer from "../components/footer";
@@ -11,13 +11,13 @@ export default function PasswordReset() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState("")
-  const navigate = useNavigate();  // Add this line
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
       .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
 
@@ -33,24 +33,39 @@ export default function PasswordReset() {
 
     setIsSubmitting(true)
 
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      setIsSuccess(true)
-      navigate('/recmsg')  // Add navigation after success
+      const response = await fetch('http://127.0.0.1:8000/api/users/password/forgot/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          navigate('/connect');
+        }, 2000);
+      } else {
+        setError(data.error || "Une erreur s'est produite. Veuillez réessayer.");
+      }
+      
     } catch (err) {
-      setError("Une erreur s'est produite. Veuillez réessayer.")
+      console.error("Error during API call:", err);
+      setError("Le serveur ne répond pas. Veuillez réessayer plus tard.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
   return (
-
     <>
     <NavBar1/>
     <hr style={{border:"none" , height:"0.5px",backgroundColor:"#e0e0e0"}}  />
-    
+
     <div className="container2">
       <div className="reset-card">
         {!isSuccess ? (

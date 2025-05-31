@@ -24,6 +24,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from django.views.decorators.csrf import csrf_exempt
 from corsheaders.defaults import default_headers
+from users.views import PasswordResetConfirmView
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -50,6 +51,9 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('', include('rating.urls')),
     path('recommendations/', include('recommendations.urls')),
+    path('api/users/password/reset/<str:uidb64>/<str:token>/', 
+         PasswordResetConfirmView.as_view(), 
+         name='password_reset_confirm'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Add CORS headers to all responses

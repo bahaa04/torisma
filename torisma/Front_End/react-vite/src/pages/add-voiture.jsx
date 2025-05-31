@@ -90,26 +90,52 @@ export default function AddCar() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    const access = localStorage.getItem('access_token');
+    if (!access) {
+      navigate('/connect');
+      return;
+    }
+    
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value);
     });
-    photos.forEach(photo => {
+    photos.forEach((photo, index) => {
       if (photo) data.append('photos', photo);
     });
+
     try {
-      await axios.post(
-        'http://localhost:8000/api/listings/cars/create/',
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/listings/cars/create/',
         data,
         {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${access}`
+          },
           withCredentials: true
         }
       );
+      
+      console.log('Success:', response.data);
       setLoading(false);
       navigate('/voiture-liste');
     } catch (err) {
-      setError('Erreur lors de la création de la voiture');
+      console.error('Error details:', err.response?.data || err.message);
+      if (err.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        navigate('/connect');
+        return;
+      }
+      setError(
+        err.response?.data?.message || 
+        err.response?.data || 
+        err.message || 
+        'Erreur lors de la création de la voiture'
+      );
       setLoading(false);
     }
   };

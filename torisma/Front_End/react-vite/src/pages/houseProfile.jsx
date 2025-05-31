@@ -46,17 +46,20 @@ function HProfile() {
 
   const handleUpdate = async (updatedData) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/listings/houses/${id}/`, {
-        method: 'PUT',
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`http://127.0.0.1:8000/api/listings/houses/${id}/`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-        credentials: 'include',
         body: JSON.stringify(updatedData)
       });
+      
       if (!response.ok) throw new Error('Failed to update house');
       const data = await response.json();
       setHouse(data);
+      navigate('/maison-liste'); // Redirect after successful update
     } catch (err) {
       setError(err.message);
     }

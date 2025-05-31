@@ -1,21 +1,20 @@
-
-
 body {
   background-color: #f5f5f5;
 }
 
 .car-rental-app {
   max-width: 1200px;
-  margin: 0 auto;
-  
-
+  margin: 90px auto 40px;
+  padding: 20px;
+  min-height: calc(100vh - 70px);
+  position: relative;
+  top: 70px;
 }
 
 .car-rental-app.loaded {
   opacity: 1;
   transform: translateY(0);
 }
-
 
 .search-container2 {
   margin-bottom: 20px;
@@ -69,7 +68,6 @@ body {
 .search-button:active {
   transform: translateY(0);
 }
-
 
 .navigation {
   display: flex;

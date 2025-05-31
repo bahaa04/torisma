@@ -201,14 +201,13 @@ function VoitureListe() {
               </button>
             </div>
           ) : cars.length === 0 ? (
-            <div className="text-center p-8">
-              <p className="text-gray-500">Vous n'avez pas encore ajouté de voitures.</p>
-              <button 
-                onClick={handleAdd}
-                className="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
-              >
-                Ajouter une voiture
-              </button>
+            <div className="h-full overflow-auto">
+              <TwoCards 
+                items={[]} 
+                onAdd={handleAdd}
+                onDelete={handleDelete}
+                onCardClick={handleCardClick}
+              />
             </div>
           ) : (
             <div className="h-full overflow-auto">

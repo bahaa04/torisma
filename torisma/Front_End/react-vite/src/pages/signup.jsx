@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/signup.css';
@@ -7,6 +7,16 @@ import Footer from '../components/footer';
 
 export default function SignUp() {
   const navigate = useNavigate();
+
+  // Add authentication check
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      navigate('/');
+      return;
+    }
+  }, [navigate]);
+
   const [formData, setFormData] = useState({
     email: '',
     username: '',

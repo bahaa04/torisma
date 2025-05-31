@@ -11,9 +11,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0;
+    padding: 0 20px;
     background-color: #fefdfd;
-  
+    height: 70px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #e2e2e2;
+    box-sizing: border-box;
   }
   
   .logo-container {
@@ -49,7 +55,7 @@
 }
 
 .logo-text .highlighted {
-color:#03d186;          
+color:#34E0A1;          
 }
 
 .logo-text span { 
@@ -93,7 +99,7 @@ margin:4px ;
 }
 
 .nav-links a:hover {
-color: #03d186;
+color: #34E0A1;
 background: #deede8;
 border-radius: 30px; /* round edges */
 
@@ -351,7 +357,7 @@ position: relative;
     right: 12px;
     width: 32px;
     height: 32px;
-    background-color: #03d186;
+    background-color: #34E0A1;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -470,7 +476,7 @@ position: relative;
   }
   
   .help-button {
-    background-color: #2bcea5;
+    background-color: #34E0A1;
     color: white;
     border: none;
     border-radius: 24px;
@@ -479,10 +485,11 @@ position: relative;
     font-weight: 500;
     cursor: pointer;
     display: inline-block;
+    max-width: 125px;
   }
   
   .help-button:hover {
-    background-color: #03d186;
+    background-color: #34E0A1;
   }
   
   /* Video */

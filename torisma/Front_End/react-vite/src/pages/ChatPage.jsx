@@ -6,6 +6,26 @@ import NavbarC from '../components/navbar1-connected';
 import Footer from '../components/footer';
 import '../styles/ChatPage.css';
 
+const UnauthorizedMessage = ({ onLogin }) => (
+  <div>
+    <p>Vous devez être connecté.</p>
+    <button 
+      onClick={onLogin}
+      style={{
+        backgroundColor: '#007bff',
+        color: 'white',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        marginTop: '10px'
+      }}
+    >
+      Se connecter
+    </button>
+  </div>
+);
+
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -47,7 +67,10 @@ const ChatPage = () => {
         const accessToken = localStorage.getItem('access_token');
         if (!accessToken) {
           console.error('Access token not found.');
-          setMessages(prevMessages => [...prevMessages, { text: 'Vous devez être connecté.', user: false }]);
+          setMessages(prevMessages => [...prevMessages, { 
+            component: <UnauthorizedMessage onLogin={() => navigate('/connect')} />,
+            user: false 
+          }]);
           return;
         }
 
@@ -78,7 +101,9 @@ const ChatPage = () => {
         <div className="messages-container">
           {messages.map((message, index) => (
             <div key={index} className={`message-wrapper ${message.user ? 'user' : 'bot'}`}>
-              <div className={`message-bubble ${message.user ? 'user-message' : 'bot-message'}`} dangerouslySetInnerHTML={{ __html: message.text }} />
+              <div className={`message-bubble ${message.user ? 'user-message' : 'bot-message'}`}>
+                {message.component || <div dangerouslySetInnerHTML={{ __html: message.text }} />}
+              </div>
             </div>
           ))}
         </div>
@@ -89,7 +114,7 @@ const ChatPage = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Tapez un message..."
+            placeholder="Tapez votre question..."
           />
           <button
             className="send-button"

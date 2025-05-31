@@ -1,29 +1,23 @@
-
 .localisation-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
   display: flex;
-  flex-direction: row; /* Arrange left and right columns in a row */
-  align-items: flex-start; /* Align items to the top */
-  padding: 15px; /* Add some padding around the main content */
-  gap: 15px;
-  min-height: 100vh; /* Ensure the container takes up at least the viewport height */
-}
-
-.left-column {
-  display: flex;
-  flex-direction: column; /* Stack the three components vertically */
- 
-  width : 300px; /* Set a fixed width for the fixed column */
-  gap: 15px; /* Spacing between the three components */
-  position: sticky; /* Make it sticky */
-  top: 20px; /* Adjust top offset as needed (e.g., to account for a fixed header) */
-  height: fit-content; /* Make the height fit its content */
-  /* overflow-y: auto; If the content inside BookingForm might overflow */
+  flex-wrap: wrap;
+  gap: 20px;
+  position: relative;
+  top: 70px;
+  min-height: calc(100vh - 70px);
 }
 
 .right-column {
-  flex: 1; /* Allow it to take up remaining available space */
-  margin-left: 20px;
-  width: auto; /* Adjust width as needed */
+  flex: 1;
+  min-width: 300px;
+}
+
+.left-column {
+  flex: 1;
+  min-width: 300px;
 }
 
 /* Responsive adjustments for smaller screens */
@@ -67,7 +61,7 @@
   .localisation-container {
     padding: 0px; /* Adjust padding */
     gap: 30px;
-    max-width: 1200px; /* Example: Set a maximum width */
+    max-width: 1400px; /* Example: Set a maximum width */
     margin: 20px auto; /* Center the container */
   }
 
