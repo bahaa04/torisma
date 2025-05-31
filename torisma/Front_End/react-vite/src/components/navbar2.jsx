@@ -1,37 +1,28 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Logo from "./logo";
+import React from 'react' ;
+import { Link } from "react-router-dom";
+import "../styles/connect.css";
+import Logo from "../components/logo";
 
 const NavBar2 = () => {
   return (
-    <header>
+    <div className="header">
       <Link to="/" className="logo-link">
         <div className="logo-container">
           <Logo/>
-          <div className="logo-text">
-            <span className="highlighted">T</span>
-            <span>o</span>
-            <span>u</span>
-            <span>r</span>
-            <span>i</span>
-            <span>s</span>
-            <span>m</span>
-            <span className="highlighted">A</span>
-          </div>
+          <h1 className="logoText"><span className="highlight">T</span>ourism<span className="highlight">A</span></h1>
+        </div>
+      </Link>
+
+      <div className="transp">vous n'avez pas de compte ? </div>
+      <hr/> <hr/><hr/><hr/>
+      <Link to="/signup">
+        <div className="register-btn">
+          
+          <button>Register</button>
         </div>
       </Link>
       
-      <div className="nav-links">
-        <a href="/whyTourisma">Pourquoi TourismA</a>
-        <a href="/whyAlgeria">Pourquoi l'Algérie</a>
-      </div>
-    
-      <div className="header-actions">
-        <Link to="/signup" className="login-button">
-          Register
-        </Link>
-      </div>
-    </header>
+    </div>
   );
 };
 
