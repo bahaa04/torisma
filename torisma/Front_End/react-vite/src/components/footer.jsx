@@ -12,7 +12,7 @@ const Footer = () => {
           <a href="/whyTourisma">À propos de TourismA</a>
           <a href="/whyAlgeria">À propos de l'Algérie</a>
           <div className="footer-divider" />
-          <h3>Nos Services</h3>
+          <h3>Nos Terms Légales</h3>
           <a href="/terms">Conditions générales</a>
         </div>
 
