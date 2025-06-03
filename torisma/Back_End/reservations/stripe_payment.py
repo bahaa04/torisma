@@ -83,7 +83,7 @@ def create_checkout_session(user_id, items, metadata=None):
             line_items=line_items,
             mode='payment',
             success_url=f"{settings.FRONTEND_URL}/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{settings.FRONTEND_URL}/cancel",
+            cancel_url=f"{settings.FRONTEND_URL}/cancellation",
             metadata={
                 'user_id': str(user_id),
                 **(metadata or {})

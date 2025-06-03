@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar1';
@@ -31,6 +31,7 @@ const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const accessToken = localStorage.getItem('access_token');
@@ -93,6 +94,14 @@ const ChatPage = () => {
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <div className="chat-page-container">
       {isAuthenticated ? <NavbarC /> : <Navbar />}
@@ -102,10 +111,11 @@ const ChatPage = () => {
           {messages.map((message, index) => (
             <div key={index} className={`message-wrapper ${message.user ? 'user' : 'bot'}`}>
               <div className={`message-bubble ${message.user ? 'user-message' : 'bot-message'}`}>
-                {message.component || <div dangerouslySetInnerHTML={{ __html: message.text }} />}
+                {message.component || <div className="message-content" dangerouslySetInnerHTML={{ __html: message.text }} />}
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
         <div className="input-container">
           <input

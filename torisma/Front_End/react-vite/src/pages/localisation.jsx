@@ -37,8 +37,8 @@ function Localisation() {
     setIsAuthenticated(!!accessToken);
 
     // Check URL parameters for payment status
-    const urlParams = new URLSearchParams(location.search);
-    const status = urlParams.get('status');
+    const searchParams = new URLSearchParams(window.location.search);
+    const status = searchParams.get('status');
     
     if (status) {
       switch (status) {
@@ -52,10 +52,12 @@ function Localisation() {
           setShowIncorrectCard(true);
           break;
       }
-      // Clean up URL parameters
-      navigate(location.pathname, { replace: true });
+      // Clean up URL parameters after a short delay
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true });
+      }, 100);
     }
-  }, [location, navigate]);
+  }, []); // Run only on mount
 
   useEffect(() => {
     const fetchHouseData = async () => {

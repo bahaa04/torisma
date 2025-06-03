@@ -52,29 +52,33 @@ export default function HousePage() {
 
     if (isDetail) {
       // ─── DETAIL ───
-      fetch(`http://127.0.0.1:8000/api/listings/houses/by_wilaya/${param}/`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
+      const fetchHouseData = async () => {
+        try {
+          const response = await fetch(`http://127.0.0.1:8000/api/listings/houses/${param}`);
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
           setHouse({
             id: data.id,
             rooms: data.number_of_rooms,
             price: parseFloat(data.price),
             currency: 'DA',
             location: data.exact_location,
+            status: data.status === 'disabled' ? 'Indisponible' : 'Disponible',
             parking: data.has_parking,
             wifi: data.has_wifi,
             description: data.description,
-            status: data.status === 'disabled' ? 'Indisponible' : 'Disponible',
             rented_until: data.rented_until,
             favorised: data.is_favorised,
             images: data.photos?.length ? data.photos.map(p => p.photo) : ['/default-house.jpg'],
           });
-        })
-        .catch(err => setError(err.message))
-        .finally(() => setLoading(false));
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchHouseData();
     } else {
       // ─── LIST ───
       fetch(`http://127.0.0.1:8000/api/listings/houses/by_wilaya/${encodeURIComponent(param)}/`)
@@ -86,14 +90,14 @@ export default function HousePage() {
           setHouses(
             (data.results || []).map((item) => ({
               id: item.id,
-              rooms: item.number_of_rooms,
+              brand: `${item.rooms} pièces`,  // Using brand for room count
+              location: item.exact_location || item.city || 'Unknown',
               price: parseFloat(item.price),
               currency: 'DA',
-              location: item.exact_location,
               status: item.status === 'disabled' ? 'Indisponible' : 'Disponible',
               rented_until: item.rented_until,
               images: item.photos?.length ? item.photos.map(p => p.photo) : ['/default-house.jpg'],
-              customPath: `/localisation/${item.id}` // Updated to use localisation route for all items
+              customPath: `/localisation/${item.id}`
             }))
           );
         })

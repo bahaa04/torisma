@@ -25,7 +25,7 @@ import Terms from './pages/terms';
 import Verified from './pages/verified';
 import { ProtectedRoute, AuthOnlyRoute } from './components/ProtectedRoute';
 import ConfirmationPage from './pages/confirmation';
-import CancellationPage from './pages/annulation';
+import CancellationPage from './pages/CancellationPage';
 import ChangePassword from './pages/passMod';
 import './App.css';
 
@@ -47,7 +47,7 @@ function App() {
       <Route path="/voiture-liste" element={<VoitureListe />} />
       <Route path="/maison-liste" element={<MaisonListe />} />
       <Route path="/confirmation" element={<ConfirmationPage />} />
-      <Route path="/annulation" element={<CancellationPage />} />
+      <Route path="/cancellation" element={<CancellationPage />} />
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/change" element={<ChangePassword />} />
       <Route path="/reset/:uid/:token" element={<ResetPassword />} />

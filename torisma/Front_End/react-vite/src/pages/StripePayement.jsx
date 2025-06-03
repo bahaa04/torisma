@@ -62,29 +62,20 @@ const PaymentForm = ({ amount, onSuccess, onInsufficient, onFailed }) => {
         // Success for 4242 4242 4242 4242
         onSuccess({
           id: 'demo_payment_' + Date.now(),
-          status: 'succeeded',
+          status: 'success', // Changed from 'succeeded' to match expected status
           amount: amount
         });
       } else if (cardNumber === '0002') {
-        // Insufficient for 4000 0000 0000 0002 (Stripe's official insufficient funds test card)
-        onInsufficient({
-          id: 'demo_payment_' + Date.now(),
-          status: 'insufficient',
-          amount: amount
-        });
-      } else if (cardNumber === '0341') {
-        // Failed for 4000 0000 0000 0341 (Stripe's official declined test card)
+        // Insufficient for 4000 0000 0000 0002
         onFailed({
-          id: 'demo_payment_' + Date.now(),
-          status: 'failed',
-          amount: amount
+          code: 'card_insufficient_funds',
+          payment_intent: { id: 'demo_payment_' + Date.now() }
         });
       } else {
-        // Default to failed for any other card
+        // Failed for any other card
         onFailed({
-          id: 'demo_payment_' + Date.now(),
-          status: 'failed',
-          amount: amount
+          code: 'card_declined',
+          payment_intent: { id: 'demo_payment_' + Date.now() }
         });
       }
     }, 2000);
@@ -105,7 +96,6 @@ const PaymentForm = ({ amount, onSuccess, onInsufficient, onFailed }) => {
       <div className="demo-notice">
         <h3>Numéros de Carte de Démonstration :</h3>
         <p>• 4242 4242 4242 4242 - Succès</p>
-        <p>• 4000 0000 0000 0002 - Fonds insuffisants</p>
         <p>• 4000 0000 0000 0341 - Paiement échoué</p>
         <p>Utilisez n'importe quelle date future pour l'expiration et n'importe quel CVC à 3 chiffres</p>
       </div>

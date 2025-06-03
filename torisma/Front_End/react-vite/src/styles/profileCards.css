@@ -44,7 +44,7 @@
     align-items: center;
     justify-content: center;
     height: 240px;
-    background: #1a1a1a; /* Dark background */
+    background: #6d6767d0; /* Light background */
     border: 2px dashed #2d3748;
     border-radius: 0.75rem;
     cursor: pointer;
@@ -78,10 +78,10 @@
     display: flex;
     flex-direction: column;
     height: 240px;
-    background: #1a1a1a; /* Dark background to match the section */
+    background: #000000; /* Dark background to match the section */
     border-radius: 0.75rem;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 3px #6d6767d0;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
@@ -89,7 +89,7 @@
 
 .photo-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px #6d6767d0;
 }
 
 .photo-card-image-wrapper {
@@ -107,7 +107,7 @@
 
 .photo-card-info {
     padding: 0.75rem 1rem;
-    background: #1a1a1a; /* Dark background */
+    background: #6d6767d0; /* Dark background */
     color: #ffffff; /* White text */
 }
 

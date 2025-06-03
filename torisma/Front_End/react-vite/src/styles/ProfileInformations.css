@@ -53,21 +53,25 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   overflow: hidden;
   border: 3px solid #34E0A1;
-  margin-bottom: 10px;
-  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+  margin: 0 auto 20px;
+  position: relative;
 }
 
-x
 .profile-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block; /* Ensure the image is treated as a block element */
+  object-position: center;
+  display: block;
+}
+
+.animated-profile {
+  animation: pulse 2s infinite alternate;
 }
 
 .profile-name {
@@ -140,6 +144,7 @@ x
   align-self: flex-end;
 }
 
+
 .password-change-button {
   background-color: transparent;
   color: #555;
@@ -167,7 +172,15 @@ x
 }
 
 .upload-label {
-  background-color: #34E0A1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-label {
   color: #000000;
   padding: 8px 15px;
   border-radius: 5px;
@@ -181,8 +194,8 @@ x
 }
 
 .upload-label img {
-  width: 100%;
-  height: 100%;
+  width: 150%;
+  height: 155%;
   object-fit: cover;
   border-radius: 50%;
 }

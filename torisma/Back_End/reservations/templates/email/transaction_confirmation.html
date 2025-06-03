@@ -66,10 +66,16 @@
         </div>
 
         <p>Lorsque vous confirmez votre situation de location, veuillez cliquer sur le bouton ci-dessous:</p>
-        <a href="http://localhost:5173/confirmation?id={{ reservation_id }}" class="button">Confirmer la réservation</a>
+        <div style="text-align: center;">
+            <a href="{{ confirmation_url }}?id={{ reservation_id }}&type={{ item_type }}" 
+               class="button"
+               style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+                Confirmer le paiement et la location
+            </a>
+        </div>
 
         <p>Si vous souhaitez annuler cette location, veuillez cliquer ici: 
-            <a href="http://localhost:5173/annulation?id={{ reservation_id }}">Annuler la réservation</a>
+            <a href="{{ cancellation_url }}?id={{ reservation_id }}&type={{ item_type }}">annuler la location</a>
         </p>
 
         <p>Si vous rencontrez des problèmes avant ou après la confirmation de la réservation, contactez-nous par e-mail: <a href="mailto:TourismA.contact@gmail.com">TourismA.contact@gmail.com</a></p>

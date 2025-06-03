@@ -34,23 +34,26 @@ const PaymentPage = () => {
 
   const processPaymentResult = async (status, paymentIntent) => {
     try {
-      await fetch(
-        'http://127.0.0.1:8000/api/reservations/process-payment-result/', 
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          },
-          body: JSON.stringify({
-            reservation_id: reservationData.reservationId,
-            payment_status: status,
-            item_type: reservationData.type,
-            total_amount: reservationData.amount,
-            payment_intent_id: paymentIntent?.id || null
-          })
-        }
-      );
+      // Only send request if payment was successful
+      if (status === 'completed') {
+        await fetch(
+          'http://127.0.0.1:8000/api/reservations/process-payment-result/', 
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            },
+            body: JSON.stringify({
+              reservation_id: reservationData.reservationId,
+              payment_status: status,
+              item_type: reservationData.type,
+              total_amount: reservationData.amount,
+              payment_intent_id: paymentIntent?.id || null
+            })
+          }
+        );
+      }
       return true;
     } catch (error) {
       console.error('Payment processing error:', error);
@@ -64,8 +67,11 @@ const PaymentPage = () => {
       if (success) {
         setPaymentStatus('success');
         setTimeout(() => {
-          // Navigate with the item ID
-          navigate(`/${reservationData.type === 'car' ? 'voiture' : 'localisation'}/${reservationData.itemId}`);
+          // Add status parameter to URL
+          navigate(
+            `/${reservationData.type === 'car' ? 'voiture' : 'localisation'}/${reservationData.itemId}?status=success`,
+            { replace: true }
+          );
         }, 2000);
       } else {
         setPaymentStatus('update_failed');
@@ -78,16 +84,19 @@ const PaymentPage = () => {
 
   const handlePaymentFailure = async (error) => {
     try {
-      const success = await processPaymentResult('failed', null);
-      if (success) {
-        setPaymentStatus('failed');
-        setTimeout(() => {
-          // Navigate with the item ID
-          navigate(`/voiture/${reservationData.type === 'car' ? 'voiture' : 'localisation'}/localisation/${reservationData.itemId}`);
-        }, 1500);
-      } else {
-        setPaymentStatus('update_failed');
-      }
+      const errorCode = error?.code || 'generic_error';
+      const status = errorCode === 'card_insufficient_funds' ? 'insufficient' : 'failed';
+      
+      await processPaymentResult(status, null);
+      setPaymentStatus(status);
+      
+      setTimeout(() => {
+        // Redirect with the appropriate status in URL
+        navigate(
+          `/${reservationData.type === 'car' ? 'voiture' : 'localisation'}/${reservationData.itemId}?status=${status}`,
+          { replace: true }
+        );
+      }, 1500);
     } catch (error) {
       console.error('Payment failure handling error:', error);
       setPaymentStatus('update_failed');
@@ -129,6 +138,15 @@ const PaymentPage = () => {
         <div className="error-message">
           <h2>System Error</h2>
           <p>Payment processed but reservation update failed. Contact support.</p>
+        </div>
+      </div>
+    );
+  } else if (paymentStatus === 'insufficient') {
+    return (
+      <div className="payment-container">
+        <div className="error-message">
+          <h2>Insufficient Funds</h2>
+          <p>Your card has insufficient funds. Please use a different payment method.</p>
         </div>
       </div>
     );

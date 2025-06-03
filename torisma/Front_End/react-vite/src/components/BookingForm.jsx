@@ -309,7 +309,6 @@ function BookingForm({ originalPrice, listingId }) {
             <div className={`price ${isPromoApplied ? 'discounted' : ''}`}>
               {currentPrice} par jour
               <br />
-              Total: {totalPrice} pour {numberOfDays} jour{numberOfDays > 1 ? 's' : ''}
             </div>
           </div>
 

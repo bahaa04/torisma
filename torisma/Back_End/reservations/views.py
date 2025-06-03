@@ -114,6 +114,12 @@ class CarReservationViewSet(viewsets.ModelViewSet):
         return reservation
 
     def send_cash_confirmation(self, reservation):
+        # Add debug logging
+        item_type = 'car' if isinstance(reservation, CarReservation) else 'house'
+        confirmation_url = f"{settings.FRONTEND_URL}/confirmation"
+        cancellation_url = f"{settings.FRONTEND_URL}/cancellation"
+        frontend_url = settings.FRONTEND_URL
+
         context = {
             'username': reservation.user.username,
             'item_title': f"{reservation.car.manufacture} {reservation.car.model}",
@@ -122,7 +128,11 @@ class CarReservationViewSet(viewsets.ModelViewSet):
             'total_price': reservation.total_price,
             'owner_phone': reservation.car.owner.phone_number,
             'reservation_id': reservation.id,
-            'confirmation_expires': (reservation.start_date + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M')
+            'confirmation_expires': (reservation.start_date + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M'),
+            'confirmation_url': confirmation_url,
+            'frontend_url': frontend_url,
+            'item_type': item_type,
+            'cancellation_url': cancellation_url
         }
 
         html_message = render_to_string('email/transaction_confirmation.html', context)
@@ -253,6 +263,12 @@ class HouseReservationViewSet(viewsets.ModelViewSet):
         return reservation
 
     def send_cash_confirmation(self, reservation):
+        # Add debug logging
+        item_type = 'car' if isinstance(reservation, CarReservation) else 'house'
+        confirmation_url = f"{settings.FRONTEND_URL}/confirmation"
+        cancellation_url = f"{settings.FRONTEND_URL}/cancellation"
+        frontend_url = settings.FRONTEND_URL
+
         context = {
             'username': reservation.user.username,
             'item_title': f"Location à {reservation.house.wilaya}",
@@ -261,7 +277,11 @@ class HouseReservationViewSet(viewsets.ModelViewSet):
             'total_price': reservation.total_price,
             'owner_phone': reservation.house.owner.phone_number,
             'reservation_id': reservation.id,
-            'confirmation_expires': (reservation.start_date + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M')
+            'confirmation_expires': (reservation.start_date + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M'),
+            'confirmation_url': confirmation_url,
+            'cancellation_url': cancellation_url,
+            'frontend_url': frontend_url,
+            'item_type': item_type
         }
 
         html_message = render_to_string('email/transaction_confirmation.html', context)
@@ -431,11 +451,11 @@ def process_payment_result(request):
                     'reservation_id': reservation.id
                 }
             
-            html_message = render_to_string('email/payment_success.html', context)
+            html_message = render_to_string('email/transaction_confirmation.html', context)
             plain_message = strip_tags(html_message)
             
             send_mail(
-                subject='Paiement Confirmé - Réservation',
+                subject='Confirmation de Réservation',
                 message=plain_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[reservation.user.email],
@@ -470,20 +490,35 @@ def process_payment_result(request):
         return Response({'error': str(e)}, status=500)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def confirm_cash_payment(request, reservation_id):
     """
-    Confirm cash payment - owner confirms they received payment
+    Confirm cash payment - allow either renter or owner to confirm
     """
     try:
+        print(f"Processing confirmation for reservation {reservation_id} by user {request.user.id}")
+        
         # Try car reservation first
         try:
             reservation = CarReservation.objects.get(id=reservation_id)
             item = reservation.car
-            owner = reservation.car.owner
+            authorized_users = [reservation.user, item.owner]
         except CarReservation.DoesNotExist:
-            reservation = HouseReservation.objects.get(id=reservation_id)
-            item = reservation.house
-            owner = reservation.house.owner
+            try:
+                reservation = HouseReservation.objects.get(id=reservation_id)
+                item = reservation.house
+                authorized_users = [reservation.user, item.owner]
+            except HouseReservation.DoesNotExist:
+                return Response({"error": "Reservation not found"}, status=404)
+
+        print(f"Authorized users: {[user.id for user in authorized_users]}")
+        
+        # Check if user is authorized
+        if request.user not in authorized_users:
+            return Response({
+                "error": "Not authorized",
+                "detail": "Only the renter or owner can confirm this payment"
+            }, status=403)
         
         # Check if confirmation link is expired (24 hours after start date)
         expiry_time = reservation.start_date + timedelta(hours=24)
@@ -500,10 +535,6 @@ def confirm_cash_payment(request, reservation_id):
                 "error": "Confirmation link expired",
                 "status": "cancelled"
             }, status=400)
-        
-        # Check if user is the owner
-        if owner != request.user:
-            return Response({"error": "Not authorized"}, status=403)
         
         # Confirm payment
         reservation.payment_status = 'completed'

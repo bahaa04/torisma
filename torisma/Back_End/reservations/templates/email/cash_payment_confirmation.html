@@ -72,7 +72,9 @@
         <p>Once you have made the payment and received the keys, please click the confirmation button below:</p>
         
         <div style="text-align: center;">
-            <a href="{{ confirmation_url }}" class="button">Confirm Payment & Rental</a>
+            <a href="{{ confirmation_url }}?id={{ reservation_id }}&type={{ item_type }}" class="button">
+                Confirm Payment & Rental
+            </a>
         </div>
         
         <p>If you wish to cancel the rental, please click this link: <a href="{{ cancellation_url }}">Cancel Rental</a></p>

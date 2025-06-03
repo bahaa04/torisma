@@ -38,14 +38,22 @@ urlpatterns = [
     path('process-payment-result/', process_payment_result, name='process-payment-result'),
     
     # Cash payment confirmation
-    path('confirm-cash-payment/<uuid:reservation_id>/', 
+    path('car-reservations/<uuid:reservation_id>/confirm/', 
          confirm_cash_payment, 
-         name='confirm-cash-payment'),
+         name='confirm-car-reservation'),
+    
+    path('house-reservations/<uuid:reservation_id>/confirm/', 
+         confirm_cash_payment, 
+         name='confirm-house-reservation'),
     
     # Reservation management
-    path('cancel-reservation/<uuid:reservation_id>/', 
+    path('car-reservations/<uuid:reservation_id>/cancel/', 
          cancel_reservation, 
-         name='cancel-reservation'),
+         name='cancel-car-reservation'),
+    
+    path('house-reservations/<uuid:reservation_id>/cancel/', 
+         cancel_reservation, 
+         name='cancel-house-reservation'),
     
     # Payment page data
     path('get-reservation-details/<uuid:reservation_id>/', 
